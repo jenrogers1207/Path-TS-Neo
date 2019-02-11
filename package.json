@@ -6,7 +6,8 @@
     "scripts": {
         "build": "npm install && webpack",
         "dev": "npm install && webpack -w",
-        "serve": "lite-server -c bs-config.json"
+        "serve": "lite-server -c bs-config.json",
+        "start": "npm install && webpack && lite-server -c bs-config.json"
     },
     "repository": {
         "type": "git",

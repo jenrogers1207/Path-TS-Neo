@@ -5,6 +5,7 @@ import { SelectedTest, drawSelectedPanel } from './queryObject';
 
 export function drawGraph(data) {
     console.log(SelectedTest);
+    console.log('test to see if it loads');
     let canvas = d3.select('#graph-render').select('.graph-canvas'),
         width = +canvas.attr("width"),
         height = +canvas.attr("height"),
