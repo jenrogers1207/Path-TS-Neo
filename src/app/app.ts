@@ -3,6 +3,8 @@ import * as d3 from 'D3';
 const gCanvas = require('./graphRender');
 var neoAPI = require('./neo4jLoader');
 var search = require('./search');
+var dataLoad = require('./fileDataLoad');
+
 
 d3.select('.search-icon').on('click', () => {
     const value = (document.getElementById('search-bar')).value;
@@ -25,5 +27,6 @@ let toolDiv = d3.select('body').append("div")
     .style("opacity", 0);
 let queryPanel = d3.select('#wrapper').append('div').attr('id', 'query-panel');
 
+dataLoad.loadFile().then(d=> dataLoad.renderSidebar(d));
 
 neoAPI.getGraph().then(g => gCanvas.drawGraph(g));

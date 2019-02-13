@@ -3,7 +3,7 @@ import * as d3 from 'D3';
 import * as search from './search';
 import { SelectedTest, drawSelectedPanel } from './queryObject';
 
-export function drawGraph(data) {
+export function drawGraph(data: Object) {
     console.log(SelectedTest);
     console.log('test to see if it loads');
     let canvas = d3.select('#graph-render').select('.graph-canvas'),
@@ -63,9 +63,7 @@ export function drawGraph(data) {
     node = nodeEnter.merge(node);
 
     node.on('click', (d) => {
-        console.log(d);
         SelectedTest.queryOb = d.data;
-        console.log(SelectedTest);
         drawGraph(data);
     });
 

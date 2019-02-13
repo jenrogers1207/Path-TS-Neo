@@ -4,6 +4,8 @@ const qo = require('./queryObject');
 const neoAPI = require('./neo4jLoader');
 const gCanvas = require('./graphRender');
 const xhr = require('nets');
+import * as data from './testData.json';
+
 
 export async function searchById(value) {
     const proxy = 'https://cors-anywhere.herokuapp.com/';
