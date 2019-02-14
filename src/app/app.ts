@@ -27,6 +27,10 @@ let toolDiv = d3.select('body').append("div")
     .style("opacity", 0);
 let queryPanel = d3.select('#wrapper').append('div').attr('id', 'query-panel');
 
-dataLoad.loadFile().then(d=> dataLoad.renderSidebar(d));
+dataLoad.loadFile().then(d=> {
+    dataLoad.renderSidebar(d);
+    console.log(d[0].key);
+    search.searchBySymbol(d[0].key, dataLoad.renderGeneDetail)
+});
 
 neoAPI.getGraph().then(g => gCanvas.drawGraph(g));

@@ -62,6 +62,52 @@ export async function searchById(value) {
     }
 }
 
+
+export async function searchBySymbol(value, callBack) {
+    const proxy = 'https://cors-anywhere.herokuapp.com/';
+
+    d3.select('#linked-pathways').selectAll('*').remove();
+    d3.select('#pathway-render').selectAll('*').remove();
+    d3.select('#assoc-genes').selectAll('*').remove();
+    d3.select('#gene-id').selectAll('*').remove();
+
+    let query = SelectedTest;
+
+    if (value.includes(':')) {
+        if (value.includes('ncbi-geneid')) {
+            convert_id(query);
+        } else {
+            linkData(query, [value]);
+        }
+    } else {
+        let url = 'http://mygene.info/v3/query?q=' + value;
+
+        return xhr({
+                url: proxy + url,
+                method: 'GET',
+                encoding: undefined,
+                headers: {
+                    "Content-Type": "application/json"
+                }
+            },
+            function done(err, resp, body) {
+
+                if (err) {
+                    console.error(err);
+                    return;
+                }
+                console.log(resp);
+                let json = JSON.parse(resp.rawRequest.responseText);
+
+                let props = json.hits[0];
+                let properties = { 'symbol': props.symbol, 'ncbi': props._id, 'entrezgene': props.entrezgene, 'description': props.name };
+                query.ncbi = props._id;
+                query.symbol = props.symbol;
+                callBack(properties);
+            });
+    }
+}
+
 //Formater for CONVERT. Passed as param to query
 async function convert_id(queryOb) {
     //NEED TO MAKE THIS SO IT CAN USE OTHER IDS
