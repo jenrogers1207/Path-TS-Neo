@@ -1,5 +1,7 @@
 import * as d3 from 'D3';
 import * as data from './testData.json';
+const qo = require('./queryObject');
+const xhr = require('nets');
 const search = require('./search');
 
 
@@ -50,4 +52,37 @@ export async function renderGeneDetail(data: Object){
     let sidebar = d3.select('#left-nav');
     let geneDet = sidebar.select('.gene-detail');
 }
+
+export async function loadCalls(file){
+let callTable = new qo.foundCalls();
+file.default.map(call=> geneFromCP(call, callTable)).then(ct=> console.log(ct));
+}
+
+export async function geneFromCP(call, callObject){
+    console.log(call);
+    const proxy = 'https://cors-anywhere.herokuapp.com/';
+
+    let url = "https://rest.ensembl.org/overlap/region/human/"+call['#chrom']+":"+call.start+"-"+call.stop+"?feature=gene;content-type=application/json"
+
+    return xhr({
+        url: proxy + url,
+        method: 'GET',
+        encoding: undefined,
+        headers: {
+            "Content-Type": "application/json"
+        }
+    },
+    function done(err, resp, body) {
+
+        if(resp.statusCode == 200){
+            console.log(resp.body);
+            let json = JSON.parse(resp.rawRequest.responseText);
+            console.log(json);
+        }
+       // let json = JSON.parse(resp.rawRequest.responseText);
+    });
+
+
+}
+
 

@@ -1,10 +1,13 @@
 import "./styles.scss";
 import * as d3 from 'D3';
+import { QueryObject } from "./queryObject";
+import { QueryObject } from "./queryObject";
+import { QueryObject } from "./queryObject";
 const gCanvas = require('./graphRender');
 var neoAPI = require('./neo4jLoader');
 var search = require('./search');
 var dataLoad = require('./fileDataLoad');
-
+const qo = require('./queryObject');
 
 d3.select('.search-icon').on('click', () => {
     const value = (document.getElementById('search-bar')).value;
@@ -30,7 +33,8 @@ let queryPanel = d3.select('#wrapper').append('div').attr('id', 'query-panel');
 dataLoad.loadFile().then(d=> {
     dataLoad.renderSidebar(d);
     console.log(d[0].key);
-    search.searchBySymbol(d[0].key, dataLoad.renderGeneDetail)
+    let dataOb = new qo.QueryObject(d[0].key);
+    search.searchBySymbol(dataOb).then(dataLoad.renderGeneDetail(dataOb.properties));
 });
 
 neoAPI.getGraph().then(g => gCanvas.drawGraph(g));

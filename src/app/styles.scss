@@ -45,14 +45,23 @@ body {
 
 .button {
     border-radius: 12px;
+    background-color: white;
+    color: rgb(43, 117, 255);
+    border: 2px solid rgb(43, 117, 255);
+    padding: 10px 24px;
+    cursor: pointer;
+    display: inline-block;
+    /* Green */
 }
 
 .gene-header {
     font-size: 15px;
-    font-style: oblique;
+    font-style: bold;
     height: 25px;
     width: 100%;
     padding: 5px;
+    border-radius: 6px;
+    cursor: pointer;
 }
 
 .variant-wrapper {
@@ -66,6 +75,8 @@ body {
     font-size: 12px;
     font-style: oblique;
     min-height: 30px;
+    border-bottom: .5px solid rgb(43, 117, 255);
+    cursor: pointer;
 }
 
 .variant h5 {
@@ -109,8 +120,10 @@ body {
 
 .search-container {
     width: 490px;
-    display: block;
+    display: inline-block;
     margin: 0 auto;
+    margin-right: 50px;
+    float: right;
 }
 
 input#search-bar {

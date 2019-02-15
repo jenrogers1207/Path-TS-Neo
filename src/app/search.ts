@@ -4,16 +4,14 @@ const qo = require('./queryObject');
 const neoAPI = require('./neo4jLoader');
 const gCanvas = require('./graphRender');
 const xhr = require('nets');
-import * as data from './testData.json';
+//const got = require('got');
 
+const queryKeeper = new qo.QueryKeeper();
 
-export async function searchById(value) {
+export async function searchById(value, callBack) {
     const proxy = 'https://cors-anywhere.herokuapp.com/';
 
-    d3.select('#linked-pathways').selectAll('*').remove();
-    d3.select('#pathway-render').selectAll('*').remove();
-    d3.select('#assoc-genes').selectAll('*').remove();
-    d3.select('#gene-id').selectAll('*').remove();
+    gCanvas.removeThings();
 
     let query = SelectedTest;
 
@@ -63,13 +61,14 @@ export async function searchById(value) {
 }
 
 
-export async function searchBySymbol(value, callBack) {
+
+export async function searchBySymbol(queryOb: object) {
+    
+    let value = queryOb.name;
+
     const proxy = 'https://cors-anywhere.herokuapp.com/';
 
-    d3.select('#linked-pathways').selectAll('*').remove();
-    d3.select('#pathway-render').selectAll('*').remove();
-    d3.select('#assoc-genes').selectAll('*').remove();
-    d3.select('#gene-id').selectAll('*').remove();
+    gCanvas.removeThings();
 
     let query = SelectedTest;
 
@@ -96,14 +95,17 @@ export async function searchBySymbol(value, callBack) {
                     console.error(err);
                     return;
                 }
-                console.log(resp);
+              
                 let json = JSON.parse(resp.rawRequest.responseText);
 
                 let props = json.hits[0];
                 let properties = { 'symbol': props.symbol, 'ncbi': props._id, 'entrezgene': props.entrezgene, 'description': props.name };
                 query.ncbi = props._id;
                 query.symbol = props.symbol;
-                callBack(properties);
+               // callBack(properties);
+                queryOb.properties = properties;
+                queryKeeper.addQueryOb(query);
+               
             });
     }
 }

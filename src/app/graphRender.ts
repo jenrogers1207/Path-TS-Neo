@@ -3,6 +3,12 @@ import * as d3 from 'D3';
 import * as search from './search';
 import { SelectedTest, drawSelectedPanel } from './queryObject';
 
+export function removeThings(){
+    d3.select('#linked-pathways').selectAll('*').remove();
+    d3.select('#pathway-render').selectAll('*').remove();
+    d3.select('#assoc-genes').selectAll('*').remove();
+    d3.select('#gene-id').selectAll('*').remove();
+}
 export function drawGraph(data: Object) {
     console.log(SelectedTest);
     console.log('test to see if it loads');

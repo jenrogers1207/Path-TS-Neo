@@ -1,5 +1,7 @@
+import { searchGeneIds } from "./search";
+
 var neo4j = require('neo4j-driver').v1;
-var driver = neo4j.driver("bolt://localhost:11001", neo4j.auth.basic("neo4j", "1234"));
+var driver = neo4j.driver("bolt://localhost:11011", neo4j.auth.basic("neo4j", "1234"));
 var _ = require('lodash');
 
 export async function addToGraph(query:string, type:string) {
@@ -10,7 +12,7 @@ export async function addToGraph(query:string, type:string) {
         .run(command)
         .then(function(result) {
             session.close();
-            checkForNode(query);
+            console.log("adding to graph");
         })
         .catch(function(error:any) {
             console.log(error);
@@ -20,6 +22,7 @@ export async function addToGraph(query:string, type:string) {
 export async function checkForNode(name:string) {
     var session = driver.session();
     let command = 'MATCH (n:Gene { name: "' + name + '" }) RETURN n';
+    
     return session
         .run(command)
         .then(function(result:any) {
@@ -51,6 +54,8 @@ export async function getGraph() {
     RETURN g AS gene, collect(a.name) AS pathway';
     //(a)-[p:path]->(b)
 
+  //  let command = 'RETURN *'
+
     var session = driver.session();
 
     return session
@@ -60,8 +65,9 @@ export async function getGraph() {
             var nodes = [],
                 rels = [],
                 i = 0;
+            console.log("graph rresult" + result);
             result.records.forEach(res => {
-
+               
                 nodes.push({ title: res.get('gene').properties.name, label: 'gene', data: res.get('gene').properties });
                 var target = i;
                 i++;
@@ -77,10 +83,9 @@ export async function getGraph() {
                     rels.push({ source, target });
                 });
             });
-
+            console.log(nodes, rels)
             return { nodes, links: rels };
-            // });
-            //    return nodes;
+          
         })
         .catch(function(error) {
             console.log(error);
@@ -88,7 +93,7 @@ export async function getGraph() {
 }
 
 export async function addRelation(name, pathName) {
-
+    
     let command = 'MATCH (a:Gene),(b:Pathway) WHERE a.name = "' + name + '" AND b.name = "' + pathName + '" CREATE (a)-[p:path]->(b) RETURN p';
     var session = driver.session();
     return session

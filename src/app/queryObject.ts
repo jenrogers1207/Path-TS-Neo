@@ -1,18 +1,39 @@
 import * as d3 from 'D3';
 export class QueryObject {
-    constructor(queryVal) {
+    symbol:string;
+    name:string
+    ncbi:string;
+    keggId:string;
+    properties: object;
+
+    constructor(queryVal:string) {
 
         this.symbol = '';
         this.name = queryVal;
         this.ncbi = '';
         this.keggId = '';
+        this.properties = {};
     }
 }
 
 export class SelectedQuery {
-    constructor(queryOb) {
+    queryOb: QueryObject;
 
-        this.queryOb = queryOb;
+    constructor(queryObPassed: QueryObject) {
+
+        this.queryOb = queryObPassed;
+    }
+}
+
+export class QueryKeeper{
+    queryKeeper: Array<QueryObject>;
+
+    constructor() {
+    this.queryKeeper = [];
+    }
+
+    addQueryOb(queryOb: QueryObject){
+        this.queryKeeper.push(queryOb);
     }
 }
 
