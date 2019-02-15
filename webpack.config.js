@@ -37,6 +37,7 @@ module.exports = {
         extensions: [".ts", ".tsx", ".js", ".css", ".html", ".json"],
         modules: ["src", "node_modules"]
     },
+    node: { fs: 'empty', net: 'empty' },
     output: {
         filename: "[name].[chunkhash].js",
         path: path.resolve(__dirname, "dist/js")

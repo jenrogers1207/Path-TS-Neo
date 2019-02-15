@@ -1,23 +1,24 @@
 import "./styles.scss";
 import * as d3 from 'D3';
 import { QueryObject } from "./queryObject";
-import { QueryObject } from "./queryObject";
-import { QueryObject } from "./queryObject";
 const gCanvas = require('./graphRender');
 var neoAPI = require('./neo4jLoader');
 var search = require('./search');
 var dataLoad = require('./fileDataLoad');
 const qo = require('./queryObject');
 
+
+
 d3.select('.search-icon').on('click', () => {
     const value = (document.getElementById('search-bar')).value;
+    let dataOb = new qo.QueryObject(value);
     neoAPI.checkForNode(value).then(found => {
         if (found.length > 0) {
             console.log("already exists");
         } else {
             neoAPI.addToGraph(value, 'Gene');
         }
-        search.searchById(value).then(() => neoAPI.getGraph().then(g => gCanvas.drawGraph(g)));
+        search.searchBySymbol(dataOb).then(() => neoAPI.getGraph().then(g => gCanvas.drawGraph(g)));
 
     });
 });
@@ -32,9 +33,16 @@ let queryPanel = d3.select('#wrapper').append('div').attr('id', 'query-panel');
 
 dataLoad.loadFile().then(d=> {
     dataLoad.renderSidebar(d);
-    console.log(d[0].key);
     let dataOb = new qo.QueryObject(d[0].key);
-    search.searchBySymbol(dataOb).then(dataLoad.renderGeneDetail(dataOb.properties));
-});
+    dataOb.type = "Gene";
+    search.searchBySymbol(dataOb).then(q=> {
+        search.geneIdtoMim(q).then(d=> console.log(d));
+    }
+    
+    /*.then((q)=> search.geneIdtoMim(dataOb).then(()=>{
+        console.log(dataOb);
+        dataLoad.renderGeneDetail(dataOb.properties);
+    }));*/
+);
 
 neoAPI.getGraph().then(g => gCanvas.drawGraph(g));

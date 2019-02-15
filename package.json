@@ -51,7 +51,6 @@
     },
     "dependencies": {
         "@types/d3": "^5.7.0",
-        "neo4j-driver": "^1.7.2",
-        "nets": "^3.2.0"
+        "neo4j-driver": "^1.7.2"
     }
 }

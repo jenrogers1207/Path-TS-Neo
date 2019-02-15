@@ -1,113 +1,65 @@
 import * as d3 from 'D3';
-import { SelectedTest } from './queryObject';
+
 const qo = require('./queryObject');
 const neoAPI = require('./neo4jLoader');
 const gCanvas = require('./graphRender');
-const xhr = require('nets');
-//const got = require('got');
+
+const got = require('got');
 
 const queryKeeper = new qo.QueryKeeper();
 
-export async function searchById(value, callBack) {
+export async function searchBySymbol(queryOb:object) {
+
+    let query = queryOb;
     const proxy = 'https://cors-anywhere.herokuapp.com/';
+    let url = 'http://mygene.info/v3/query?q=';
 
-    gCanvas.removeThings();
+    let req =  await got(proxy+'http://mygene.info/v3/query?q='+query.value);
+  
+    let json = JSON.parse(req.body);
 
-    let query = SelectedTest;
+    let props = json.hits[0];
+    let properties = { 'symbol': props.symbol, 'ncbi': props._id, 'entrezgene': props.entrezgene, 'description': props.name };
+              
+    query.properties = properties
+    /*
+    neoAPI.checkForNode(value).then(found => {
+    if (found.length > 0) {
+        for (let prop in properties) {
+            neoAPI.setNodeProperty(value, prop, properties[prop]);
+            }
+            };
+    });
 
-    if (value.includes(':')) {
-        if (value.includes('ncbi-geneid')) {
-            convert_id(query);
-        } else {
-            linkData(query, [value]);
-        }
-    } else {
-        let url = 'http://mygene.info/v3/query?q=' + value;
+    convert_id(query);
+        */
 
-        return xhr({
-                url: proxy + url,
-                method: 'GET',
-                encoding: undefined,
-                headers: {
-                    "Content-Type": "application/json"
-                }
-            },
-            function done(err, resp, body) {
-
-                if (err) {
-                    console.error(err);
-                    return;
-                }
-
-                let geneID = d3.select('#gene-id');
-                let json = JSON.parse(resp.rawRequest.responseText);
-
-                let props = json.hits[0];
-                let properties = { 'symbol': props.symbol, 'ncbi': props._id, 'entrezgene': props.entrezgene, 'description': props.name };
-                query.ncbi = props._id;
-                query.symbol = props.symbol;
-
-                neoAPI.checkForNode(value).then(found => {
-                    if (found.length > 0) {
-                        for (let prop in properties) {
-                            neoAPI.setNodeProperty(value, prop, properties[prop]);
-                        }
-                    };
-                });
-
-                convert_id(query);
-            });
-    }
+    return query;
+    
 }
 
-
-
-export async function searchBySymbol(queryOb: object) {
-    
-    let value = queryOb.name;
-
+export async function geneIdtoMim(queryOb:any){
+    let query = queryOb;
+    console.log(query.properties.entrezgene);
+    let value = query.properties.entrezgene;
+    console.log(value);
     const proxy = 'https://cors-anywhere.herokuapp.com/';
 
-    gCanvas.removeThings();
+    let url = 'http://mygene.info/v2/gene/'+value+'?fields=MIM';
+          
+    let req =  await got(proxy+url);
+    console.log(req);
+    let json = JSON.parse(req.body);
 
-    let query = SelectedTest;
+    let props = json;
 
-    if (value.includes(':')) {
-        if (value.includes('ncbi-geneid')) {
-            convert_id(query);
-        } else {
-            linkData(query, [value]);
-        }
-    } else {
-        let url = 'http://mygene.info/v3/query?q=' + value;
-
-        return xhr({
-                url: proxy + url,
-                method: 'GET',
-                encoding: undefined,
-                headers: {
-                    "Content-Type": "application/json"
-                }
-            },
-            function done(err, resp, body) {
-
-                if (err) {
-                    console.error(err);
-                    return;
-                }
-              
-                let json = JSON.parse(resp.rawRequest.responseText);
-
-                let props = json.hits[0];
-                let properties = { 'symbol': props.symbol, 'ncbi': props._id, 'entrezgene': props.entrezgene, 'description': props.name };
-                query.ncbi = props._id;
-                query.symbol = props.symbol;
-               // callBack(properties);
-                queryOb.properties = properties;
-                queryKeeper.addQueryOb(query);
-               
-            });
-    }
+    console.log(json)
+           
+    query.properties.MIM = props.MIM;
+    console.log(props);
+    console.log("query with property", query);
+           
+    return query;
 }
 
 //Formater for CONVERT. Passed as param to query
@@ -135,7 +87,6 @@ async function convert_id(queryOb) {
 
             // v this consoles what I want v 
             grabId(queryOb, resp.rawRequest.responseText).then(ids => {
-
                 linkData(queryOb, ids);
             });
 
@@ -169,6 +120,8 @@ function get_format(id, geneId) {
 
         });
 }
+
+
 
 //Formater for CONVERT. Passed as param to query
 function conv_format(id) {

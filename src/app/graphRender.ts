@@ -10,7 +10,7 @@ export function removeThings(){
     d3.select('#gene-id').selectAll('*').remove();
 }
 export function drawGraph(data: Object) {
-    console.log(SelectedTest);
+
     console.log('test to see if it loads');
     let canvas = d3.select('#graph-render').select('.graph-canvas'),
         width = +canvas.attr("width"),

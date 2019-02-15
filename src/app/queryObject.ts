@@ -1,17 +1,16 @@
 import * as d3 from 'D3';
 export class QueryObject {
-    symbol:string;
-    name:string
+
+    value:string
     ncbi:string;
     keggId:string;
     properties: object;
+    entrez:string;
+    type:string;
 
     constructor(queryVal:string) {
-
-        this.symbol = '';
-        this.name = queryVal;
-        this.ncbi = '';
-        this.keggId = '';
+        this.type = ''
+        this.value = queryVal;
         this.properties = {};
     }
 }
