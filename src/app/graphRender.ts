@@ -9,9 +9,24 @@ export function removeThings(){
     d3.select('#assoc-genes').selectAll('*').remove();
     d3.select('#gene-id').selectAll('*').remove();
 }
+
+export async function renderGeneDetail(data: Object){
+    console.log(data);
+    let titles = d3.keys(data.properties);
+    let sidebar = d3.select('#left-nav');
+    let geneDet = sidebar.select('.gene-detail');
+    let geneHeader = geneDet.append('div').attr('class', 'detail-head').append('h3').text(data.value);
+    let propertyDivs = geneDet.selectAll('.prop-headers').data(titles);
+    let propEnter = propertyDivs.enter().append('div').classed('prop-headers', true);
+    propEnter.append('h5').text((d, i)=> d)
+    let sections = propEnter.selectAll('.sections').data(d=> data.properties[d]);
+    let secEnter = sections.enter().append('div').classed('sections', true);
+    sections = secEnter.merge(sections);
+    propertyDivs = propEnter.merge(propertyDivs);
+}
+
 export function drawGraph(data: Object) {
 
-    console.log('test to see if it loads');
     let canvas = d3.select('#graph-render').select('.graph-canvas'),
         width = +canvas.attr("width"),
         height = +canvas.attr("height"),

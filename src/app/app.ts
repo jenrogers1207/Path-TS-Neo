@@ -1,6 +1,7 @@
 import "./styles.scss";
 import * as d3 from 'D3';
 import { QueryObject } from "./queryObject";
+import { searchOMIM } from "./search";
 const gCanvas = require('./graphRender');
 var neoAPI = require('./neo4jLoader');
 var search = require('./search');
@@ -36,13 +37,8 @@ dataLoad.loadFile().then(d=> {
     let dataOb = new qo.QueryObject(d[0].key);
     dataOb.type = "Gene";
     search.searchBySymbol(dataOb).then(q=> {
-        search.geneIdtoMim(q).then(d=> console.log(d));
-    }
-    
-    /*.then((q)=> search.geneIdtoMim(dataOb).then(()=>{
-        console.log(dataOb);
-        dataLoad.renderGeneDetail(dataOb.properties);
-    }));*/
-);
+        search.geneIdtoMim(q).then(d=> {
+            searchOMIM(d).then(om=> gCanvas.renderGeneDetail(om));
+    });
 
-neoAPI.getGraph().then(g => gCanvas.drawGraph(g));
+//neoAPI.getGraph().then(g => gCanvas.drawGraph(g));

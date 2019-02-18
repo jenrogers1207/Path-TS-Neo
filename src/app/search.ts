@@ -19,9 +19,9 @@ export async function searchBySymbol(queryOb:object) {
     let json = JSON.parse(req.body);
 
     let props = json.hits[0];
-    let properties = { 'symbol': props.symbol, 'ncbi': props._id, 'entrezgene': props.entrezgene, 'description': props.name };
+    let ids = { 'symbol': props.symbol, 'ncbi': props._id, 'entrezgene': props.entrezgene, 'description': props.name };
               
-    query.properties = properties
+    query.properties.ids = ids
     /*
     neoAPI.checkForNode(value).then(found => {
     if (found.length > 0) {
@@ -38,65 +38,45 @@ export async function searchBySymbol(queryOb:object) {
     
 }
 
+export async function searchOMIM(queryOb:any){
+
+    const proxy = 'https://cors-anywhere.herokuapp.com/';
+    let url = "https://api.omim.org/api/entry?mimNumber="+queryOb.properties.ids.MIM+"&include=text&include=allelicVariantList&include=clinicalSynopsis&include=referenceList&include=geneMap&format=json&apiKey=mUYjhLsCRVOuShEhrHLG_w";
+    let req =  await got(proxy+url);
+    let json = JSON.parse(req.body);
+
+    let props = json.omim.entryList[0].entry;
+    console.log("OMIM", props);
+    queryOb.properties.allelicVariantList = props.allelicVariantList.map(p=> p.allelicVariant);
+    queryOb.properties.titles = props.titles;
+    queryOb.properties.geneMap = props.geneMap;
+    queryOb.properties.referenceList = props.referenceList.map(p=> p.reference);
+    queryOb.properties.text = props.textSectionList.map(p=> p.textSection);
+    
+    return queryOb;
+}
+
 export async function geneIdtoMim(queryOb:any){
     let query = queryOb;
-    console.log(query.properties.entrezgene);
-    let value = query.properties.entrezgene;
-    console.log(value);
+    console.log(query.properties.ids.entrezgene);
+    let value = query.properties.ids.entrezgene;
+  
     const proxy = 'https://cors-anywhere.herokuapp.com/';
 
     let url = 'http://mygene.info/v2/gene/'+value+'?fields=MIM';
           
     let req =  await got(proxy+url);
-    console.log(req);
+    
     let json = JSON.parse(req.body);
 
     let props = json;
 
-    console.log(json)
            
-    query.properties.MIM = props.MIM;
-    console.log(props);
-    console.log("query with property", query);
+    query.properties.ids.MIM = props.MIM;
+    
            
     return query;
 }
-
-//Formater for CONVERT. Passed as param to query
-async function convert_id(queryOb) {
-    //NEED TO MAKE THIS SO IT CAN USE OTHER IDS
-    let stringArray = new Array();
-    let type = 'genes/';
-    let url = 'http://rest.kegg.jp/conv/' + type + 'ncbi-geneid:' + queryOb.ncbi;
-
-    const proxy = 'https://cors-anywhere.herokuapp.com/';
-
-    return xhr({
-            url: proxy + url,
-            method: 'GET',
-            encoding: undefined,
-            headers: {
-                "Content-Type": "text/plain"
-            }
-        },
-        function done(err, resp, body) {
-            if (err) {
-                console.error(err);
-                return;
-            }
-
-            // v this consoles what I want v 
-            grabId(queryOb, resp.rawRequest.responseText).then(ids => {
-                linkData(queryOb, ids);
-            });
-
-            return resp;
-        }
-
-    );
-
-}
-
 
 function get_format(id, geneId) {
     let url = 'http://rest.kegg.jp/get/' + id + '/kgml';
@@ -117,7 +97,6 @@ function get_format(id, geneId) {
                 console.error(err);
                 return;
             }
-
         });
 }
 

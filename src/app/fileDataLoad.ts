@@ -47,12 +47,6 @@ export async function renderSidebar(data: Object){
     });
 }
 
-export async function renderGeneDetail(data: Object){
-    console.log(data);
-    let sidebar = d3.select('#left-nav');
-    let geneDet = sidebar.select('.gene-detail');
-}
-
 export async function loadCalls(file){
 let callTable = new qo.foundCalls();
 file.default.map(call=> geneFromCP(call, callTable)).then(ct=> console.log(ct));

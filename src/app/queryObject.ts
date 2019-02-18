@@ -11,7 +11,9 @@ export class QueryObject {
     constructor(queryVal:string) {
         this.type = ''
         this.value = queryVal;
-        this.properties = {};
+        this.properties = {
+            'ids': {}
+        };
     }
 }
 
