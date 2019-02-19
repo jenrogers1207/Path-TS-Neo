@@ -36,10 +36,25 @@ dataLoad.loadFile().then(d=> {
     dataLoad.renderSidebar(d);
     let dataOb = new qo.QueryObject(d[0].key);
     dataOb.type = "Gene";
+
+    let varArray = d[0].values.map(v=> {
+        let variant = new qo.QueryObject(v.id);
+        variant.type = "Variant";
+        Object.keys(v).map(key=> {
+            variant.properties[key.toString()] = v[key];
+            variant.Gene = d[0].key;
+        });
+        return variant
+    });
+  
+    dataOb.fileVariants = varArray;
     search.searchBySymbol(dataOb).then(q=> {
         search.geneIdtoMim(q).then(d=> {
             searchOMIM(d).then(om=>{  
-                console.log(om);
-                search.getPathways(om)});
+                search.getPathways(om);
+                gCanvas.renderGeneDetail(om);
+                neoAPI.addNodes(om);
+            });
+        
 
 //neoAPI.getGraph().then(g => gCanvas.drawGraph(g));

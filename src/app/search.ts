@@ -5,6 +5,9 @@ const neoAPI = require('./neo4jLoader');
 const gCanvas = require('./graphRender');
 
 const got = require('got');
+import ky from 'ky';
+import { SrvRecord } from 'dns';
+
 
 const queryKeeper = new qo.QueryKeeper();
 
@@ -105,20 +108,26 @@ export async function getPathways(queryOb) {
 
     let value = queryOb.properties.ids.ncbi;
 
-    let url = 'http://rest.kegg.jp/conv/genes/' + 'ncbi:'+value;
-    console.log(url);
-
     let proxy = 'https://cors-anywhere.herokuapp.com/';
-          
-    let req =  await got(proxy+url);
+    let url = 'http://rest.kegg.jp/conv/genes/ncbi-geneid:'+value;
 
-    console.log(req)
+    let req =  await ky.get('https://cors-anywhere.herokuapp.com/http://rest.kegg.jp/conv/genes/ncbi-geneid:'+value).text();
+
+    console.log(req);
     
-    let json = JSON.parse(req.body);
+    let idstring:Array<string> = await grabId('ncbi-geneid', req);
 
-    let props = json;
+    console.log(idstring[1]);
 
-    console.log(props);
+    let keggId = null;
+
+    keggId = (idstring.length > 1) ? idstring[1] : idstring[0];
+
+    let url2 = 'http://rest.kegg.jp/link/pathway/' + keggId;
+
+    let req2 =  await ky.get(proxy+ url2).text();
+
+    console.log(req2);
 
   
           //  grabId(null, resp.rawRequest.responseText).then(ids => link_format(ids));
@@ -132,6 +141,7 @@ async function grabId(query, list) {
     let stringArray = new Array();
 
     list = list.split(/(\s+)/);
+
 
     for (var i = 0; i < list.length; i++) {
         if (list[i].length > 1) {

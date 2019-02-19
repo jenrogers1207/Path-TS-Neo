@@ -1,8 +1,31 @@
 import { searchGeneIds } from "./search";
 
 var neo4j = require('neo4j-driver').v1;
-var driver = neo4j.driver("bolt://localhost:11011", neo4j.auth.basic("neo4j", "1234"));
+var driver = neo4j.driver("bolt://localhost:11008", neo4j.auth.basic("neo4j", "1234"));
 var _ = require('lodash');
+
+export async function addNodes(queryOb:object){
+    let node = await checkForNode(queryOb.value);
+    if(node.length > 0){
+        console.log('node exists');
+
+    }else{
+        console.log('add node');
+        let props = queryOb.properties;
+        let command = 'CREATE (n:' + queryOb.type + ' $'+props+')';
+        console.log(command);
+        var session = driver.session();
+        session
+            .run(command)
+            .then(function(result) {
+                session.close();
+                console.log("adding to graph");
+            })
+            .catch(function(error:any) {
+                console.log(error);
+            });
+    }
+}
 
 export async function addToGraph(query:string, type:string) {
     let command = 'CREATE (n:' + type + ' {name:"' + query + '"})';
