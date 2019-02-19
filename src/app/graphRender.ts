@@ -12,17 +12,37 @@ export function removeThings(){
 
 export async function renderGeneDetail(data: Object){
     console.log(data);
-    let titles = d3.keys(data.properties);
+    let headers = d3.keys(data.properties);
     let sidebar = d3.select('#left-nav');
     let geneDet = sidebar.select('.gene-detail');
     let geneHeader = geneDet.append('div').attr('class', 'detail-head').append('h3').text(data.value);
-    let propertyDivs = geneDet.selectAll('.prop-headers').data(titles);
+    let propertyDivs = geneDet.selectAll('.prop-headers').data(headers);
     let propEnter = propertyDivs.enter().append('div').classed('prop-headers', true);
-    propEnter.append('h5').text((d, i)=> d)
-    let sections = propEnter.selectAll('.sections').data(d=> data.properties[d]);
-    let secEnter = sections.enter().append('div').classed('sections', true);
-    sections = secEnter.merge(sections);
+    propEnter.append('h5').text((d)=> d)
+   // let sections = propEnter.selectAll('.sections').data(d=> data.properties[d]);
+   // let secEnter = sections.enter().append('div').classed('sections', true);
+    //sections = secEnter.merge(sections);
+    let titles = propEnter.filter(d=> d == "titles");
+    let titleSec = titles.selectAll('.sections').data(d=> data.properties[d]);
+    let titleEnter = titleSec.enter().append('div').classed('title sections', true);
+    titleEnter.append('text').text(d=> d);
+
+    let variants = propEnter.filter(d=> d == 'allelicVariantList');
+    let varSec = variants.selectAll('.sections').data(d=> data.properties[d]);
+    let varSecEnter = varSec.enter().append('div').classed('var sections', true);
+    varSecEnter.append('text').text(d=> d.dbSnps);
+
+    let geneMap = propEnter.filter(d=> d == 'geneMap');
+    let geneSec = geneMap.selectAll('.sections').data(d=>data.properties[d]);
+    let geneEnter = geneSec.enter().append('div').classed('gmap sections', true);
+    geneEnter.append('text').text(d=> d);
+
+
+
     propertyDivs = propEnter.merge(propertyDivs);
+
+    
+
 }
 
 export function drawGraph(data: Object) {

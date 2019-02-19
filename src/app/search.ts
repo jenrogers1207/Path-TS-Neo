@@ -52,13 +52,13 @@ export async function searchOMIM(queryOb:any){
     queryOb.properties.geneMap = props.geneMap;
     queryOb.properties.referenceList = props.referenceList.map(p=> p.reference);
     queryOb.properties.text = props.textSectionList.map(p=> p.textSection);
-    
+
     return queryOb;
 }
 
 export async function geneIdtoMim(queryOb:any){
     let query = queryOb;
-    console.log(query.properties.ids.entrezgene);
+   // console.log(query.properties.ids.entrezgene);
     let value = query.properties.ids.entrezgene;
   
     const proxy = 'https://cors-anywhere.herokuapp.com/';
@@ -100,41 +100,32 @@ function get_format(id, geneId) {
         });
 }
 
-
-
 //Formater for CONVERT. Passed as param to query
-function conv_format(id) {
-    //NEED TO MAKE THIS SO IT CAN USE OTHER IDS
-    let stringArray = new Array();
-    let type = 'genes/';
-    let url = 'http://rest.kegg.jp/conv/' + type + id;
+export async function getPathways(queryOb) {
+
+    let value = queryOb.properties.ids.ncbi;
+
+    let url = 'http://rest.kegg.jp/conv/genes/' + 'ncbi:'+value;
+    console.log(url);
 
     let proxy = 'https://cors-anywhere.herokuapp.com/';
+          
+    let req =  await got(proxy+url);
 
-    let data = xhr({
-            url: proxy + url,
-            method: 'GET',
-            encoding: undefined,
-            headers: {
-                "Content-Type": "text/plain"
-            }
-        },
+    console.log(req)
+    
+    let json = JSON.parse(req.body);
 
-        function done(err, resp, body) {
-            if (err) {
-                console.error(err);
-                return;
-            }
+    let props = json;
 
-            // v this consoles what I want v 
-            grabId(null, resp.rawRequest.responseText).then(ids => link_format(ids));
+    console.log(props);
 
-            return resp;
-        }
+  
+          //  grabId(null, resp.rawRequest.responseText).then(ids => link_format(ids));
 
-    );
 
-    return data;
+
+   // return data;
 }
 
 async function grabId(query, list) {

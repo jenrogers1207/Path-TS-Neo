@@ -38,7 +38,8 @@ dataLoad.loadFile().then(d=> {
     dataOb.type = "Gene";
     search.searchBySymbol(dataOb).then(q=> {
         search.geneIdtoMim(q).then(d=> {
-            searchOMIM(d).then(om=> gCanvas.renderGeneDetail(om));
-    });
+            searchOMIM(d).then(om=>{  
+                console.log(om);
+                search.getPathways(om)});
 
 //neoAPI.getGraph().then(g => gCanvas.drawGraph(g));
