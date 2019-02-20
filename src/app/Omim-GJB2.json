@@ -1,0 +1,1979 @@
+{"omim": { 
+"version": "1.0",
+"entryList": [ 
+{"entry": { 
+"prefix": "*", 
+"mimNumber": 121011, 
+"status": "live", 
+"titles": { 
+"preferredTitle": "GAP JUNCTION PROTEIN, BETA-2; GJB2", 
+"alternativeTitles": "GAP JUNCTION PROTEIN, 26-KD;;\nCONNEXIN 26; CX26"
+} , 
+"textSectionList": [ 
+{"textSection": { 
+"textSectionName": "description", 
+"textSectionTitle": "Description", 
+"textSectionContent": "Gap junctions are large-diameter channels made up of 2 hemichannels--each composed of 6 connexin subunits--on opposing membranes that join through hydrophobic interactions and form an aqueous pore between the cytoplasm of 2 adjacent cells. Cx26 (GJB2) is a gap junction subunit expressed in the developing cortex (summary by {36:Elias et al., 2007})."
+} },
+{"textSection": { 
+"textSectionName": "cloning", 
+"textSectionTitle": "Cloning", 
+"textSectionContent": "By subtractive hybridization for genes downregulated in mammary tumors, followed by library screening, {68:Lee et al. (1992)} cloned CX26 from a normal mammary epithelial cell cDNA library. The 3-prime untranslated region of the CX26 transcript contains a putative mRNA instability sequence. The deduced 226-amino acid protein has a calculated molecular mass of about 26 kD. CX26 shares 92.5% identity with rat Cx26. Northern blot analysis revealed expression of major CX26 transcripts of 2.4 and 2.8 kb in normal mammary epithelial cells. No expression was detected in any of the mammary tumor cells examined. Immunofluorescent and phase contrast microscopy detected diffuse intracellular staining of endogenous CX26 and a punctate distribution that often corresponded to regions of cell-cell contact.\n\nBy immunohistochemical staining of human cochlear cells, {59:Kelsell et al. (1997)} demonstrated high levels of CX26 expression. Expression patterns in mouse and rat cochlea indicated that connexin 26 and connexin 30 ({604418}) are expressed in the supporting cells of the cochlea, suggesting a potential role in endolymph potassium recycling ({105:Rabionet et al., 2000}).\n\nBy immunohistochemistry and Western blot analysis, {11:Arishima et al. (2002)} detected CX26 and CX43 ({121014}) in the cap cell layer, cap cell cluster, and central core of arachnoid villi. Expression was weaker in the fibrous capsule. In meningiomas, the connexins were strongly expressed in the meningotheliomatous area and were weakly expressed in the fibrous area. Neither was expressed in hemangiopericytomas. CX26 and CX43 were distributed on the cell membranes in arachnoid villi and meningiomas and showed bands with apparent molecular masses of 26 and 42 to 47 kD, respectively.\n\n{122:Sohl et al. (2003)} stated that mouse and human CX26 share 93% amino acid identity. Northern blot analysis detected variable expression of a CX26 doublet of about 2.5 kb in both mouse and human, with highest expression in kidney and liver."
+} },
+{"textSection": { 
+"textSectionName": "geneFunction", 
+"textSectionTitle": "Gene Function", 
+"textSectionContent": "Using dye transfer to detect the presence of functional gap junctions, {68:Lee et al. (1992)} determined that normal mammary epithelial cells expressing CX26 and CX43 contained functional gap junctions, whereas tumor cells not expressing them did not. In synchronized cells, CX26 expression was regulated by the cell cycle, showing moderate expression during G1 and S and strong upregulation in late S and G2. CX43 was constitutively expressed at a uniform low level throughout the cell cycle. Phorbol ester induced reexpression of the 2 CX26 transcripts in mammary tumor epithelial cells, but not reexpression of CX43.\n\nUsing the paired Xenopus oocyte assay, {84:Mese et al. (2004)} functionally analyzed 5 CX26 mutations associated with autosomal recessive neurosensory deafness (DFNB1A; {220290}). Three of the mutants were unable to form functional channels; the other 2 did electrically couple cells, but their voltage gating properties were different from wildtype CX26 channels. {84:Mese et al. (2004)} suggested that deafness associated with CX26 mutations is caused not only by reduced potassium recirculation in the inner ear, but also by abnormalities in the exchange of other metabolites through the cochlear gap.\n\n{36:Elias et al. (2007)} showed that the gap junction subunits CX26 and CX43 ({121014}) are expressed at the contact points between radial fibers and migrating neurons, and that acute downregulation of CX26 or CX43 impairs the migration of neurons to the cortical plate. Unexpectedly, gap junctions do not mediate neuronal migration by acting in the classical manner to provide an aqueous channel for cell-cell communication. Instead, gap junctions provide dynamic adhesive contacts that interact with the internal cytoskeleton to enable leading process stabilization along radial fibers as well as the subsequent translocation of the nucleus. {36:Elias et al. (2007)} concluded that gap junction adhesions are necessary for glial-guided neuronal migration."
+} },
+{"textSection": { 
+"textSectionName": "geneStructure", 
+"textSectionTitle": "Gene Structure", 
+"textSectionContent": "{63:Kiang et al. (1997)} noted that the CX26 gene contains 2 exons and that exon 1 is untranslated. The promoter region is highly conserved between the mouse and human genes, and it contains 6 GC boxes, 2 GT boxes, a TTAAAA box, a YY1 ({600013})-like binding site, and a consensus mammary gland factor ({601511})-binding site."
+} },
+{"textSection": { 
+"textSectionName": "mapping", 
+"textSectionTitle": "Mapping", 
+"textSectionContent": "{141:Willecke et al. (1990)} used rat connexin gene probes in Southern blot analysis of human-mouse somatic cell hybrids to map the CX26 gene to chromosome 13. By means of somatic cell hybrids, {51:Hsieh et al. (1991)} assigned the GJB2 gene to chromosome 13 in man and chromosome 14 in the mouse. {47:Haefliger et al. (1992)} showed that the rat homologs of the CX26 and CX46 genes are tightly linked on chromosome 14. By isotopic in situ hybridization, {87:Mignon et al. (1996)} mapped GJB2 to 13q11-q12 and confirmed the assignment to mouse chromosome 14."
+} },
+{"textSection": { 
+"textSectionName": "biochemicalFeatures", 
+"textSectionTitle": "Biochemical Features", 
+"textSectionContent": "<Subhead> Crystal Structure\n\n{75:Maeda et al. (2009)} reported the crystal structure of the gap junction channel formed by human connexin-26 at 3.5-angstrom resolution, and discussed structural determinants of solute transport through the channel. The density map showed the 2 membrane-spanning hemichannels and the arrangement of the 4 transmembrane helices of the 6 promoters forming each hemichannel. The hemichannels feature a positively charged cytoplasmic entrance, a funnel, a negatively charged transmembrane pathway, and an extracellular cavity. The pore is narrowed at the funnel, which is formed by the 6 amino-terminal helices lining the wall of the channel, which thus determines the molecular size restriction at the channel entrance. {75:Maeda et al. (2009)} concluded that the structure of the Cx26 gap junction channel also has implications for the gating of the channel by the transjunctional voltage."
+} },
+{"textSection": { 
+"textSectionName": "molecularGenetics", 
+"textSectionTitle": "Molecular Genetics", 
+"textSectionContent": "{58:Kelsell et al. (2001)} provided a comprehensive review of connexin mutations in skin disease and hearing loss. They discussed the dominant connexin disorders of keratoderma and/or hearing loss and the autosomal recessive nonsyndromal hearing loss due to connexin mutations.\n\n<Subhead> Autosomal Dominant Deafness 3 (DFNA3) and Autosomal Recessive Deafness 1A (DFNB1A)\n\n{59:Kelsell et al. (1997)} identified CX26 mutations resulting in premature stop codons in 3 autosomal recessive nonsyndromic sensorineural deafness pedigrees, genetically linked to 13q11-q12, where the CX26 gene is localized (DFNB1A; {220290}).\n\n{19:Carrasquillo et al. (1997)} performed linkage analysis in 2 interrelated inbred kindreds in a single Israeli-Arab village containing more than 50 individuals with nonsyndromic recessive deafness. Genetic mapping demonstrated that a gene located at 13q11 segregated with the deafness in these 2 kindreds (DFNB1A). Haplotype analysis, using 8 microsatellite markers spanning 15 cM in 13q11, suggested the segregation of 2 different mutations in this extended kindred; affected individuals were homozygotes for either haplotype or compound heterozygotes: W77R ({121011.0004}) and 35delG ({121011.0005}), which is also known as 30delG, both of which were predicted to inactivate connexin-26. The recombination of marker alleles involving polymorphisms in 13q11, at known map distances from the mutations, allowed them to estimate the age of the mutations to be 3 to 5 generations (75 to 125 years). The study demonstrated that in small populations with high rates of consanguinity, as compared with large outbred populations, recessive mutations may have very recent origin and show allelic diversity. They pointed to the same phenomenon being observed for Hurler syndrome ({607014}) with 3 unique mutations and for metachromatic leukodystrophy ({250100}) with 5 distinct mutations, discovered among the Druze and Muslim Arab villages in Israel. In light of these findings, the authors commented that it is likely that homozygosity mapping studies in highly inbred communities may be compromised, as may be studies of mapping by linkage disequilibrium, unless the possibility of mutational diversity is taken into account.\n\n{69:Lench et al. (1998)} studied the role of CX26 mutations in singleton (sporadic) cases of nonsyndromal sensorineural deafness. Such mutations were identified in 4 of 43 U.K. and 2 of 25 Belgian patients. Thus, about 10% of families presenting with a child sporadically affected with this disorder can be offered definitive mendelian recurrence risks. This was said to be the first genetic test available for screening such children.\n\n{57:Kelley et al. (1998)} analyzed 58 multiplex families each having at least 2 affected children diagnosed with autosomal recessive nonsyndromic deafness. Mutations in both alleles of GJB2 were observed in 20 of the 58 families. A 30delG allele ({121011.0005}) occurred in 33 of the 116 chromosomes, for a frequency of 0.284. This mutation was observed in 2 of 192 control chromosomes, for an estimated gene frequency of 0.01 +/- 0.007. The homozygous frequency of the 30delG allele was then estimated at 0.0001, or 1 in 10,000. Given that the frequency of all childhood hearing impairment is 1 in 1,000 and that half of that is genetic, the specific mutation 30delG is responsible for 10% of all childhood hearing loss and for 20% of all childhood hereditary hearing loss. Six novel mutations were also observed in the affected population.\n\n{90:Murgia et al. (1999)} studied 53 unrelated individuals with nonsyndromic sensorineural hearing impairment and carried out CX26 mutation analysis. Mutations were found in 53% of cases, in 35.3% of those in whom autosomal recessive inheritance was thought likely and in 60% of the presumed sporadic cases. Three novel mutations were found. The hearing deficit varied from mild to profound even within the same family. Among patients with profound hearing loss, 35.5% were found to have a mutation; among those severely impaired, 20%; and among those moderately impaired, 33.3%.\n\n{106:Rabionet et al. (2000)} analyzed the GJB2 gene in 576 families/unrelated patients with recessive or sporadic deafness from Italy and Spain, 193 of them being referred as autosomal recessive and the other 383 as apparently sporadic. Of the 1,152 unrelated GJB2 chromosomes, 37% had GJB2 mutations. A total of 23 different mutations were detected. Mutation 35delG ({121011.0005}) was the most common, accounting for 82% of all GJB2 deafness alleles. It represented 88% of the alleles in Italian patients and only 55% in Spanish cases.\n\n{121:Sobe et al. (2000)} sequenced the entire coding region of the GJB2 gene in 75 hearing-impaired children and adults in Israel. Age at onset in the screened population was both prelingual and postlingual, with hearing loss ranging from moderate to profound. Almost 39% of all persons tested harbored GJB2 mutations, most of which were 35delG and 167delT ({121011.0010}). A novel mutation, involving both a deletion and an insertion, 51del12insA ({121011.0013}), was identified in a family originating from Uzbekistan. All GJB2 mutations were associated with prelingual hearing loss, although severity ranged from moderate to profound, with variability even among hearing-impaired sibs. No significant difference in hearing levels was found between individuals with 35delG and 167delT mutations.\n\n{140:Wilcox et al. (2000)} performed mutation analysis of the GJB2 gene and audiology on 106 families presenting with at least 1 child with congenital hearing loss. In 74 families (80 children), the etiology was consistent with nonsyndromic recessive hearing loss. Six different GJB2 mutations, including 1 novel mutation, were identified. They found that GJB2 mutations caused a range of phenotypes from mild to profound hearing impairment and that loss of hearing in the high-frequency range (4,000 to 8,000 Hz) is a characteristic feature in children with molecularly diagnosed CX26 hearing impairment. They also demonstrated that high frequency hearing loss was found in a group of similar size of deaf children in whom a mutation could be found in only one of the GJB2 alleles. In their study, the M34T mutation was associated with hearing loss only when present in compound heterozygous state, suggesting autosomal recessive inheritance.\n\n{89:Morle et al. (2000)} reported a missense mutation ({121011.0018}) in a family with autosomal dominant isolated hearing loss.\n\n{62:Kenneson et al. (2002)} reviewed the 167delT ({121011.0010}), 35delG ({121011.0005}), and 235delC ({121011.0014}) mutations in the GJB2 gene. These alleles are recessive for nonsyndromic prelingual sensorineural hearing loss, and the evidence suggested complete penetrance but variable expressivity. The authors also reviewed GJB2 variance with a corresponding change in the connexin-26 allele type.\n\n{142:Wu et al. (2002)} used a PCR-based DNA sequencing strategy to sequence all of the coding regions and flanking sequences of the GJB2 gene in 324 cases of childhood deafness. A total of 127 of the 324 (39.2%) cases had at least 1 mutant connexin 26 all (36.1% of sporadic cases, 70% of familial cases). Of these 127 cases, 57 (44.8%) were homozygotes or compound heterozygotes. {142:Wu et al. (2002)} identified 34 different mutations including 10 novel mutations, 6 of which may be pathogenic.\n\n{25:D'Andrea et al. (2002)} studied the functional significance of 6 common CX26 mutations that result in hearing loss, including 35delG and M34T. The associated defects appeared to fall into 3 different classes in terms of altered protein expression, subcellular localization, and/or functional activity. {127:Thonnissen et al. (2002)} described the functional significance of mutations in the coding region of the GJB2 gene which were identified in patients with deafness and stably transfected in human HeLa cells. The results showed that mutations in the connexin-26 gene can affect gap junctional intercellular communication at the level of protein translation, trafficking, or assembly of hemichannels.\n\nIn a study in Italy, {46:Gualandi et al. (2002)} performed GJB2 mutation analysis in 179 unrelated subjects with sporadic or familial hearing loss. Among 57 families, 18 showed a vertical transmission of hearing loss, the disease being present in 2 or 3 generations. Of the 179 subjects, 155 were nonsyndromic and 24 presented with extra-auditory clinical signs. GJB2 mutation analysis was also performed in 19 subjects with an anamnestic history of perinatal risk factors for acquired hearing loss. The 35delG mutation accounted for 22.1% of analyzed chromosomes in sporadic cases and 39.4% in familial cases; 35delG prevalence reached 41% in autosomal recessive and 44.4% in pseudodominant pedigrees. Two novel GJB2 mutations were identified in compound heterozygosity with the 35delG allele: asp159 to val (D159V; {121011.0024}) and a 5-bp duplication at codon 96 ({121011.0025}). Two 35delG homozygous subjects were identified among hearing loss cases classified as environmental in origin. Four patients who were compound heterozygotes for 35delG and another GJB2 mutation and 2 homozygotes presented with extra-auditory clinical signs involving different organs (skin, vascular system, hemopoietic lineages, and thyroid). In a high proportion of 35delG heterozygous hearing loss patients (52%), no second GJB2 mutation was detected.\n\n{81:Marziano et al. (2003)} compared the properties of 4 CX26 mutants derived from point mutations associated with dominantly inherited hearing loss, either nonsyndromic (W44S, {121011.0031}; R75W, {121011.0011}) or with various skin disorders (G59A, {121011.0015}; D66H, {121011.0012}). Since CX26 and CX30 (GJB6; {604418}) colocalize to the inner ear, the effect of the dominant CX26 mutations on both of these wildtype proteins was determined. Communication-deficient HeLa cells were transiently transfected with the various cDNA constructs, and dye transfer studies demonstrated disruption of intercellular coupling for all 4 CX26 mutant proteins. Immunostaining of the transfected cells revealed that the G59A and D66H mutants demonstrated impaired intracellular trafficking and targeting to the plasma membrane. Impaired trafficking was rescued by oligomerization with both CX26 and CX30, suggesting that CX26 and CX30 can form heteromeric connexons. Significantly reduced dye transfer rates were observed between cells coexpressing either CX26 or CX30 together with W44S or R75W compared with wildtype proteins alone. The dominant actions of the G59A and D66H mutants were only on CX30 and CX26, respectively. {81:Marziano et al. (2003)} suggested that in the inner ear CX26 and CX30 may form heteromeric connexons with particular properties essential for hearing and that disruption of these heteromeric channels underlies the nonsyndromic nature of certain deafness-causing GJB2 mutations.\n\nIn a study of 777 unrelated children with hearing loss, {20:Cheng et al. (2005)} identified GJB2 or GJB6 mutations in 12%; among those with an affected sib, 20% had GJB2/GJB6 mutations. The authors noted that 4% of those whose medical records listed an environmental cause for the deafness and 11% of those with an unknown etiology were found to have GJB2/GJB6 mutations. Otoacoustic emissions testing to detect functional outer hair cells identified 76 children (10%) with positive emissions, consistent with auditory neuropathy. Five of the patients with auditory neuropathy were homozygous or compound heterozygous for mutations in the GJB2 gene. {20:Cheng et al. (2005)} suggested that lack of functional gap junctions due to GJB2 mutations does not necessarily destroy all outer hair cell function.\n\n{125:Tang et al. (2006)} analyzed the GJB2 gene in 610 hearing-impaired individuals and 294 controls and identified causative mutations in 10.3% of cases, with equivocal results in 1.8% of cases due to the detection of unclassified, novel, or controversial coding sequence variations or of only a single recessive mutation in GJB2. Thirteen sequence variations were identified in controls, and complex genotypes were observed among Asian controls, 47% of whom carried 2 to 4 sequence variations in the coding region of GJB2.\n\n{5:Alvarez et al. (2003)} described 2 unrelated patients who were homozygous for the 35delG mutation and whose biologic fathers were not carriers of the mutation. A study of the segregation of polymorphic genetic markers showed maternal uniparental disomy (UPD) of chromosome 13, causing homozygosity for the mutation. In both cases, the disomic maternal gamete may have resulted from nondisjunction of chromosome 13 in meiosis II. These 2 patients represented the first description of UPD of chromosome 13 with an abnormal phenotype and the first cases of UPD resulting in nonsyndromic hearing impairment. {143:Yan et al. (2007)} reported a Hispanic boy with nonsyndromic hearing loss due to paternal UPD of chromosome 13q, resulting in homozygosity for the 35delG mutation. The nondisjunction event was postulated to have occurred in paternal second meiosis.\n\n{53:Iossa et al. (2010)} reported an Italian family in which an unaffected mother and 1 of her deaf sons were both heterozygous for an allele carrying 2 GJB2 mutations in cis: the dominant R75Q ({121011.0026}) and the recessive 35delG ({121011.0005}), whereas her other deaf son did not carry either of these mutations. The results suggested that the recessive mutation 'canceled out' the effect of the dominant mutation by causing a truncated protein before reaching residue 75. {53:Iossa et al. (2010)} suggested that the deafness in the 2 sons was due to another genetic cause and highlighted the importance of the report for genetic counseling.\n\n<Subhead> Susceptibility to Deafness\n\n{1:Abe et al. (2001)} evaluated 23 Japanese families with the 1555A-G mutation in the mitochondrial 12S rRNA gene ({561000.0001}) in which affected individuals had late-onset progressive hearing loss. Of these, 8 families had GJB2 mutations (4 frameshift, 2 nonsense, and 2 missense). The frequency of GJB2 mutations was statistically significantly higher than in the general population. The authors suggested that GJB2 mutations may at times be an aggravating factor, in addition to aminoglycoside exposure, in the phenotypic expression of nonsyndromic hearing loss associated with the 1555A-G mitochondrial mutation.\n\nAmong 149 children with congenital cytomegalovirus (CMV) infection, {110:Ross et al. (2007)} observed a significantly higher frequency of GJB2 mutations among the 19 who developed hearing loss compared to the 130 with CMV infection and normal hearing (21% vs 3%; p = 0.017), and compared to 380 uninfected neonates (3.9%; p = 0.016). All the mutations identified were heterozygous. The authors suggested that GJB2 mutations may serve as a modifier to increase the risk of hearing loss in children with congenital CMV infection.\n\n<Subhead> Deafness and Skin Disorders\n\n{76:Maestrini et al. (1999)} identified a mutation in the GJB2 gene (D66H; {121011.0012}) as causative of Vohwinkel syndrome (VOWNKL; {124500}), a mutilating palmoplantar keratoderma (PPK) associated with honeycomb-like keratoderma and starfish-like keratoses on the knuckles.\n\nIn a 38-year-old Zimbabwean man with severe Vohwinkel syndrome, {30:de Zwart-Storm et al. (2011)} identified heterozygosity for a missense mutation in the GJB2 gene (Y65H; {121011.0041}).\n\nIn affected members of a family with autosomal dominant palmoplantar keratoderma and deafness ({148350}), {48:Heathcote et al. (2000)} identified a mutation in the GJB2 gene (G59A; {121011.0015}).\n\nIn a 40-year-old German woman and her 2 children with palmoplantar keratoderma and sensorineural deafness, {29:de Zwart-Storm et al. (2008)} identified heterozygosity for a mutation in the GJB2 gene (H73R; {121011.0038}).\n\nIn 6 unrelated sporadic patients with keratitis-ichthyosis-deafness syndrome (KID; {148210}) and in 1 family with vertical transmission of KID, {108:Richard et al. (2002)} identified a D50N mutation ({121011.0020}) in the GJB2 gene. The presence of this mutation in 7 unrelated probands of varying ethnic origins but not in any unaffected parents or sibs strongly suggested to {108:Richard et al. (2002)} that D50N arose de novo in each family and is a common mutation in KID. {4:Alvarez et al. (2003)} found the same mutation in a sporadic case of KID syndrome in Spain. {131:Van Geel et al. (2002)} identified the D50N mutation in a patient with hystrix-like ichthyosis-deafness (HID) syndrome ({602540}).\n\nIn a family with Bart-Pumphrey syndrome ({149200}), {107:Richard et al. (2004)} identified heterozygosity for an N54K ({121011.0030}) mutation in the GJB2 gene. The phenotype is characterized by knuckle pads, leukonychia, and sensorineural deafness.\n\n{23:Common et al. (2004)} introduced 4 GJB2 mutations (M34T, {121011.0001}; R143W, {121011.0009}; W44X, {121011.0019}; and D50N, {121011.0020}) into wildtype GJB2 by site-directed mutagenesis and transfected the constructs into either NEB1 keratinocyte or NIH 3T3 cell lines. Using fluorescence-activated cell scanning analysis, the authors demonstrated that these NSHL-associated GJB2 mutations increase cell survival and suggested that an extended terminal differentiation program may explain the thicker epidermis postulated as a selective advantage by {86:Meyer et al. (2002)}.\n\n<Subhead> M34T Variant\n\n{59:Kelsell et al. (1997)} studied a pedigree containing individuals with autosomal dominant deafness (DFNA3; {601544}) and identified a mutation in the CX26 gene (M34T; {121011.0001}). {57:Kelley et al. (1998)} presented evidence that the M34T missense mutation identified by {59:Kelsell et al. (1997)} in individuals with autosomal dominant nonsyndromic deafness is not sufficient to cause hearing loss.\n\n{23:Common et al. (2004)} introduced the M34T variant in CX26 ({121011.0001}) into wildtype GJB2 by site-directed mutagenesis and transfected the construct into NEB1 keratinocytes. Fluorescence-activated cell scanning analysis demonstrated a reduction in cell death compared to transfected wildtype plasmid constructs."
+} },
+{"textSection": { 
+"textSectionName": "genotypePhenotypeCorrelations", 
+"textSectionTitle": "Genotype/Phenotype Correlations", 
+"textSectionContent": "{43:Green et al. (2002)} found that cochlear implant recipients with GJB2-related deafness have greater improvement with cochlear implant than that in subjects with congenital deafness on other bases and noncochlear implant recipients.\n\n{12:Azaiez et al. (2004)} performed genetic testing on 1,294 persons with deafness referred for a diagnosis of DFNB1 ({220290}). Exon 2 of GJB2 was screened for coding sequence allelic variants. If 2 deafness-causing mutations of GJB2 were identified, further screening was not performed. If only a single deafness-causing mutation was identified, screening was performed for a large GJB6 deletion which the authors referred to as GJB6-D13S1830 and for mutations in the noncoding region of GJB2. A total of 205 persons carried 2 GJB2 exon 2 mutations and were diagnosed as having DFNB1; 100 persons carried only a single deafness-causing allelic variant of exon 2. A total of 37 of these persons were carriers of the 35delG mutation ({121011.0005}). Persons diagnosed with DFNB1 segregating 2 truncating/nonsense mutations had a more severe phenotype than persons carrying 2 missense mutations, with mean hearing impairments being 88% and 37%, respectively (p less than 0.05). The number of deaf 35delG carriers was greater than expected when compared to the 35delG carrier frequency in controls with normal hearing, suggesting the existence of at least 1 other mutation outside the GJB2 coding region that does not complement GJB2 deafness-causing allelic variants.\n\nBy analyzing audiometric data in 277 patients with biallelic GJB2 mutations for phenotype/genotype correlations, {24:Cryns et al. (2004)} found that 35delG ({121011.0005}) homozygotes had much more hearing loss than 35delG/non-35delG compound heterozygotes, who, in turn, had more hearing loss than individuals with 2 non-35delG mutations. Homozygosity for V37I ({121011.0023}) or the combination of 35delG with L90P ({121011.0016}), V37I, or IVS1+1G-A ({121011.0029}) was associated with significantly less hearing loss. In general, inactivating mutations were associated with more hearing loss than noninactivating mutations.\n\n{120:Snoeckx et al. (2005)} performed cross-sectional analyses of GJB2 genotype and audiometric data from 1,531 persons from 16 different countries with autosomal recessive nonsyndromic hearing impairment. A total of 153 different genotypes were found, of which 56 were homozygous truncating (T/T), 30 were homozygous nontruncating (NT/NT), and 67 were compound heterozygous truncating/nontruncating (T/NT). The degree of hearing impairment associated with biallelic truncating mutations was significantly more severe than that associated with biallelic nontruncating mutations (p less than 0.0001). The hearing impairment of 48 different genotypes was less severe than that of 35 delG ({121011.0005}) homozygotes. Mild to moderate hearing impairment was found with several common mutations: M34T ({121011.0001}), V37I ({121011.0023}), and L90P ({121011.0016}).\n\n{95:Oguchi et al. (2005)} performed audiometric testing in 60 patients with deafness caused by mutations in the GJB2 gene. Eleven patients with the most common mutation, 235delC ({121011.0014}), exhibited a significantly more severe phenotype than 5 patients with the second most common mutation, V37I ({121011.0023}). Patients with the V37I mutation also had a later age at onset. A comparison of audiometric testing in the other patients consistently showed that inactivating or truncating mutations resulted in a more severe phenotype than noninactivating or missense mutations. In vitro studies showed that while wildtype and mutant V37I GJB2 localized as puncta along the cell membrane, the 235delC mutant protein was retained within the cytoplasm close to the nucleus, consistent with a severe loss of function."
+} },
+{"textSection": { 
+"textSectionName": "populationGenetics", 
+"textSectionTitle": "Population Genetics", 
+"textSectionContent": "{92:Nance et al. (2000)} noted that recessive mutations at the connexin-26 gene locus account for nearly half of all cases of genetic deafness in many populations. They suggested that this high frequency is only seen in populations with a long tradition of intermarriage among deaf people. Available data are consistent with the hypothesis that such marriages might well have contributed to the high frequency of connexin-26 deafness in the U.S., and could represent a novel mechanism for maintaining specific genotypes at unexpectedly high frequencies.\n\n{9:Antoniadi et al. (2000)} screened 26 unrelated Greek patients with prelingual sensorineural deafness in whom syndromic forms and environmental causes of deafness had been excluded. They detected the 35delG mutation in 28 chromosomes (53.8%); another 3 sequence variations accounted for 7.6% of the alleles. {99:Pampanos et al. (2002)} studied 210 cases of nonsyndromic prelingual sensorineural deafness from Greece. Biallelic GJB2 mutations were detected in 70 of the patients (33.3%). Of 70 patients, 63 were homozygous for the 35delG mutation and 7 were compound heterozygous for the 35delG mutation and another mutation. Aside from 35delG, a total of 4 other mutations were detected in 7 alleles. The 35delG mutation was thus responsible for 95% of GJB2 deafness alleles. In 6 patients heterozygous for the 35delG mutation, no second mutation was found by sequencing of the coding region of the GJB2 gene. This proportion was not statistically different from the carrier frequency of 3.5% in the healthy Greek population, as described by {10:Antoniadi et al. (1999)}.\n\n{105:Rabionet et al. (2000)} reviewed the molecular genetics of hearing impairment due to mutations in gap junction genes encoding beta-connexins. Among these genes, mutations in GJB2 account for about 50% of all congenital cases of hearing impairment. Three mutations in GJB2 are particularly common in specific populations: 35delG ({121011.0005}) in Caucasians, 167delT ({121011.0010}) in Ashkenazi Jews, and 235delC ({121011.0014}) in East Asians. Carrier frequencies in these populations vary between 1 and 30 and 1 in 75. Over 50 mutations have been identified in the GJB2 gene, of which some missense changes (e.g., M34T; {121011.0001}) have a dominant-negative action in hearing impairment, with partial to full penetrance. Functional studies for some missense mutations in connexins 26, 30, and 32 indicate abnormal gap junction conductivity.\n\nIn the Japanese population, {66:Kudo et al. (2000)} sequenced the GJB2 gene in 39 patients with prelingual deafness, 39 patients with postlingual progressive sensorineural hearing loss, and 63 individuals with normal hearing. GJB2 mutations were found in 5 of the 39 patients (12%) with prelingual deafness. The most common mutation was 235delC ({121011.0014}), observed in 7 of 10 mutant alleles. There were no cases with the 30delG allele ({121011.0005}). No GJB2 mutation was found in patients in the postlingual hearing loss group.\n\nIn 76 consecutive Austrian patients with sensorineural hearing loss, {73:Loffler et al. (2001)} found biallelic GJB2 mutations in 13 patients (17.1%). The 35delG mutation ({121011.0005}) accounted for 65.4% of the GJB2 alleles, and the leu90-to-pro mutation (L90P; {121011.0016}), the second most frequent mutation, accounted for 19.2%. In 5 patients, only 1 mutant allele was detected, and the possibility of other genetic or nongenetic causes of their hearing loss could not be excluded. The GJB2 mutations were found to be associated with mild to profound hearing loss, and with asymmetric hearing impairment. In Austria, {55:Janecke et al. (2002)} screened 204 consecutive patients with nonsyndromic sensorineural hearing loss for GJB2 mutations. Causative GJB2 mutations were identified in 31 (15.2%); 2 common mutations, 35delG and L90P ({121011.0016}), accounted for 72.1% and 9.8% of GJB2 disease alleles, respectively. {55:Janecke et al. (2002)} found that homozygotes for truncating mutations were more likely to have a more severe degree of hearing loss than other genotypes. From phenotypic studies, they concluded that progressive hearing loss or recurrent sudden sensorineural hearing loss can be caused by GJB2 mutations. A carrier frequency of 1 out of 110 (0.9%) was determined for the most common Caucasian mutation, 35delG, in west Austria. Based on population and patient data, the overall GJB2 mutation carrier frequency of 1.3% was estimated for west Austria. {41:Frei et al. (2002)} examined 43 cases of nonsyndromic deafness from eastern Austria and found biallelic GJB2 mutations in 10 patients (23.3%). The most common mutation identified was 35delG ({121011.0005}), found in 8 homozygotes and 1 compound heterozygote. Five further GJB2 mutations were detected in this population. The L90P mutation ({121011.0016}) was found in 1 allele, which contrasts with the high incidence (19.2% of GJB2 deafness alleles) in the Tyrolean population ({73:Loffler et al., 2001}).\n\nIn some Palestinian communities, the prevalence of inherited prelingual deafness is among the highest in the world. {117:Shahin et al. (2002)} evaluated mutations in CX26 in 48 independently ascertained Palestinian probands with nonsyndromic hearing loss. In 11 (23%), they found homozygosity or compound heterozygosity for mutations in the GJB2 gene. Linkage disequilibrium analysis suggested, in the Palestinian and Israeli populations, a common origin of the 35delG mutation ({121011.0005}), which is worldwide, and of 167delT ({121011.0010}), which appeared specific to Israeli Ashkenazi and Palestinian populations. Nine deaf probands were homozygous and only 2 were compound heterozygous.\n\n{71:Liu et al. (2002)} found that the 235delC mutation ({121011.0014}) is the most frequent one causing deafness in Chinese, and not 35delG ({121011.0005}), which accounts for up to 70% of deafness in northern and southern European, as well as American Caucasian, populations.\n\nBy genomic sequencing, {83:Medlej-Hashim et al. (2002)} tested 68 Jordanian consanguineous families with prelingual nonsyndromic recessive hearing impairment for mutations of the GJB2 gene. Only the 35delG mutation, in homozygous state in 11 patients (16.2%), was detected. This frequency of GJB2 deafness was lower than that reported in other Mediterranean countries.\n\n{135:Wang et al. (2002)} examined 169 Taiwanese school children with prelingual deafness for mutations in the GJB2 gene. Biallelic mutations were found in 12 patients (7.1%). Three different mutations were detected, with the most frequent being the 235delC mutation ({121011.0014}), frequently found among Japanese ({2:Abe et al., 2000}; {66:Kudo et al., 2000}). The 235delC mutation was found in 8 homozygotes and 4 compound heterozygotes. The 35delG mutation ({121011.0005}) was not detected in the Taiwanese population.\n\n{101:Pandya et al. (2003)} found that although more than 50 GJB2 mutations have been identified, 3 of these--35delG, 167delT ({121011.0010}), and 235delC ({121011.0014})--account for up to 70% of the pathologic alleles in whites, Ashkenazi Jews, and Asians, respectively.\n\nIn affected members of 19 of 86 (22%) Kurdish families with autosomal recessive nonsyndromic deafness, {77:Mahdieh et al. (2004)} identified mutations in the GJB2 gene. In 7 families, deaf persons were homozygous for the 35delG mutation ({121011.0005}), and in 6 other families, deaf persons were 35delG heterozygotes. In 13 probands, homozygous or compound heterozygous mutations of GJB2 were identified. In this study, 32% of the patients with GJB2 mutations were found to carry a single GJB2 mutation. The 342-kb deletion that includes a portion of GJB6 ({604418.0004}) and had been reported to be the second most common cause of genetic prelingual deafness in the Spanish population ({31:del Castillo et al., 2002}) was not identified in this Kurdish population.\n\nIn 255 French patients with a phenotype compatible with DFNB1, {39:Feldmann et al. (2004)} found that 32% had biallelic GJB2 mutations, and 6% were heterozygous for a GJB2 mutation and the GJB6 342-kb deletion. Profoundly deaf children were more likely to have the biallelic GJB2 or heterozygous GJB2/GJB6 mutations.\n\nIn 156 unrelated congenitally deaf Czech patients, {115:Seeman et al. (2004)} tested for the presence of mutations in the coding sequence of the GJB2 gene. At least 1 pathogenic mutation was detected in 48.1% of patients. The 3 most common mutations were W24X ({121011.0003}), 35delG, and 313del14 ({121011.0034}); the authors stated that testing for only these 3 mutations would detect over 96% of all disease-causing mutations in GJB2 in this population. Testing for 35delG in 503 controls revealed a carrier frequency of 1:29.6 (3.4%) in the Czech Republic.\n\n{91:Najmabadi et al. (2005)} assessed the contributions made by GJB2 mutations and the deletion of approximately 309 kb on chromosome 13 commonly known as GJB6-D13S1830, which includes a portion of GJB6, to the autosomal recessive nonsyndromic deafness genetic load in Iran. GJB2-related deafness was found in 111 (16.7%) of 664 families. The carrier frequency of the 35delG mutation ({121011.0005}) showed a geographic variation that was supported by studies in neighboring countries; GJB6-D13S1830 was not found. {91:Najmabadi et al. (2005)} concluded that their prevalence data for GJB2-related deafness in Iran revealed a geographic pattern that mirrored the south-to-north European gradient and supported a founder effect in southeastern Europe.\n\n{79:Mani et al. (2009)} identified GJB2 mutations in 128 (24%) of 530 Indian patients with nonsyndromic hearing loss. About 21% (112 patients) had biallelic mutations. The most common mutation was W24X ({121011.0003}) with an allelic frequency of 16.4%. By in vitro functional expression studies of various GJB2 mutations in HeLa cells, {79:Mani et al. (2009)} found that different mutations resulted in different detrimental effects on gap junction activity. The R184P mutation ({121011.0008}) showed impaired trafficking of the protein to the plasma membrane, whereas the R75W mutation ({121011.0011}) showed membrane localization but did not form a functional gap junction channel. The R75W mutation also showed a dominant-negative effect. The truncating mutation W24X was found to allow formation of a full-length protein, perhaps due to a stop codon read-through mechanism, but showed predominantly cytoplasmic localization.\n\n{7:Ammar-Khodja et al. (2009)} identified mutations in the GJB2 gene in 21 (42%) of 50 families and 3 of 9 sporadic cases of deafness from Algeria. The 35delG mutation was the most common mutant allele, representing 76% of mutant alleles at this locus. Fifteen families with nonsyndromic deafness were homozygous for this mutation, 2 were compound heterozygous for 35delG and another pathogenic mutation in the GJB2 gene, and 3 were heterozygous for the 35delG mutation. One patient who was heterozygous for the mutation was found to have Usher syndrome ({276900}) due to a homozygous mutation in the MYO7A gene ({276903})."
+} },
+{"textSection": { 
+"textSectionName": "animalModel", 
+"textSectionTitle": "Animal Model", 
+"textSectionContent": "Due to the embryonic lethality of Cx26 knockout mice, {22:Cohen-Salmon et al. (2002)} used targeted ablation of Cx26 in the mouse inner ear epithelial network to selectively disrupt Cx26 expression. The inner ears of homozygous mutant mice developed normally, and these mice had a hearing impairment, but not vestibular dysfunction. On postnatal day 14, soon after the onset of hearing, cell death appeared and eventually extended to the cochlear epithelial network and sensory hair cells. Cell death initially affected only the supporting cells of inner hair cells (IHC), suggesting that apoptosis could be triggered by the IHC response to sound stimulation. {22:Cohen-Salmon et al. (2002)} concluded that Cx26-containing epithelial gap junctions are essential for cochlear function and cell survival and that prevention of cell death in the sensory epithelium is essential in restoring auditory function in DFNB1 patients.\n\n{35:Djalilian et al. (2006)} found significant upregulation of connexin 26 in the skin of newborn Klf4 ({602253})-null mice. Ectopic expression of Cx26 demonstrated that downregulation of Cx26 was required for barrier acquisition during development. In juvenile and adult mice, persistent Cx26 expression in keratinocytes increased ATP release, which kept wounded epidermis in a hyperproliferative state, blocked the transition to remodeling, and led to an infiltration of immune cells.\n\n{85:Mese et al. (2011)} created transgenic mice with inducible expression of Cx26 with the gly45-to-glu (G45E; {121011.0033}) mutation in basal keratinocytes of the epidermis. Induction of the transgene in utero and maintenance of induction postnatally resulted in mortality exceeding 50% by weaning. Surviving animals were generally in poor health. Induction of the transgene in adult animals resulted in skin abnormalities within 7 to 14 days and progressive worsening of skin pathology, which included hyperkeratosis, acanthosis, papillomatosis, and extensive ichthyosiform scaling. Cx26 G45E increased apoptosis primarily in the dermis and increased cell proliferation in the epidermis. Patch-clamp analysis of cultured Cx26 G45E keratinocytes revealed significantly increased whole-cell membrane currents at both hyperpolarizing and depolarizing membrane potentials. Cx26 G45E keratinocytes showed significantly increased cell size compared with controls, including elevated membrane capacitance, and cell size increased with disease progression."
+} 
+} ] , 
+"allelicVariantList": [ 
+{"allelicVariant": { 
+"number": 1, 
+"mimNumber": 121011, 
+"status": "live", 
+"name": "RECLASSIFIED - VARIANT OF UNKNOWN SIGNIFICANCE", 
+"mutations": "GJB2, MET34THR", 
+"text": "This variant, formerly titled DEAFNESS, AUTOSOMAL RECESSIVE 1A, has been reclassified based on the findings of {119:Shearer et al. (2014)}. Based on allele frequency in 8,595 controls from 12 populations (maximum minor allele frequency = 0.0200), {119:Shearer et al. (2014)} recategorized the M34T variant in the GJB2 gene as benign.\n\nIn a family in which both palmoplantar keratoderma and deafness ({148350}) were segregating as probably independent autosomal dominant traits ({133:Verbov, 1987}), {59:Kelsell et al. (1997)} identified a heterozygous T-to-C substitution in exon 1 of the GJB2 gene, resulting in a met34-to-thr (M34T) substitution. The M34T mutation appeared to segregate with profound deafness, but not with the skin disorder, suggesting to {59:Kelsell et al. (1997)} that the mutation acted in a dominant manner. However, {57:Kelley et al. (1998)} and {114:Scott et al. (1998)} observed normal hearing in M34T heterozygotes, suggesting that the variant does not function as a dominant GJB2 allele in vivo. Moreover, {57:Kelley et al. (1998)} identified the M34T allele in 3 of 192 control chromosomes, suggesting that it may be a polymorphism.\n\nBy in vitro functional studies, {136:White et al. (1998)} observed a dominant-negative effect of the M34T mutant polypeptide on the intercellular coupling activity of the wildtype GJB2 polypeptide expressed in Xenopus oocytes.\n\n{45:Griffith et al. (2000)} presented evidence that M34T is a hypomorphic allele that is insufficient in itself to cause hearing loss, but may cause hearing loss when combined with another pathogenic GJB2 allele. They reported a family with severe autosomal recessive deafness (DFNB1A; {220290}) associated with a homozygous mutation in the GJB2 gene (167delT; {121011.0010}). One individual who was heterozygous for M34T had normal hearing, and another who was compound heterozygous for M34T and 167delT had only mild high frequency hearing loss.\n\n{50:Houseman et al. (2001)} found the prevalence of the M34T allele in a cohort of white sib pairs and sporadic cases with nonsyndromic sensorineural hearing loss from the United Kingdom and Ireland to be 3.179% of chromosomes screened. They found the homozygous M34T/M34T genotype cosegregating with mid to high frequency deafness. In a control population of 630 individuals, they identified 25 M34T heterozygotes but no M34T homozygotes. Eighty-eight percent of the M34T alleles were in cis with a 10-bp deletion in the 5-prime noncoding sequence. This deletion was homozygous in the M34T homozygotes. {50:Houseman et al. (2001)} concluded that M34T acts as a recessive allele.\n\n{60:Kelsell et al. (2000)} investigated the possible reason for normal hearing in M34T carriers from distinct ethnic populations. They stated that no M34T homozygotes had been reported among individuals with normal hearing. They extended their analysis of a small family in which palmoplantar keratoderma and various forms of deafness were segregating. In addition to the M34T sequence variant in GJB2, 2 other sequence variants were identified: D66H, also in GJB2 ({121011.0012}), and R32W in GJB3 ({603324}). As D66H segregated with the skin disease, {60:Kelsell et al. (2000)} thought it likely to underlie the palmoplantar keratoderma. The other 2 gap junction variants identified may contribute to the type of hearing impairment and the variable severity of the skin disease in the family.\n\n{25:D'Andrea et al. (2002)} showed that CX26 proteins carrying the M34T mutation were expressed at the cell surface and showed wildtype membrane distribution following transient transfection in HeLa cells, but they did not support dye transfer. The M34T mutant also acted as a dominant inhibitor of wildtype CX26 channel activity when the 2 proteins were coexpressed to mimic the heterozygous state. In contrast, {98:Oshima et al. (2003)} found that the M34T mutation supported dye transfer in HeLa cells at levels comparable to wildtype CX26, but a CX26 protein in which the authors introduced a met34-to-ala (M34A) mutation did not.\n\nIn 11 French families with nonsyndromic sensorineural hearing loss (7 familial forms and 4 sporadic cases) in which the M34T variant had been identified, {40:Feldmann et al. (2004)} found that the mutation did not segregate with deafness in 6 of the 7 families. Of the family members with normal audiograms, 8 were heterozygous for M34T and 5 were compound heterozygous for M34T and another GJB2 mutation. A screening of 116 controls demonstrated an M34T allele frequency of 1.72%, which was not significantly different from the 2.12% frequency in the deaf population cited by {40:Feldmann et al. (2004)}. {40:Feldmann et al. (2004)} suggested that the M34T variant is not clinically significant in humans and is a frequent polymorphism in France.\n\nIn a study of 610 hearing-impaired individuals and 294 controls, {125:Tang et al. (2006)} found no significant difference in the M34T allele frequency between cases and controls, suggesting that the M34T variant is a polymorphism.\n\n{103:Pollak et al. (2007)} studied 233 Polish patients with hearing impairment and the GJB2 35delG mutation ({121011.0005}) on 1 allele. Analysis of 17 patients with the M34T/35delG and 12 patients with the V37I ({121011.0023})/35delG genotypes, patients with other GJB2 mutations, and controls found that the M34T and V37I were significantly overrepresented among patients with hearing impairment, consistent with both variants being pathogenic. However, both mutations showed decreased penetrance of about 10% compared to mutations of undisputed pathogenicity. Also, patients with M34T/35delG and V37I/35delG had significantly later onset of hearing impairment compared to those with other genotypes. {103:Pollak et al. (2007)} suggested that the M34T and V37I mutations cause mild hearing impairment characterized by relatively late onset and progression.", 
+"dbSnps": "rs35887622", 
+"clinvarAccessions": "RCV000018523;;;RCV000168670;;;RCV000211758;;;RCV000678866;;;RCV000355109;;;RCV000300311;;;RCV000324780;;;RCV000379337;;;RCV000260287;;;RCV000080364;;;RCV000487479"
+} },
+{"allelicVariant": { 
+"number": 2, 
+"mimNumber": 121011, 
+"status": "live", 
+"name": "DEAFNESS, AUTOSOMAL RECESSIVE 1A", 
+"mutations": "GJB2, TRP77TER", 
+"text": "In a large consanguineous family of Pakistani origin with recessive nonsyndromic profound deafness (DFNB1A; {220290}) that mapped to 13q11-q12 ({17:Brown et al., 1996}), {59:Kelsell et al. (1997)} found that 2 affected individuals were homozygous for a G-to-A transition in the GJB2 gene, resulting in a trp77-to-ter (W77X) substitution. The parents were heterozygous for the mutation and had no noticeable hearing impairment.", 
+"dbSnps": "rs80338944,rs104894395", 
+"clinvarAccessions": "RCV000018524;;;RCV000211767;;;RCV000711349"
+} },
+{"allelicVariant": { 
+"number": 3, 
+"mimNumber": 121011, 
+"status": "live", 
+"name": "DEAFNESS, AUTOSOMAL RECESSIVE 1A", 
+"mutations": "GJB2, TRP24TER", 
+"text": "In 2 consanguineous Pakistani families with nonsyndromic profound deafness (DFNB1A; {220290}), {59:Kelsell et al. (1997)} found evidence for linkage to 13q11-q12 and showed that 2 affected individuals from each pedigree were homozygous for a G-to-A transition in the GJB2 gene, resulting in a trp24-to-ter (W24X) substitution. Haplotype comparisons indicated that these 2 identical mutations arose independently.\n\n{78:Maheshwari et al. (2003)} found that involvement of the W24X mutation in autosomal recessive nonsyndromic hearing loss was 13.3% in a study population of 45 Indian families. Moreover, the W24X mutation contributed in all 6 families, either in homozygous or heterozygous state, which suggested it to be a common GJB2 allele in India.\n\n{6:Alvarez et al. (2005)} screened the GJB2 gene in 34 Spanish Romani/Gypsy families with autosomal recessive nonsyndromic hearing loss and found mutations in 50%. The predominant allele was W24X, accounting for 79% of DFNB1 alleles. Haplotype analysis suggested that a founder effect is responsible for the high prevalence of this mutation among Spanish gypsies. A carrier rate of 4% (3 of 76) was found among Andalusian gypsies.", 
+"dbSnps": "rs104894396", 
+"clinvarAccessions": "RCV000211778;;;RCV000018525;;;RCV000146028;;;RCV000678864;;;RCV000255370;;;RCV000515359;;;RCV000411010", 
+"exacDbSnps": "rs104894396"
+} },
+{"allelicVariant": { 
+"number": 4, 
+"mimNumber": 121011, 
+"status": "live", 
+"name": "DEAFNESS, AUTOSOMAL RECESSIVE 1A", 
+"mutations": "GJB2, TRP77ARG", 
+"text": "One of 2 recessive mutations causing nonsyndromic recessive deafness ({220290}) observed in a Muslim Israeli-Arab village in the lower Galilee by {19:Carrasquillo et al. (1997)} was a T-to-C transition at cDNA position 229 that converted a tryptophan (TGG) into arginine (CGG).", 
+"dbSnps": "rs104894397", 
+"clinvarAccessions": "RCV000080368;;;RCV000018526;;;RCV000412297;;;RCV000211765"
+} },
+{"allelicVariant": { 
+"number": 5, 
+"mimNumber": 121011, 
+"status": "live", 
+"name": "DEAFNESS, AUTOSOMAL RECESSIVE 1A", 
+"alternativeNames": "DEAFNESS, DIGENIC, GJB2/GJB6, INCLUDED", 
+"mutations": "GJB2, 1-BP DEL, 35G ({dbSNP rs80338939})", 
+"text": "A mutation consisting of deletion of 1 guanine (G) in a run of 6 guanines extending from position 30 to position 35 in the GJB2 gene has been observed by several groups. Some referred to the deleted nucleotide as 30G (the first of the 6 Gs), whereas others referred to it as 35G. The second mutation found by {19:Carrasquillo et al. (1997)} to be responsible for nonsyndromic recessive deafness (DFNB1A; {220290}) in a Muslim-Israeli village in the lower Galilee was a deletion of a guanine residue at cDNA position 35 (35delG), causing a frameshift of the coding sequence leading to premature chain termination at the twelfth amino acid. The mutation was on a different haplotype from the W77R mutation ({121011.0004}). {146:Zelante et al. (1997)} found a very high frequency of the 35delG mutation in Spanish, Italian, and Israeli autosomal recessive neurosensory deafness patients, in whom it accounted for approximately 50% of cases. This might be interpreted as evidence for an ancient deletion mutation that had spread in Europe and Middle-East; however, the mutation identified in the inbred group by {19:Carrasquillo et al. (1997)} was shown by haplotype analysis to be of recent origin and on different haplotypes from those identified by {146:Zelante et al. (1997)}. Thus, these mutations are all likely different, independent and recurrent, and arise due to the run of Gs being a mutation hotspot. Haplotype analysis of 35delG mutations in different populations can be used to address this question definitively.\n\n{34:Denoyelle et al. (1997)} found that the 30delG mutation accounted for approximately 70% of CX26 mutant alleles in a study of 65 Caucasian families with prelingual deafness originating from various countries. The high frequency of this mutation may recommend it for genetic counseling in families with a single deaf child. {34:Denoyelle et al. (1997)} made the significant observation that only moderate hearing loss was found in some individuals homozygous for the 30delG mutation.\n\nAmong 82 families from Italy and Spain with recessive nonsyndromic deafness and 54 unrelated individuals with apparently sporadic congenital deafness, {37:Estivill et al. (1998)} found mutations in the GJB2 gene in 49% of participants with recessive deafness and 37% of sporadic cases. The 35delG mutation accounted for 85% of GJB2 mutations, and 6 other mutations accounted for 6% of alleles; no changes in the coding region of GJD2 were detected in 9% of DFNB1 alleles. The carrier frequency of the 35delG mutation in the general population was 1 in 31 (95% CI, 1 in 19 to 1 in 87).\n\n{88:Morell et al. (1998)} found a prevalence of 0.73% for heterozygosity for the 30delG mutation in Ashkenazi Jews. Audiologic examination of carriers of the mutant allele who had normal hearing showed subtle differences in their otoacoustic emissions, suggesting that the expression of mutations in GJB2 may be semidominant.\n\nReporting from Iowa, {44:Green et al. (1999)} found that of 52 sequential probands referred for congenital sensorineural hearing loss, 22 (42%) were found to have GJB2 mutations. They identified the 35delG mutation in 29 of the 41 mutant alleles. Of the probands' sibs, all homozygotes and compound heterozygotes had deafness. They found 35delG heterozygosity in 14 of 560 controls, for a carrier rate of 2.5%. The carrier rate for all recessive deafness-causing GJB2 mutations was determined to be 3.01%. Calculated sensitivity and specificity values for a screening test based on the 35delG mutation alone were 96.9% and 97.4%, respectively, and observed values were 94% and 97%, respectively.\n\n{10:Antoniadi et al. (1999)} analyzed 395 voluntary healthy Greek blood donors for the 35delG mutation of the GJB2 gene. They detected 14 heterozygotes, giving a carrier frequency of 3.5% in the Greek population. With an incidence of prelingual deafness of about 1 in 1,000 children, homozygosity for the 35delG mutation should account for about 30% of all cases. The discovery of this very common mutation in the most common form of genetic hearing loss should enable easy DNA diagnosis, carrier detection, and prenatal diagnosis.\n\nBecause of the high frequency of carriers of the 35delG mutation in the Greek population reported by {10:Antoniadi et al. (1999)}, it is perhaps not surprising that pseudodominant inheritance was observed in 2 families reported by {100:Pampanos et al. (2000)}.\n\nIn a study of 35 Japanese families with bilateral sensorineural hearing loss, {2:Abe et al. (2000)} found no individuals with this mutation. In addition, they found a high prevalence of a novel frameshift mutation ({121011.0014}) in these families.\n\n{66:Kudo et al. (2000)} found no cases of the 30delG allele among 39 Japanese patients with prelingual deafness.\n\n{42:Gasparini et al. (2000)} analyzed the 35delG mutation in 3,270 random controls from 17 European countries. They detected a carrier frequency of 1 in 35 in southern Europe and 1 in 79 in central and northern Europe. In addition, 35delG was detected in 5 of 376 Jewish subjects of different origins, but was absent in other non-European populations.\n\nIn a study of 560 persons from 5 ethnic groups of Russia, {8:Anichkina et al. (2001)} found the 35delG mutation in 12 chromosomes, giving a carrier frequency of 1 in 47. These results demonstrated that the 35delG mutation is present not only in western but also in eastern European (Finno-Ugric and Turkic) populations.\n\nIn a study of 76 Austrian patients with sensorineural hearing loss, {73:Loffler et al. (2001)} found that the 35delG mutation accounted for 65.4% of GJB2 mutant alleles among 13 patients with biallelic GJB2 mutations. A 35delG carrier frequency of 1 in 112 (0.9%) was observed among 672 blood donors from Tirol (West-Austria).\n\n{132:Van Laer et al. (2001)} studied 35 Belgian, 30 British, and 49 American patients with nonsyndromic hearing impairment who were homozygous for the 35delG mutation and 70 Belgian, 30 British, and 50 American normal hearing controls. Four single-nucleotide polymorphisms mapped in the immediate vicinity of the GJB2 gene, and 2 positioned some distance from it were analyzed. Significant differences between the genotypes of patients and controls for the 5 SNPs closest to the GJB2 gene were found, with nearly complete association of 1 SNP allele with the 35delG mutation. {132:Van Laer et al. (2001)} concluded that the 35delG mutation is derived from a common, albeit ancient, founder.\n\n{97:Oliveira et al. (2002)} added Brazil to the countries in which the 35delG mutation is a frequent cause of deafness.\n\nIn a study in Italy of 179 patients with hearing loss, {46:Gualandi et al. (2002)} found that the 35delG mutation accounted for 22.1% of analyzed chromosomes in sporadic cases and 39.4% in familial cases; 35delG prevalence reached 41% in autosomal recessive and 44.4% in pseudodominant pedigrees. In a high proportion of 35delG heterozygous hearing loss patients (52%), no second GJB2 mutation was detected.\n\n{25:D'Andrea et al. (2002)} showed that the 35delG mutation, which they identified in almost 90% of an affected Italian population, resulted in no CX26 expression following transient transfection in HeLa cells. Furthermore, there was no dye transfer between clusters of cells expressing this mutation.\n\n{28:De Brouwer et al. (2003)} performed a genetic analysis of a large consanguineous family that was previously described by {80:Marres and Cremers (1989)}. Patients in 1 branch of the family were homozygous for the 35delG mutation in the GJB2 gene, whereas patients in 2 other branches carried mutations in the CDH23 gene ({605516.0008}-{605516.0009}) causing DFNB12 ({601386}).\n\n{31:Del Castillo et al. (2002)} reported 2 Spanish individuals with severe hearing loss who were found to be compound heterozygous for the 35delG mutation and a 309-kb deletion in the GJB6 gene ({604418.0004}), consistent with digenic inheritance (see {220290}). The GJB6 deletion truncating the GJB6 gene was shown to be the accompanying mutation in approximately 50% of deaf GJB2 heterozygotes in a cohort of Spanish patients, thus becoming second only to 35delG at GJB2 as the most frequent mutation causing prelingual hearing impairment in Spain.\n\n{111:Rothrock et al. (2003)} presented evidence that the 35delG mutation arose in European and Middle Eastern populations from a single mutational event on a founder chromosome. They felt that the high frequency does not represent a mutation hotspot. They found the same, relatively rare, polymorphism associated with the 35delG mutation immediately upstream of the first exon of GJB2 in all populations studied including those in Italy, Brazil, and North America.\n\n{112:Salvinelli et al. (2003)} reported a low frequency of the 35delG mutation in Sicilians with hearing loss, whereas it had previously been reported to be responsible for most nonsyndromic recessive deafness in American and European populations. Only 5 of 53 probands with familial deafness were homozygous for 35delG; another 5 were heterozygous for 35delG and 2 more were compound heterozygous for 35delG and 167delT ({121011.0010}).\n\n{74:Lucotte and Pinna (2003)} reported a frequency of 35delG heterozygotes of 3.35% in Corsica. This value was lower than that in continental Italy but similar to values reported for Sardinia and for Greece.\n\n{6:Alvarez et al. (2005)} screened the GJB2 gene in 34 Spanish Romani (gypsy) families with autosomal recessive nonsyndromic hearing loss and found mutations in 50%. The predominant allele was W24X ({121011.0003}), accounting for 79% of DFNB1 alleles; 35delG was the second most common allele (17%).\n\n{139:Wilch et al. (2006)} described a large kindred of German descent in which they found a novel allele of the GJB2 gene that segregated with deafness when present in trans with the 35delG allele of GJB2. Qualitative PCR-based allele-specific expression assays showed that expression of both GJB2 and GJB6 from the novel allele was dramatically reduced. The findings suggested possible coregulation of GJB2 and GJB6, which are closely situated on 13q. The DFNB1 locus ({220290}) encompasses GJB2 and GJB6. The 2 genes lie within 30 kb of each other and their products are coexpressed in the cochlea. {138:Wilch et al. (2010)} reported follow-up of the family reported by {139:Wilch et al. (2006)} in which 4 deaf individuals were heterozygous for the 35delG allele. Array CGH of these patients identified a common 131.4-kb deletion on chromosome 13 that was carried in trans with the 35delG mutation. The deletion was not found in 160 control individuals or in 528 patients with hearing loss and a heterozygous GJB2 or GJB6 mutation. The proximal breakpoint of the deletion lies more than 100 kb upstream of the transcriptional start sites of GJB2 and GJB6, leaving both of those genes intact. {138:Wilch et al. (2010)} suggested that the deleted region contains a distant cis-regulatory region that controls GJB2 and GJB6 expression.\n\n{70:Lezirovitz et al. (2006)} identified a homozygous 35delG mutation in the GJB2 gene in 2 Brazilian sibs with profound congenital sensorineural deafness. A third sib with a milder form of progressive hearing loss beginning in childhood was also homozygous for the mutation, suggesting phenotypic variability. One of the sibs with profound deafness also had oculocutaneous albinism type IV (OCA4; {606574}) caused by a homozygous mutation in the MATP gene ({606202.0009}). {70:Lezirovitz et al. (2006)} concluded that congenital deafness and oculocutaneous albinism due to mutations in 2 different genes as seen in their Brazilian family suggested a similar coincident inheritance of 2 separate recessive disorders in the Sephardic family reported by {147:Ziprkowski and Adam (1964)} (see {220900}).\n\nBy haplotype analysis of 60 unrelated Greek individuals homozygous for the 35delG mutation and 60 Greek hearing controls, {64:Kokotas et al. (2008)} found evidence that the mutation was due to a common founder effect. The mutation was estimated to have occurred about 700 generations or approximately 14,000 years ago.\n\n{49:Hilgert et al. (2009)} noted that the hearing loss associated with homozygosity for the 35delG mutation shows marked phenotypic variability, ranging from mild to profound. A genomewide association study of 255 individuals homozygous for 35delG, followed by a replication study of 297 samples, yielded 9 SNPs that showed significant association with mild/moderate hearing loss compared to profound hearing loss (p values between 3 x 10(-3) and 1 x 10(-4)). Although these SNPs may reflect a small modifying effect on the phenotype, {49:Hilgert et al. (2009)} concluded that the overall results suggested that the phenotypic variability in this subset of patients cannot be explained by the effect of 1 major modifier gene.\n\n{7:Ammar-Khodja et al. (2009)} found that the 35delG mutation was the most common mutant allele in deaf individuals in Algeria, representing 76% of mutant alleles at the DFNB1 locus identified in 25 families. Fifteen families with nonsyndromic deafness were homozygous for this mutation, 2 were compound heterozygous for 35delG and another pathogenic mutation in the GJB2 gene, and 3 were heterozygous for the 35delG mutation. One patient who was heterozygous for the mutation was found to have Usher syndrome ({276900}) due to a homozygous mutation in the MYO7A gene ({276903}).\n\nAmong 1,510 Schmiedeleut (S-leut) Hutterites from the United States, {21:Chong et al. (2012)} found 54 heterozygotes and no homozygotes for the 35delG mutation in the GJB2 gene, for a frequency of 0.036, or 1 in 28. The population frequency of this allele in other populations is about 1 in 40 ({62:Kenneson et al., 2002}).", 
+"dbSnps": "rs80338939", 
+"clinvarAccessions": "RCV000411531;;;RCV000414886;;;RCV000080373;;;RCV000509463;;;RCV000146019;;;RCV000415367;;;RCV000477882;;;RCV000678860;;;RCV000211775;;;RCV000623840;;;RCV000415175;;;RCV000415181;;;RCV000018528;;;RCV000018527;;;RCV000509532"
+} },
+{"allelicVariant": { 
+"number": 6, 
+"mimNumber": 121011, 
+"status": "live", 
+"name": "DEAFNESS, AUTOSOMAL RECESSIVE 1A", 
+"mutations": "GJB2, GLU47TER", 
+"text": "{34:Denoyelle et al. (1997)} observed the glu47-to-ter (E47X) mutation in the GJB2 gene in an inbred Tunisian family as the cause of profound deafness ({220290}).", 
+"dbSnps": "rs104894398", 
+"clinvarAccessions": "RCV000678867;;;RCV000211760;;;RCV000146008;;;RCV000591857;;;RCV000018529;;;RCV000080366;;;RCV000515308"
+} },
+{"allelicVariant": { 
+"number": 7, 
+"mimNumber": 121011, 
+"status": "live", 
+"name": "DEAFNESS, AUTOSOMAL RECESSIVE 1A", 
+"mutations": "GJB2, GLU118DEL", 
+"text": "In 2 Australian sisters with autosomal recessive deafness ({220290}), {34:Denoyelle et al. (1997)} found compound heterozygosity for deletion of codon 118 (glu) and an arg184-to-pro (R184P; {121011.0008}) amino acid substitution in the GJB2 gene. One sister had moderate deafness, and the other had severe deafness.", 
+"dbSnps": "rs80338947", 
+"clinvarAccessions": "RCV000146018;;;RCV000520132;;;RCV000678881;;;RCV000018530;;;RCV000211776", 
+"exacDbSnps": "rs80338947"
+} },
+{"allelicVariant": { 
+"number": 8, 
+"mimNumber": 121011, 
+"status": "live", 
+"name": "DEAFNESS, AUTOSOMAL RECESSIVE 1A", 
+"mutations": "GJB2, ARG184PRO", 
+"text": "For discussion of the arg184-to-pro (R184P) mutation in the GJB2 gene that was found in compound heterozygous state in 2 sisters with autosomal recessive deafness (DFNB1A; {220290}) by {34:Denoyelle et al. (1997)}, see {121011.0007}.\n\nIn an 18-month-old Arab Israeli boy with nonsyndromic hearing impairment, {118:Shalev and Hujirat (2004)} screened the GJB2 gene for mutations known to occur in the Arab population and identified the 35delG ({121011.0005}) and R184P mutations. The father was a carrier of 35delG and the mother was negative for both mutations; however, biparental contribution was confirmed by segregation analysis. {118:Shalev and Hujirat (2004)} stated that this case represented the first report of a de novo mutation in the GJB2 gene leading to recessive nonsyndromic hearing impairment, and was particularly unusual because the new mutation occurred on the maternal allele.", 
+"dbSnps": "rs80338950", 
+"clinvarAccessions": "RCV000678888;;;RCV000211781;;;RCV000018531;;;RCV000657913"
+} },
+{"allelicVariant": { 
+"number": 9, 
+"mimNumber": 121011, 
+"status": "live", 
+"name": "DEAFNESS, AUTOSOMAL RECESSIVE 1A", 
+"mutations": "GJB2, ARG143TRP", 
+"text": "In a village in eastern Ghana known for having an extraordinarily high prevalence of profound nonsyndromic hearing impairment ({220290}), {16:Brobby et al. (1998)} found that 21 deaf subjects from 11 families were homozygous for a C-to-T transition in the GJB2 gene that resulted in a nonconservative arg143-to-trp (R143W) amino acid exchange. All heterozygous family members had normal hearing. In the families studied in Ghana, the disease haplotypes differed greatly among families, indicating that the mutation arose at least 60 generations ago and that the village community has been highly stable.\n\n{86:Meyer et al. (2002)} raised the possibility that the R143W mutation may have some selective advantage. They noted that CX26 is expressed not only in the inner ear but also in the embryonic epidermis, palmoplantar epidermis, sweat glands, and other tissues. They found that the epidermis was significantly thicker in individuals heterozygous or homozygous for the R143W mutation than in wildtype family members. Moreover, whereas sweat volumes were similar, sodium and chloride concentrations in sweat were higher among homozygotes than in other groups. Functionally, these changes were considered to be compatible with an unfavorable osmotic milieu for microbial colonization and a more robust mechanical skin barrier against pathogen invasion, trauma, and insect bites.", 
+"dbSnps": "rs80338948", 
+"clinvarAccessions": "RCV000146023;;;RCV000211779;;;RCV000255157;;;RCV000018533;;;RCV000678885;;;RCV000515418;;;RCV000593661", 
+"exacDbSnps": "rs80338948"
+} },
+{"allelicVariant": { 
+"number": 10, 
+"mimNumber": 121011, 
+"status": "live", 
+"name": "DEAFNESS, AUTOSOMAL RECESSIVE 1A", 
+"mutations": "GJB2, 1-BP DEL, 167T", 
+"text": "{88:Morell et al. (1998)} found homozygosity for 167delT and compound heterozygosity for this mutation of GJB2 and the 30delG mutation ({121011.0005}) in Ashkenazi Jewish families with nonsyndromic recessive deafness ({220290}). In the Ashkenazi Jewish population, the prevalence of heterozygosity for 167delT, which is rare in the general population, was 4.03%. The frequency of carriers of the 30delG and the 167delT mutation (totaling 4.76%) predicted a prevalence of 1 deaf person among 1,765 persons, which may account for most cases of nonsyndromic recessive deafness in the Ashkenazi Jewish population. Conservation of the haplotype flanking the 167delT mutation suggested that this allele has a single origin, whereas the multiple haplotypes with the 30delG mutation suggested that this site is a hotspot for recurrent mutations.", 
+"dbSnps": "rs80338942", 
+"clinvarAccessions": "RCV000211757;;;RCV000409300;;;RCV000018534;;;RCV000678869;;;RCV000392353;;;RCV000307189;;;RCV000392361;;;RCV000291910;;;RCV000346888;;;RCV000477920;;;RCV000146010;;;RCV000255988"
+} },
+{"allelicVariant": { 
+"number": 11, 
+"mimNumber": 121011, 
+"status": "live", 
+"name": "DEAFNESS, AUTOSOMAL DOMINANT 3A", 
+"mutations": "GJB2, ARG75TRP", 
+"text": "{109:Richard et al. (1998)} described a small Egyptian pedigree in which autosomal dominant deafness ({601544}) and palmoplantar keratoderma cosegregated. The affected father and daughter both had a C-to-T transition, which resulted in an arg-to-trp substitution at codon 75 (R75W) of the connexin-26 gap junction protein (CX26). Paired oocyte studies showed that CX26 carrying the R75W mutation coexpressed with wildtype CX26 resulted in complete loss of mean junctional conductance, whereas CX26 carrying the W77R ({121011.0004}) mutation coexpressed with wildtype CX26 did not significantly interfere with the function of the wildtype protein. The R75W variant was also identified in 1 of 154 Egyptian controls chosen because of the lack of skin disease. Thus, whether palmoplantar keratoderma and deafness were both caused by the GJB2 mutation could not be determined in this small pedigree. Data from {59:Kelsell et al. (1997)} suggested that they were not.\n\n{56:Janecke et al. (2001)} identified the first de novo mutation of the CX26 gene, the R75W change, in a sporadic case of isolated profound hearing loss. The case illustrated the risk of a possible erroneous diagnosis of autosomal recessive hearing loss in such a sporadic case.\n\n{67:Kudo et al. (2003)} generated transgenic mice expressing a mutant connexin-26 with the R75W mutation. Previous expression analysis revealed that the mutant connexin-26 inhibited the gap channel function of the coexpressed normal connexin-26 in a dominant-negative fashion. Two such lines of transgenic mice showed severe to profound hearing loss, deformity of supporting cells, failure in the formation of the tunnel of Corti, and degeneration of sensory hair cells. Despite robust expression of the transgene, no obvious structural change was observed in the stria vascularis or spiral ligament that is rich in connexin-26 and generates endolymph. The high resting potential in cochlear endolymph, essential for hair cell excitation, was normally sustained. {67:Kudo et al. (2003)} suggested that the GJB2 mutation disturbs homeostasis of cortilymph, an extracellular space surrounding the sensory hair cells, due to impaired potassium transport by supporting cells, resulting in degradation of the organ of Corti rather than affecting endolymph homeostasis.", 
+"dbSnps": "rs104894402", 
+"clinvarAccessions": "RCV000018535;;;RCV000211763"
+} },
+{"allelicVariant": { 
+"number": 12, 
+"mimNumber": 121011, 
+"status": "live", 
+"name": "VOHWINKEL SYNDROME", 
+"mutations": "GJB2, ASP66HIS", 
+"text": "{134:Vohwinkel (1929)} and {137:Wigley (1929)} independently reported mutilating palmoplantar keratoderma (PPK) associated with honeycomb-like keratoderma and starfish-like keratoses on the knuckles. In the Vohwinkel report, a mother and daughter were affected. Moderate sensorineural deafness was also a feature in that family, as in most other clear cases of Vohwinkel syndrome (VOWNKL; {124500}). In a large British pedigree with classic Vohwinkel syndrome, {76:Maestrini et al. (1999)} mapped the disorder to the GJB2 locus and found that all 10 affected members were heterozygous for a nonconservative mutation, asp66 to his (D66H), in the GJB2 gene. They identified the same mutation in affected individuals from 2 unrelated Spanish and Italian pedigrees with Vohwinkel syndrome, suggesting that D66H is a common mutation in the form of Vohwinkel syndrome without ichthyosis. This mutation is located at a highly conserved residue in the first extracellular domain of the CX26 molecule, and may exert its effects by interfering with assembly into connexons (hexamers of connexin subunits), docking with adjacent cells, or gating properties of the GAP junction. The results indicated that a specific mutation in CX26 can impair epidermal differentiation, as well as inner ear function.\n\nIn the family studied by {65:Korge et al. (1997)} and {76:Maestrini et al. (1999)}, the affected individuals varied in age from 10 to 76 years. In the milder or younger cases, the keratoderma consisted of translucent horny papules, in places becoming confluent. Confluent lesions on the palms of older patients were responsible for the 'honeycomb' pattern of keratoderma, although some cases had only callosities at pressure points, or even striate lesions. Keratoderma extending around small digits had resulted in pseudo-ainhum, and one woman had lost a little toe. Adult members of the family suffered from moderate to severe sensorineural deafness, although the children (aged 8 to 15 years) were only mildly affected at the time of assessment.", 
+"dbSnps": "rs104894403", 
+"clinvarAccessions": "RCV000018536;;;RCV000678871"
+} },
+{"allelicVariant": { 
+"number": 13, 
+"mimNumber": 121011, 
+"status": "live", 
+"name": "DEAFNESS, AUTOSOMAL RECESSIVE 1A", 
+"mutations": "GJB2, 12-BP DEL, 1-BP INS, NT51", 
+"text": "In a child with a family history of profound nonsyndromal hearing loss ({220290}), {121:Sobe et al. (2000)} found a novel mutation in the GJB2 gene involving both a deletion and an insertion: 51del12insA. The proband and his 2 profoundly deaf siblings were the offspring of second-cousin Jewish parents originating from Samarkand, Uzbekistan. All the children were homozygous for a deletion of 12 bp and an insertion of an A nucleotide. A frameshift was formed in the N-terminal portion of the protein, resulting in the addition of 26 novel amino acids followed by premature termination. This was said to be the first report of a deletion and insertion occurring simultaneously as a GJB2 mutation.", 
+"dbSnps": "rs886037624", 
+"clinvarAccessions": "RCV000018537"
+} },
+{"allelicVariant": { 
+"number": 14, 
+"mimNumber": 121011, 
+"status": "live", 
+"name": "DEAFNESS, AUTOSOMAL RECESSIVE 1A", 
+"alternativeNames": "DEAFNESS, DIGENIC, GJB2/GJB3, INCLUDED", 
+"mutations": "GJB2, 1-BP DEL, 235C", 
+"text": "In a study of 35 families with autosomal recessive bilateral sensorineural hearing loss ({220290}), {2:Abe et al. (2000)} found a deletion of a single C nucleotide at position 235 of the GJB2 gene in 8 of 11 Japanese families in which a mutation in the GJB2 gene was found. The 235delC mutation, which causes a frameshift at codon 79 resulting in a truncated polypeptide, was found in homozygosity in 2 families and in compound heterozygosity with other mutations in 5 families. One family was heterozygous for the 235delC mutation with no other mutation being detected. The deletion was also found in 2 of 192 control alleles.\n\n{66:Kudo et al. (2000)} found that the most common GJB2 mutation among 39 Japanese patients with prelingual deafness was 235delC. The mutation was found in 7 of 10 mutant alleles and in 2 of 203 unrelated normal individuals in the Japanese population.\n\n{71:Liu et al. (2002)} found that the 235delC mutation is the most prevalent one causing deafness in Chinese. It accounted for 81% of the pathologic alleles in multiplex cases and 67% in simplex cases. Analysis of the affected haplotypes in patients with a homozygous 235delC mutation yielded evidence for a single origin of the mutation. Carrier frequency in control subjects with normal hearing was 1.3%.\n\n{144:Yan et al. (2003)} stated that the high frequency of the 235delC mutation in multiple East Asian populations suggested that it results from recurrent deletion at a mutation hotspot or is derived from a common ancestral founder. Among East Asians, they observed significant linkage disequilibrium between 235delC and 5 linked polymorphic markers, suggesting that 235delC was derived from a common founder. The detection of this mutation only in East Asians, but not in Caucasians, and the small chromosomal interval of the shared haplotype suggested that it is an ancient mutation that arose after the divergence of Mongoloids and Caucasians. The finding that this mutation appears on a single haplotype argues against the possibility of recurrent mutation as the explanation for the high frequency of the allele.\n\n{27:Dai et al. (2007)} collected DNA specimens from 3,004 patients with nonsyndromic hearing impairment from 26 regions of China, 368 Han Chinese and 98 Uigur controls, and screened for the 235delC mutation. Overall, 488 patients (16.3%) carried at least 1 235delC mutant allele, with 233 (7.8%) homozygotes and 255 (8.5%) heterozygotes. Therefore, within the subpopulations examined, the frequency varies from 0 to 14.7% for 235delC homozygotes and from 1.7 to 16.1% for heterozygotes. {27:Dai et al. (2007)} found that Chinese patients with nonsyndromic hearing loss have a higher frequency of the 235delC mutation than that of other Asian populations.\n\nIn 2 unrelated Chinese patients with autosomal recessive profound hearing impairment, {72:Liu et al. (2009)} found compound heterozygosity for the 235delC mutation in the GJB2 gene and a mutation in the GJB3 gene ({603324.0011} and {603324.0012}, respectively). The findings were consistent with digenic inheritance (see {220290}). The unaffected parents were heterozygous for 1 of the mutant alleles.", 
+"dbSnps": "rs80338943", 
+"clinvarAccessions": "RCV000211768;;;RCV000146011;;;RCV000410166;;;RCV000255303;;;RCV000018539;;;RCV000678874;;;RCV000018538;;;RCV000490501"
+} },
+{"allelicVariant": { 
+"number": 15, 
+"mimNumber": 121011, 
+"status": "live", 
+"name": "KERATODERMA, PALMOPLANTAR, WITH DEAFNESS", 
+"mutations": "GJB2, GLY59ALA", 
+"text": "In a family with autosomal dominant deafness and palmoplantar keratoderma ({148350}), {48:Heathcote et al. (2000)} identified a G-to-C transversion at nucleotide 175 of the GJB2 gene resulting in the substitution of an alanine residue for a glycine residue at codon 59 (G59A).", 
+"dbSnps": "rs104894404", 
+"clinvarAccessions": "RCV000018540"
+} },
+{"allelicVariant": { 
+"number": 16, 
+"mimNumber": 121011, 
+"status": "live", 
+"name": "DEAFNESS, AUTOSOMAL RECESSIVE 1A", 
+"mutations": "GJB2, LEU90PRO", 
+"text": "{73:Loffler et al. (2001)} detected a leu90-to-pro (L90P) substitution in the GJB2 gene in 5 of 26 (19.2%) GJB2 alleles in 13 unrelated Austrian patients with autosomal recessive neurosensory hearing loss ({220290}). GJB2 mutations were detected on both alleles. The onset of hearing loss in compound heterozygous individuals was prelingual in 2 cases, perilingual in 1 case, and in the first decade in 2 cases. See also ({121011.0017}).", 
+"dbSnps": "rs80338945", 
+"clinvarAccessions": "RCV000080369;;;RCV000146013;;;RCV000515450;;;RCV000507991;;;RCV000409625;;;RCV000678875;;;RCV000415167;;;RCV000211772;;;RCV000018541"
+} },
+{"allelicVariant": { 
+"number": 17, 
+"mimNumber": 121011, 
+"status": "live", 
+"name": "DEAFNESS, AUTOSOMAL DOMINANT 3A", 
+"alternativeNames": "DEAFNESS, AUTOSOMAL RECESSIVE 1A, INCLUDED", 
+"mutations": "GJB2, ARG143GLN", 
+"text": "{73:Loffler et al. (2001)} identified a G-to-A transition that resulted in an arg143-to-gln (R143Q) substitution in the GJB2 gene. The R143Q mutation was detected in compound heterozygosity with the leu90-to-pro mutation ({121011.0016}) in a 7-year-old proband with profound hearing loss ({229200}), but cosegregated with high frequency progressive hearing loss in maternal relatives, pointing towards a dominant effect ({601544}). The family was of Austrian/Czech origin. The R143Q mutation is within the third transmembrane domain of CX26, affecting a highly conserved residue that is also involved in the recessive R143W mutation ({121011.0009}).", 
+"dbSnps": "rs104894401", 
+"clinvarAccessions": "RCV000018543;;;RCV000018542;;;RCV000484997"
+} },
+{"allelicVariant": { 
+"number": 18, 
+"mimNumber": 121011, 
+"status": "live", 
+"name": "DEAFNESS, AUTOSOMAL DOMINANT 3A", 
+"mutations": "GJB2, CYS202PHE", 
+"text": "In all affected members of a large French family with late childhood onset of autosomal dominant isolated hearing loss ({601544}), {89:Morle et al. (2000)} identified a heterozygous G-to-T transversion at nucleotide 605 of the GJB2 gene, resulting in the substitution of a cysteine residue by a phenylalanine residue at codon 202 in the fourth transmembrane domain of the CX26 protein. The hearing loss was detected between 10 and 20 years of age. There was significant intrafamilial variability for the severity of the hearing loss, which was restricted to high frequencies during the first decade and progressed to middle frequencies between 10 and 50 years of age.", 
+"dbSnps": "rs104894406", 
+"clinvarAccessions": "RCV000018544"
+} },
+{"allelicVariant": { 
+"number": 19, 
+"mimNumber": 121011, 
+"status": "live", 
+"name": "DEAFNESS, AUTOSOMAL DOMINANT 3A", 
+"mutations": "GJB2, TRP44CYS", 
+"text": "{126:Tekin et al. (2001)} described a third family with early-onset severe to profound nonsyndromic hearing loss ({601544}) segregating with a trp44-to-cys (W44C) mutation in the GJB2 gene. The mutation had previously been described in association with prelingual nonsyndromic deafness in 2 families originating from the same geographic region of France ({32:Denoyelle et al., 1998}). The observation placed W44C among recurrent mutations in the connexin-26 gene.", 
+"dbSnps": "rs104894407", 
+"clinvarAccessions": "RCV000018545"
+} },
+{"allelicVariant": { 
+"number": 20, 
+"mimNumber": 121011, 
+"status": "live", 
+"name": "KERATITIS-ICHTHYOSIS-DEAFNESS SYNDROME, AUTOSOMAL DOMINANT", 
+"alternativeNames": "HYSTRIX-LIKE ICHTHYOSIS WITH DEAFNESS, INCLUDED", 
+"mutations": "GJB2, ASP50ASN", 
+"text": "In 6 unrelated sporadic patients with keratitis-ichthyosis-deafness syndrome (KID; {148210}) and in 1 family with vertical transmission of KID, {108:Richard et al. (2002)} identified a 148G-A transition in the GJB2 gene, resulting in an asp50-to-asn (D50N) substitution. This mutation occurred in the highly conserved first extracellular loop of CX26, which is crucial for voltage gating and connexon-connexon interactions. The presence of this mutation in 7 unrelated probands of varying ethnic origins but not in any unaffected parents or sibs strongly suggested to {108:Richard et al. (2002)} that D50N arose de novo in each family and is a common mutation in KID.\n\n{4:Alvarez et al. (2003)} found the same mutation in a sporadic case of KID syndrome in Spain.\n\n{131:Van Geel et al. (2002)} identified the D50N mutation in a patient with hystrix-like ichthyosis-deafness (HID) syndrome ({602540}).\n\n{54:Janecke et al. (2005)} identified the D50N mutation in heterozygous state in 3 Austrian patients with KID syndrome and remarked on the variable phenotype. Two of the cases were mother and daughter. The mother had 'eczema' since the age of 6 weeks. Mild to moderate bilateral sensorineural hearing loss was diagnosed at 5 years of age. Photophobia due to keratitis became apparent at 24 years of age. Recurrent corneal epithelial erosions and ulcerations as well as trichiatic lashes resulted in corneal scarring and vascularization with moderate visual loss. She developed sensory neuropathy of the fingers and hands that was attributed to the hyperkeratosis and also had recurrent axillary and anal fistula. The 13-year-old daughter was known to have 'eczema' since the first weeks of life and episodes of cutaneous candida infections. She had diffuse hyperkeratosis mostly affecting the extremities and the external ears. Mild to moderate bilateral sensorineural hearing loss was diagnosed at 4 years of age. Ophthalmologic examination at age 13 years was unremarkable. She had normal growth and psychomotor development. The third patient had the D50N mutation on a de novo basis. Transient cardiomyopathy and persistent ductus arteriosus were diagnosed in the neonatal period. Profound sensorineural hearing loss was diagnosed at 6 months of age. At that time, sparse and depigmented hair, as well as photophobia, were apparent. Palmoplantar hyperkeratosis and joint contractures of the elbows and ankles were noted at 2 years of age. From the age of 5 years, severe involvement of cornea occurred, with reduction of visual acuity to finger counting by age 12 years. By that age hearing loss had progressed to right-sided deafness, and contractures as well as decreased sensibility due to hyperkeratotic plaques affected most joints. {54:Janecke et al. (2005)} pointed out the strikingly wide variation in severity of the phenotype associated with the D50N mutation as an indication of the influence of genetic background. The mutation was not present in more than 500 individuals who were screened for recessive deafness mutations or in 96 healthy controls of Austrian origin.\n\n{93:Nyquist et al. (2007)} identified heterozygosity for the D50N mutation in a 32-year-old African American woman with KID syndrome, severe hidradenitis of the groin, and dissecting cellulitis of the scalp. She developed moderately differentiated squamous cell carcinoma in the area of the hidradenitis at 28 years of age, and 3 years later was found to have a primary malignant proliferating pilar tumor of the scalp, with metastases in 3 of 25 lymph nodes examined.\n\n{128:Titeux et al. (2009)} reported a Portuguese boy with KID syndrome who was heterozygous for the D50N mutation. The mutation was 'barely detectable' in DNA from a lesional skin biopsy from his mother, who had segmental manifestations of disease, with bilateral hyperkeratotic hyperpigmented linear cutaneous lesions on the chest, shoulders, and back along Blaschko lines. Allele-specific amplification showed a difference in signal intensity between the proband and his mother, consistent with maternal mosaicism for the mutation.", 
+"dbSnps": "rs28931594", 
+"clinvarAccessions": "RCV000018546;;;RCV000175764;;;RCV000678868;;;RCV000018547;;;RCV000412852;;;RCV000596164"
+} },
+{"allelicVariant": { 
+"number": 21, 
+"mimNumber": 121011, 
+"status": "live", 
+"name": "KERATITIS-ICHTHYOSIS-DEAFNESS SYNDROME, AUTOSOMAL DOMINANT", 
+"mutations": "GJB2, GLY12ARG", 
+"text": "In a sporadic case of KID syndrome ({148210}), {108:Richard et al. (2002)} identified a heterozygous G-to-C transversion in codon 12 of the GJB2 gene, replacing glycine with arginine (G12R).", 
+"dbSnps": "rs104894408", 
+"clinvarAccessions": "RCV000018548"
+} },
+{"allelicVariant": { 
+"number": 22, 
+"mimNumber": 121011, 
+"status": "live", 
+"name": "KERATITIS-ICHTHYOSIS-DEAFNESS SYNDROME, AUTOSOMAL DOMINANT", 
+"mutations": "GJB2, SER17PHE", 
+"text": "In a sporadic case of KID syndrome ({148210}), {108:Richard et al. (2002)} identified a 50C-T transition in the GJB2 gene, leading to substitution of serine-17 with phenylalanine (S17F).", 
+"dbSnps": "rs28929485", 
+"clinvarAccessions": "RCV000018549"
+} },
+{"allelicVariant": { 
+"number": 23, 
+"mimNumber": 121011, 
+"status": "live", 
+"name": "DEAFNESS, AUTOSOMAL RECESSIVE 1A", 
+"mutations": "GJB2, VAL37ILE", 
+"text": "{14:Bason et al. (2002)} identified 3 unrelated individuals with sensorineural hearing loss ({220290}) who were homozygous for a val37-to-ile (V37I) missense mutation in the GJB2 gene. One individual was of Philippine ancestry, another was from a Chinese and Cambodian background, and the third was of Chinese ancestry, raising the possibility that this mutation may be more frequent among populations in eastern Asia. V37I was reported first as a polymorphism found as a heterozygous variant in a sample from a control group ({57:Kelley et al., 1998}). {106:Rabionet et al. (2000)} identified a deaf individual who was homozygous for V37I.\n\n{26:Dahl et al. (2006)} identified a homozygous V37I mutation in 4 (8.3%) of 48 Australian children with slight or mild sensorineural hearing loss. All 4 children were of Asian background, and SNP analysis suggested a common founder effect. All 4 children showed bilateral high-frequency sensorineural hearing loss, and 3 also had low-frequency hearing loss. Two additional children who were heterozygous for V37I had mild high-frequency loss maximal at 6kHz, and mild low-frequency loss, respectively. In all, 55 children with slight or mild hearing loss were identified in a screening of 6,240 Australian school children.\n\n{52:Huculak et al. (2006)} examined the records of 40 Chinese and 40 Caucasian patients with sensorineural hearing loss who had undergone GJB2 genetic testing, and tested DNA samples from 100 Chinese and 100 Caucasian controls for V37I. The V37I allele was identified in 43.75% and 11.5% of the Chinese patient and control alleles, respectively, but was not found in either Caucasian cohort. Audiograms from 15 V37I homozygotes showed mild to moderate sensorineural hearing loss. {52:Huculak et al. (2006)} concluded that the V37I allele is common in individuals of Asian descent but rarely present in Caucasians, and that it is pathogenic but produces milder hearing loss than nonsense mutations in the GJB2 gene.\n\n{125:Tang et al. (2006)} analyzed the GJB2 gene in 610 hearing-impaired individuals and 294 controls and identified the V37I variant in 18 cases and 6 controls, including 1 control who was homozygous for the variant. The variant was found only among Asians, occurring at an allele frequency of 7.6%.\n\n{103:Pollak et al. (2007)} studied 233 Polish patients with hearing impairment and the presence of the GJB2 35delG mutation ({121011.0005}) on 1 allele. In an analysis of those with the 35delG/M34T ({121011.0001}) and 35delG/V37I genotypes (17 and 12 patients, respectively), other GJB2 mutations, and controls, the authors found that the M34T and V37I were significantly overrepresented among patients with hearing impairment, consistent with both variants being pathogenic. However, both mutations showed decreased penetrance at about 1/10 compared to mutations of undisputed pathogenicity. Subsequent analyses showed that patients with M34T/35delG and V37I/35delG had significantly later onset of hearing impairment compared to those with other genotypes. {103:Pollak et al. (2007)} suggested that M34T and V37I cause mild hearing impairment characterized by relatively late onset and progression.\n\n{103:Pollak et al. (2007)} studied 233 Polish patients with hearing impairment and the GJB2 35delG mutation ({121011.0005}) on 1 allele. Analysis of 17 patients with the M34T ({121011.0001})/35delG and 12 patients with the V37I/35delG genotypes, patients with other GJB2 mutations, and controls found that the M34T and V37I were significantly overrepresented among patients with hearing impairment, consistent with both variants being pathogenic. However, both mutations showed decreased penetrance of about 10% compared to mutations of undisputed pathogenicity. Also, patients with M34T/35delG and V37I/35delG had significantly later onset of hearing impairment compared to those with other genotypes. {103:Pollak et al. (2007)} suggested that the M34T and V37I mutations cause mild hearing impairment characterized by relatively late onset and progression.", 
+"dbSnps": "rs72474224", 
+"clinvarAccessions": "RCV000515287;;;RCV000146005;;;RCV000211759;;;RCV000597456;;;RCV000018550;;;RCV000080365"
+} },
+{"allelicVariant": { 
+"number": 24, 
+"mimNumber": 121011, 
+"status": "live", 
+"name": "DEAFNESS, AUTOSOMAL RECESSIVE 1A", 
+"mutations": "GJB2, ASP159VAL", 
+"text": "In a study in Italy of 179 unrelated subjects with sporadic or familial hearing loss, {46:Gualandi et al. (2002)} identified a 476A-T transversion in the GJB2 gene, resulting in an asp159-to-val (D159V) substitution in a patient with sporadic nonsyndromic hearing loss ({220290}).", 
+"dbSnps": "rs28931592", 
+"clinvarAccessions": "RCV000018551"
+} },
+{"allelicVariant": { 
+"number": 25, 
+"mimNumber": 121011, 
+"status": "live", 
+"name": "DEAFNESS, AUTOSOMAL RECESSIVE 1A", 
+"mutations": "GJB2, 5-BP DUP, NT280", 
+"text": "In a study in Italy of 179 unrelated subjects with sporadic or familial hearing loss, {46:Gualandi et al. (2002)} identified a patient with sporadic nonsyndromic hearing loss ({220290}) in whom a 5-bp duplication (CACGT) of nucleotides 280 to 284 resulted in a frameshift at codon 96.", 
+"dbSnps": "rs886037625", 
+"clinvarAccessions": "RCV000018552"
+} },
+{"allelicVariant": { 
+"number": 26, 
+"mimNumber": 121011, 
+"status": "live", 
+"name": "KERATODERMA, PALMOPLANTAR, WITH DEAFNESS", 
+"alternativeNames": "DEAFNESS, AUTOSOMAL DOMINANT 3A, INCLUDED", 
+"mutations": "GJB2, ARG75GLN", 
+"text": "In a 4-generation Turkish family segregating for autosomal dominant deafness and palmoplantar keratoderma ({148350}), {130:Uyguner et al. (2002)} identified a 224G-A transition in the GJB2 gene resulting in an arg75-to-gln (R75Q) mutation. The age of onset and progression of hearing loss were variable among affected family members, but they all had more severe impairment at higher hearing frequencies. Mutation in the same amino acid (R75W; {121011.0011}) is associated with profound prelingual hearing loss and palmoplantar keratoderma.\n\n{38:Feldmann et al. (2005)} reported 2 French families presenting with autosomal dominant hearing loss (DFNA3A; {601544}) caused by the R75Q mutation of the GJB2 gene. In 1 family, a mother and son presented with hearing loss with no skin disease. The hearing defect was profound in the child and moderate/severe in his mother. Both were heterozygous for the R75Q mutation. The R75Q mutation was not found in either of the mother's parents. In the second family reported by {38:Feldmann et al. (2005)}, a father and his 2 daughters presented with a sensorineural hearing loss associated with skin abnormalities. Bilateral mild hearing loss of the father had been diagnosed at age 18 years, and a palmoplantar keratosis had developed during infancy. His elder daughter had a mild bilateral hearing loss detected at age 10 years.\n\nIn 4 individuals over 3 generations of a Turkish family with autosomal dominant nonsyndromic congenital profound hearing loss, {102:Piazza et al. (2005)} identified heterozygosity for the R75Q mutation in the GJB2 gene. Cell transfection and fluorescence imaging, dye transfer experiments, and dual patch-clamp recording showed that the mutant protein completely prevents the formation of functional channels.", 
+"dbSnps": "rs28931593", 
+"clinvarAccessions": "RCV000018555;;;RCV000018554;;;RCV000210858;;;RCV000211764;;;RCV000254728"
+} },
+{"allelicVariant": { 
+"number": 27, 
+"mimNumber": 121011, 
+"status": "live", 
+"name": "KERATITIS-ICHTHYOSIS-DEAFNESS SYNDROME, AUTOSOMAL DOMINANT", 
+"mutations": "GJB2, ASP50TYR", 
+"text": "In a sporadic case of KID syndrome ({148210}), {145:Yotsumoto et al. (2003)} identified heterozygosity for a 148G-T transversion in exon 2 of the GJB2 gene, resulting in a putative amino acid change from aspartic acid to tyrosine at codon 50 (D50Y).\n\nIn 1 of 2 Japanese patients with KID syndrome, {123:Sonoda et al. (2004)} identified the D50Y mutation; the other patient had no pathologic mutation in the GJB2 gene.", 
+"dbSnps": "rs28931594", 
+"clinvarAccessions": "RCV000018556"
+} },
+{"allelicVariant": { 
+"number": 28, 
+"mimNumber": 121011, 
+"status": "live", 
+"name": "DEAFNESS, AUTOSOMAL DOMINANT 3A", 
+"mutations": "GJB2, ASP179ASN", 
+"text": "{104:Primignani et al. (2003)} described a family from southern Italy in whom autosomal dominant nonsyndromic postlingual hearing loss ({601544}) was associated with a heterozygous 535G-A transition in the GJB2 gene, resulting in an asp179-to-asn (D179N) substitution that occurred in the second extracellular domain, which was thought to be important for connexon-connexon interaction.", 
+"dbSnps": "rs28931595", 
+"clinvarAccessions": "RCV000018553"
+} },
+{"allelicVariant": { 
+"number": 29, 
+"mimNumber": 121011, 
+"status": "live", 
+"name": "DEAFNESS, AUTOSOMAL RECESSIVE 1A", 
+"mutations": "GJB2, IVS1DS, G-A, +1", 
+"text": "In a patient with sporadic nonsyndromic sensorineural deafness ({220290}), {33:Denoyelle et al. (1999)} identified compound heterozygosity for mutations in the GJB2 gene: a -3170G-A transition (IVS1+1G-A), and the common 30delG (alternatively known as 35delG; {121011.0005}). {24:Cryns et al. (2004)} observed 35delG/IVS1+1G-A compound heterozygotes to have significantly less severe hearing impairment compared to 35delG homozygotes. As the conclusion that there is no mRNA for the IVS1+1G-A mutation is based on a DNA sequencing result ({117:Shahin et al., 2002}), the presence of a very small amount of mRNA cannot be excluded, possibly providing an explanation for this discrepancy.\n\n{116:Seeman and Sakmaryova (2006)} identified compound heterozygosity for the IVS1+1G-A mutation and 35delG in 9 Czech patients with nonsyndromic hearing loss. Combined with other results from Czech individuals, the authors estimated that this splice site mutation represents 4% of pathogenic GJB2 mutations, making it the third most common GJB2 mutation in Czech patients with hearing loss.\n\n{13:Barashkov et al. (2011)} found homozygosity for the IVS1+1G-A mutation in 70 of 86 patients from the Yakut population isolate in eastern Siberia with nonsyndromic hearing impairment. Six patients were compound heterozygous for this mutation and another pathogenic GJB2 mutation. Audiometric examination was performed on 40 patients who were homozygous for the mutation. Most (85%) had severe to profound hearing impairment, 14% had moderate impairment, and 1% had mild hearing loss. There was some variability in hearing thresholds. The carrier frequency for this mutation in this population was estimated to be 11.7%, the highest among 6 eastern Siberian populations analyzed, and the mutation was estimated to be about 800 years old. The findings were consistent with a founder effect, and {13:Barashkov et al. (2011)} postulated a central Asian origin for this mutation.", 
+"dbSnps": "rs80338940", 
+"clinvarAccessions": "RCV000018557;;;RCV000211766;;;RCV000678858;;;RCV000146002;;;RCV000418755"
+} },
+{"allelicVariant": { 
+"number": 30, 
+"mimNumber": 121011, 
+"status": "live", 
+"name": "KNUCKLE PADS, LEUKONYCHIA, AND SENSORINEURAL DEAFNESS", 
+"mutations": "GJB2, ASN54LYS", 
+"text": "In a family with Bart-Pumphrey syndrome ({149200}), {107:Richard et al. (2004)} identified heterozygosity for a 162C-A transversion in the GJB2 gene, resulting in an asn54-to-lys (N54K) amino acid substitution in connexin-26, segregating with the disorder. The mutation was not detected in 110 control individuals of Northern European ancestry. This nonconservative missense mutation lies within a cluster of pathogenic GJB2 mutations affecting the evolutionarily conserved first extracellular loop of Cx26 important for docking of connexin hemichannels and voltage gating.", 
+"dbSnps": "rs104894412", 
+"clinvarAccessions": "RCV000018558"
+} },
+{"allelicVariant": { 
+"number": 31, 
+"mimNumber": 121011, 
+"status": "live", 
+"name": "DEAFNESS, AUTOSOMAL DOMINANT 3A", 
+"mutations": "GJB2, TRP44SER", 
+"text": "{81:Marziano et al. (2003)} stated that autosomal dominant nonsyndromic sensorineural deafness-3 ({601544}) can be caused by a trp44-to-ser (W44S) mutation in the GJB2 gene.", 
+"dbSnps": "rs104894413", 
+"clinvarAccessions": "RCV000018559"
+} },
+{"allelicVariant": { 
+"number": 32, 
+"mimNumber": 121011, 
+"status": "live", 
+"name": "DEAFNESS, AUTOSOMAL RECESSIVE 1A", 
+"mutations": "GJB2, VAL84LEU", 
+"text": "{61:Kenna et al. (2001)} identified a homozygous val84-to-leu (V84L) mutation in the GJB2 gene in a 4-year-old patient with autosomal recessive profound sensorineural hearing loss ({220290}).\n\n{15:Beltramello et al. (2005)} found that CX26 carrying the V84L mutation sorted to the plasma membrane normally and formed gap junctions that were morphologically and electrically indistinguishable from those of control CX26. However, the mutation markedly reduced the permeability of CX26 gap junction channels to inositol 1,4,5-trisphosphate (Ins(1,4,5)P3), resulting in blockade of the Ins(1,4,5)P3-induced inward calcium current in neighboring cells. {15:Beltramello et al. (2005)} concluded that reduced Ins(1,4,5)P3 permeability impairs the propagation of calcium waves in cochlear-supporting cells.", 
+"dbSnps": "rs104894409", 
+"clinvarAccessions": "RCV000146012;;;RCV000018560;;;RCV000211770"
+} },
+{"allelicVariant": { 
+"number": 33, 
+"mimNumber": 121011, 
+"status": "live", 
+"name": "KERATITIS-ICHTHYOSIS-DEAFNESS SYNDROME, AUTOSOMAL DOMINANT", 
+"mutations": "GJB2, GLY45GLU", 
+"text": "In an Austrian girl with the fatal form of KID syndrome ({148210}), {54:Janecke et al. (2005)} identified a heterozygous 134G-A transition in the GJB2 gene, resulting in a gly45-to-glu (G45E) substitution. At the age of 2 months, the patient showed a generalized scaled appearance resembling ichthyosiform erythroderma. Eyebrows and eyelashes were absent. Hearing loss was demonstrated. Psychomotor development was severely delayed. The patient suffered from recurrent severe bacterial and fungal skin infections, presenting as sharply circumscribed, hyperkeratotic and vegetating plaques. Death from septicemia occurred at the age of 1 year.\n\n{113:Sbidian et al. (2010)} identified a heterozygous G45E mutation in 4 sibs with the lethal form of KID syndrome, who were born of unrelated parents of African descent. Molecular studies indicated that the mother, who had palmoplantar keratosis, was germline mosaic for the mutation.\n\n{85:Mese et al. (2011)} found that expression of CX26 with the G45E mutation increased marker dye uptake in transfected HeLa cells and increased whole-cell membrane currents at both hyperpolarizing and depolarizing potentials in mouse N2A neuroblastoma cells. Transgenic Cx26 G45E mouse keratinocytes also showed increased whole-cell membrane currents at hyperpolarizing and depolarizing membrane potentials.\n\n{94:Ogawa et al. (2014)} reported a Japanese patient with KID due to a heterozygous G45E mutation in GJB2. The patient had inherited the mutant allele from her unaffected mother, who harbored both G45E and Y136X mutations in cis ({121011.0042}) in heterozygosity; however, in the patient the Y136X mutation was lost, thus allowing manifestation of the effects of the G45E mutation. {94:Ogawa et al. (2014)} stated that the G45E mutation is in complete linkage disequilibrium with Y136X in the Japanese population, and hypothesized that the Y136X mutation 'confines' and rescues the dominant pathogenic effect of the G45E mutation.", 
+"dbSnps": "rs72561723", 
+"clinvarAccessions": "RCV000516165;;;RCV000022510;;;RCV000258130;;;RCV000018561"
+} },
+{"allelicVariant": { 
+"number": 34, 
+"mimNumber": 121011, 
+"status": "live", 
+"name": "DEAFNESS, AUTOSOMAL RECESSIVE 1A", 
+"mutations": "GJB2, 14-BP DEL, NT313", 
+"text": "In 5 of 156 Czech patients with prelingual deafness ({220290}), {115:Seeman et al. (2004)} identified a 14-bp deletion at nucleotide 313 of the GJB2 gene.", 
+"dbSnps": "rs111033253", 
+"clinvarAccessions": "RCV000678878;;;RCV000146016;;;RCV000037836;;;RCV000080370;;;RCV000595243;;;RCV000506547;;;RCV000211774", 
+"exacDbSnps": "rs111033253"
+} },
+{"allelicVariant": { 
+"number": 35, 
+"mimNumber": 121011, 
+"status": "live", 
+"name": "KNUCKLE PADS, LEUKONYCHIA, AND SENSORINEURAL DEAFNESS", 
+"mutations": "GJB2, GLY59SER", 
+"text": "In a 26-year-old male patient with Bart-Pumphrey syndrome ({149200}), {3:Alexandrino et al. (2005)} identified heterozygosity for a 175G-A transition in the GJB2 gene, resulting in a gly59-to-ser (G59S) substitution. A change in the same codon, G59A ({121011.0015}), was reported by {48:Heathcote et al. (2000)} in connection with the syndrome of hearing loss and hyperkeratosis.", 
+"dbSnps": "rs104894410", 
+"clinvarAccessions": "RCV000018562"
+} },
+{"allelicVariant": { 
+"number": 36, 
+"mimNumber": 121011, 
+"status": "live", 
+"name": "DEAFNESS, AUTOSOMAL RECESSIVE 1A", 
+"mutations": "GJB2, -3438C-T, PROMOTER", 
+"text": "In a Portuguese girl with autosomal recessive neurosensory deafness ({220290}), {82:Matos et al. (2007)} identified compound heterozygosity for 2 mutations in the GJB2 gene: a -3438C-T transition in the promoter of the GJB2 gene and a 250G-A transition resulting in a val84-to-met substitution (V84M; {121011.0037}). Functional expression studies in HEK293 cells showed that the promoter mutation abolished basal promoter activity, and the V84M mutation disrupted cellular communication. The patient's mother, who had less severe hearing loss, was heterozygous for the V84M mutation, whereas her unaffected sister was heterozygous for the promoter mutation.", 
+"dbSnps": "rs886037626", 
+"clinvarAccessions": "RCV000018563"
+} },
+{"allelicVariant": { 
+"number": 37, 
+"mimNumber": 121011, 
+"status": "live", 
+"name": "DEAFNESS, AUTOSOMAL RECESSIVE 1A", 
+"mutations": "GJB2, VAL84MET", 
+"text": "For discussion of the val84-to-met (V84M) mutation in the GJB2 gene that was found in compound heterozygous state in a patient with autosomal recessive neurosensory deafness (DFNB1A; {220290}) by {82:Matos et al. (2007)}, see {121011.0036}.", 
+"dbSnps": "rs104894409", 
+"clinvarAccessions": "RCV000254760;;;RCV000211769;;;RCV000626853;;;RCV000410225;;;RCV000018564"
+} },
+{"allelicVariant": { 
+"number": 38, 
+"mimNumber": 121011, 
+"status": "live", 
+"name": "KERATODERMA, PALMOPLANTAR, WITH DEAFNESS", 
+"mutations": "GJB2, HIS73ARG", 
+"text": "In a 40-year-old German woman and her 2 children with palmoplantar keratoderma and sensorineural deafness ({148350}), {29:de Zwart-Storm et al. (2008)} identified heterozygosity for a 219A-G transition in the GJB2 gene, resulting in a his73-to-arg (H73R) substitution. The mutation was not found in unaffected family members or in 100 unrelated German controls. Cotransfection into cells expressing wildtype Cx26 showed that the mutant has a dominant-negative effect on connexin trafficking.", 
+"dbSnps": "rs121912968", 
+"clinvarAccessions": "RCV000018565"
+} },
+{"allelicVariant": { 
+"number": 39, 
+"mimNumber": 121011, 
+"status": "live", 
+"name": "DEAFNESS, AUTOSOMAL DOMINANT 3A", 
+"mutations": "GJB2, ARG184GLN", 
+"text": "In affected members of a Taiwanese family with autosomal dominant deafness ({601544}), {124:Su et al. (2010)} identified a heterozygous 552G-A transition in the GJB2 gene, resulting in an arg184-to-gln (R184Q) substitution in a highly conserved residue in the second extracellular loop. In vitro functional expression studies in transfected HeLa cells showed that most of the mutant protein was retained in the Golgi apparatus, with some in the endoplasmic reticulum. Coexpression studies with wildtype GJB2 and wildtype GJB6 ({604418}) showed perinuclear localization of both proteins, consistent with a dominant-negative effect of the R184Q mutant protein. The findings indicated that the mutation causes a defect in intracellular trafficking.", 
+"dbSnps": "rs80338950", 
+"clinvarAccessions": "RCV000678889;;;RCV000146024;;;RCV000022511;;;RCV000480903"
+} },
+{"allelicVariant": { 
+"number": 40, 
+"mimNumber": 121011, 
+"status": "live", 
+"name": "DEAFNESS, AUTOSOMAL RECESSIVE 1A", 
+"mutations": "GJB2, TRP44TER ({dbSNP rs104894413})", 
+"text": "In 6 Guatemalan probands with autosomal recessive deafness-1A (DFNB1A; {220290}), {18:Carranza et al. (2016)} identified a homozygous c.131G-A transition ({dbSNP rs104894413}) in the GJB2 gene, resulting in a trp44-to-ter (W44X) substitution. Two additional probands with deafness were compound heterozygous for the W44X mutation and another pathogenic mutation. The patients were from a cohort of 133 Guatemalan families with hearing loss who underwent sequencing of the GJB2 gene. The W44X mutation was the most common GJB2 pathogenic variant identified, accounting for 21 of 266 alleles, and 62% of the mutant GJB2 alleles identified. Haplotype analysis indicated a founder effect in this population, and ancestry analysis of individuals with this pathogenic variant showed a close match with Mayans. The W44X mutation always occurred with a benign c.79G-A variant (V27I) in the GJB2 gene. Functional studies and studies of patient cells were not performed.", 
+"dbSnps": "rs104894413", 
+"clinvarAccessions": "RCV000169176;;;RCV000517231;;;RCV000595481;;;RCV000515211;;;RCV000624765"
+} },
+{"allelicVariant": { 
+"number": 41, 
+"mimNumber": 121011, 
+"status": "live", 
+"name": "VOHWINKEL SYNDROME", 
+"mutations": "GJB2, TYR65HIS", 
+"text": "In a 38-year-old Zimbabwean man with severe Vohwinkel syndrome (VOWNKL; {124500}), {30:de Zwart-Storm et al. (2011)} identified heterozygosity for a c.193T-C transition in the GJB2 gene, resulting in a tyr65-to-his (Y65H) substitution within the first extracellular loop. Functional analysis in transiently transfected HeLa Ohio cells showed that the mutant mostly accumulated in perinuclear globular aggregates with only a few residual gap junction plaques, and the mutant gap junction channels showed reduced dye transfer compared to wildtype.", 
+"dbSnps": "rs886037849", 
+"clinvarAccessions": "RCV000239514"
+} },
+{"allelicVariant": { 
+"number": 42, 
+"mimNumber": 121011, 
+"status": "live", 
+"name": "DEAFNESS, AUTOSOMAL RECESSIVE 1A", 
+"mutations": "GJB2, GLY45GLU AND TYR136TER", 
+"text": "Among 1,343 independently ascertained Japanese probands with bilateral hearing loss (DFNB1A; {220290}), {129:Tsukada et al. (2010)} identified GJB2 mutations gly45 to glu (G45E) and tyr136 to ter (Y136X) on the same parental allele in homozygosity in 1 patient and in compound heterozygosity in 22 patients.\n\n{54:Janecke et al. (2005)} noted that the G45E mutation had not previously been reported in Caucasian patients; however, it was the third most common GJB2 mutation in Japanese patients with autosomal recessive nonsyndromic hearing loss (DFNB1A; {220290}), occurring in 45 (16%) of 264 GJB2 disease alleles, and was the only missense mutation in the first extracellular domain (EC1) of the protein associated with autosomal recessive hearing loss ({96:Ohtsuka et al., 2003}). It was identified in patients both in the homozygous and compound heterozygous state, and heterozygous parents were reported as clinically normal. {54:Janecke et al. (2005)} stated that their findings suggested different modes of action of the same GJB2 mutation that are dependent on genetic background and that this hypothesis was substantiated by their observation of a variable clinical course in patients harboring the D50N mutation ({121011.0020}).\n\n{94:Ogawa et al. (2014)} stated that the G45E mutation is in complete linkage disequilibrium with Y136X in the Japanese population. They reported a Japanese patient with KID ({148210}) who had inherited the G45E mutation from her unaffected mother, who was heterozygous for the G45E/Y136X allele; in the patient, however, the Y136X mutation was lost. That the G45E/Y136X mutation in homozygosity or compound heterozygosity causes autosomal recessive nonsyndromic hearing loss suggested to {94:Ogawa et al. (2014)} that the G45E/Y136X mutation leads to total loss of function of the GJB2 gene product. Cotransfection experiments and a neurobiotin uptake assay demonstrated that the Y136X mutation confines the pathogenic effects of the G45E mutation.", 
+"dbSnps": "rs786204690", 
+"clinvarAccessions": "RCV000516165;;;RCV000022510;;;RCV000258130;;;RCV000169498;;;RCV000018561"
+} 
+} ] , 
+"referenceList": [ 
+{"reference": { 
+"mimNumber": 121011, 
+"referenceNumber": 1, 
+"authors": "Abe, S., Kelley, P. M., Kimberling, W. J., Usami, S.", 
+"title": "Connexin 26 gene (GJB2) mutation modulates the severity of hearing loss associated with the 1555A-G mitochondrial mutation.", 
+"source": "Am. J. Med. Genet. 103: 334-338, 2001.", 
+"pubmedID": 11746015, 
+"articleUrl": "https://onlinelibrary.wiley.com/resolve/openurl?genre=article&sid=nlm:pubmed&issn=0148-7299&date=2001&volume=103&issue=4&spage=334"
+} },
+{"reference": { 
+"mimNumber": 121011, 
+"referenceNumber": 2, 
+"authors": "Abe, S., Usami, S., Shinkawa, H., Kelley, P. M., Kimberling, W. J.", 
+"title": "Prevalent connexin 26 gene (GJB2) mutations in Japanese.", 
+"source": "J. Med. Genet. 37: 41-43, 2000.", 
+"pubmedID": 10633133, 
+"articleUrl": "http://jmg.bmj.com/cgi/pmidlookup?view=long&pmid=10633133"
+} },
+{"reference": { 
+"mimNumber": 121011, 
+"referenceNumber": 3, 
+"authors": "Alexandrino, F., Sartorato, E. L., Marques-de-Faria, A. P., Steiner, C. E.", 
+"title": "G59S mutation in the GJB2 (connexin 26) gene in a patient with Bart-Pumphrey syndrome. (Letter)", 
+"source": "Am. J. Med. Genet. 136A: 282-284, 2005.", 
+"pubmedID": 15952212, 
+"articleUrl": "https://doi.org/10.1002/ajmg.a.30822", 
+"doi": "10.1002/ajmg.a.30822"
+} },
+{"reference": { 
+"mimNumber": 121011, 
+"referenceNumber": 4, 
+"authors": "Alvarez, A., del Castillo, I., Pera, A., Villamar, M., Moreno-Pelayo, M. A., Moreno, F., Moreno, R., Tapia, M. C.", 
+"title": "De novo mutation in the gene encoding connexin-26 (GJB2) in a sporadic case of keratitis-ichthyosis-deafness (KID) syndrome. (Letter)", 
+"source": "Am. J. Med. Genet. 117A: 89-91, 2003.", 
+"pubmedID": 12548749, 
+"articleUrl": "https://doi.org/10.1002/ajmg.a.10851", 
+"doi": "10.1002/ajmg.a.10851"
+} },
+{"reference": { 
+"mimNumber": 121011, 
+"referenceNumber": 5, 
+"authors": "Alvarez, A., del Castillo, I., Pera, A., Villamar, M., Moreno-Pelayo, M. A., Rivera, T., Solanellas, J., Moreno, F.", 
+"title": "Uniparental disomy of chromosome 13q causing homozygosity for the 35delG mutation in the gene encoding connexin26 (GJB2) results in prelingual hearing impairment in two unrelated Spanish patients.", 
+"source": "J. Med. Genet. 40: 636-639, 2003.", 
+"pubmedID": 12920081, 
+"articleUrl": "http://jmg.bmj.com/cgi/pmidlookup?view=long&pmid=12920081"
+} },
+{"reference": { 
+"mimNumber": 121011, 
+"referenceNumber": 6, 
+"authors": "Alvarez, A., del Castillo, I., Villamar, M., Aguirre, L. A., Gonzalez-Neira, A., Lopez-Nevot, A., Moreno-Pelayo, M. A., Moreno, F.", 
+"title": "High prevalence of the W24X mutation in the gene encoding connexin-26 (GJB2) in Spanish Romani (gypsies) with autosomal recessive non-syndromic hearing loss.", 
+"source": "Am. J. Med. Genet. 137A: 255-258, 2005.", 
+"pubmedID": 16088916, 
+"articleUrl": "https://doi.org/10.1002/ajmg.a.30884", 
+"doi": "10.1002/ajmg.a.30884"
+} },
+{"reference": { 
+"mimNumber": 121011, 
+"referenceNumber": 7, 
+"authors": "Ammar-Khodja, F., Faugere, V., Baux, D., Giannesini, C., Leonard, S., Makrelouf, M., Malek, R., Djennaoui, D., Zenati, A., Claustres, M., Roux, A.-F.", 
+"title": "Molecular screening of deafness in Algeria: high genetic heterogeneity involving DFNB1 and the Usher loci, DFNB2/USH1B, DFNB12/USH1D and DFNB23/USH1F.", 
+"source": "Europ. J. Med. Genet. 52: 174-179, 2009.", 
+"pubmedID": 19375528, 
+"articleUrl": "https://linkinghub.elsevier.com/retrieve/pii/S1769-7212(09)00032-9", 
+"doi": "10.1016/j.ejmg.2009.03.018"
+} },
+{"reference": { 
+"mimNumber": 121011, 
+"referenceNumber": 8, 
+"authors": "Anichkina, A., Kulenich, T., Zinchenko, S., Shagina, I., Polyakov, A., Ginter, E., Evgrafov, O., Viktorova, T., Khusnitdonova, E.", 
+"title": "On the origin and frequency of the 35delG allele in GJB2-linked deafness in Europe. (Letter)", 
+"source": "Europ. J. Hum. Genet. 9: 151 only, 2001.", 
+"pubmedID": 11313751, 
+"articleUrl": "https://dx.doi.org/10.1038/sj.ejhg.5200596", 
+"doi": "10.1038/sj.ejhg.5200596"
+} },
+{"reference": { 
+"mimNumber": 121011, 
+"referenceNumber": 9, 
+"authors": "Antoniadi, T., Gronskov, K., Sand, A., Pampanos, A., Brondum-Nielsen, K., Petersen, M. B.", 
+"title": "Mutation analysis of the GJB2 (connexin 26) gene by DGGE in Greek patients with sensorineural deafness.", 
+"source": "Hum. Mutat. 16: 7-12, 2000.", 
+"pubmedID": 10874298, 
+"articleUrl": "https://doi.org/10.1002/1098-1004(200007)16:1<7::AID-HUMU2>3.0.CO;2-A", 
+"doi": "10.1002/1098-1004(200007)16:1&lt;7::AID-HUMU2&gt;3.0.CO;2-A"
+} },
+{"reference": { 
+"mimNumber": 121011, 
+"referenceNumber": 10, 
+"authors": "Antoniadi, T., Rabionet, R., Kroupis, C., Aperis, G. A., Economides, J., Petmezakis, J., Economou-Petersen, E., Estivill, X., Petersen, M. B.", 
+"title": "High prevalence in the Greek population of the 35delG mutation in the connexin 26 gene causing prelingual deafness. (Letter)", 
+"source": "Clin. Genet. 55: 381-382, 1999.", 
+"pubmedID": 10422812, 
+"articleUrl": "https://onlinelibrary.wiley.com/resolve/openurl?genre=article&sid=nlm:pubmed&issn=0009-9163&date=1999&volume=55&issue=5&spage=381"
+} },
+{"reference": { 
+"mimNumber": 121011, 
+"referenceNumber": 11, 
+"authors": "Arishima, H., Sato, K., Kubota, T.", 
+"title": "Immunohistochemical and ultrastructural study of gap junction proteins connexin26 and 43 in human arachnoid villi and meningeal tumors.", 
+"source": "J. Neuropath. Exp. Neurol. 61: 1048-1055, 2002.", 
+"pubmedID": 12484567
+} },
+{"reference": { 
+"mimNumber": 121011, 
+"referenceNumber": 12, 
+"authors": "Azaiez, H., Chamberlin, G. P., Fischer, S. M., Welp, C. L., Prasad, S. D., Taggart, R. T., del Castillo, I., Van Camp, G., Smith, R. J. H.", 
+"title": "GJB2: the spectrum of deafness-causing allele variants and their phenotype.", 
+"source": "Hum. Mutat. 24: 305-311, 2004.", 
+"pubmedID": 15365987, 
+"articleUrl": "https://doi.org/10.1002/humu.20084", 
+"doi": "10.1002/humu.20084"
+} },
+{"reference": { 
+"mimNumber": 121011, 
+"referenceNumber": 13, 
+"authors": "Barashkov, N. A., Dzhemileva, L. U., Fedorova, S. A., Teryutin, F. M., Posukh, O. L., Fedotova, E. E., Lobov, S. L., Khusnutdinova, E. K.", 
+"title": "Autosomal recessive deafness 1A (DFNB1A) in Yakut population isolate in eastern Siberia: extensive accumulation of the splice site mutation IVS1+1G-A in GJB2 gene as a result of founder effect.", 
+"source": "J. Hum. Genet. 56: 631-639, 2011.", 
+"pubmedID": 21776002, 
+"doi": "10.1038/jhg.2011.72"
+} },
+{"reference": { 
+"mimNumber": 121011, 
+"referenceNumber": 14, 
+"authors": "Bason, L., Dudley, T., Lewis, K., Shah, U., Potsic, W., Ferraris, A., Fortina, P., Rappaport, E., Krantz, I. D.", 
+"title": "Homozygosity for the V37I connexin 26 mutation in three unrelated children with sensorineural hearing loss.", 
+"source": "Clin. Genet. 61: 459-464, 2002.", 
+"pubmedID": 12121355, 
+"articleUrl": "https://onlinelibrary.wiley.com/resolve/openurl?genre=article&sid=nlm:pubmed&issn=0009-9163&date=2002&volume=61&issue=6&spage=459"
+} },
+{"reference": { 
+"mimNumber": 121011, 
+"referenceNumber": 15, 
+"authors": "Beltramello, M., Piazza, V., Bukauskas, F. F., Pozzan, T., Mammano, F.", 
+"title": "Impaired permeability to Ins(1,4,5)P3 in a mutant connexin underlies recessive hereditary deafness.", 
+"source": "Nature Cell Biol. 7: 63-69, 2005.", 
+"pubmedID": 15592461, 
+"articleUrl": "https://dx.doi.org/10.1038/ncb1205", 
+"doi": "10.1038/ncb1205"
+} },
+{"reference": { 
+"mimNumber": 121011, 
+"referenceNumber": 16, 
+"authors": "Brobby, G. W., Muller-Myhsok, B., Horstmann, R. D.", 
+"title": "Connexin 26 R143W mutation associated with recessive nonsyndromic sensorineural deafness in Africa.", 
+"source": "New Eng. J. Med. 338: 548-550, 1998.", 
+"pubmedID": 9471561, 
+"articleUrl": "http://www.nejm.org/doi/full/10.1056/NEJM199802193380813?url_ver=Z39.88-2003&rfr_id=ori:rid:crossref.org&rfr_dat=cr_pub%3dpubmed", 
+"doi": "10.1056/NEJM199802193380813"
+} },
+{"reference": { 
+"mimNumber": 121011, 
+"referenceNumber": 17, 
+"authors": "Brown, K. A., Janjua, A. H., Karbani, G., Parry, G., Noble, A., Crockford, G., Bishop, D. T., Newton, V. E., Markham, A. F., Mueller, R. F.", 
+"title": "Linkage studies of non-syndromic recessive deafness (NSRD) in a family originating from the Mirpur region of Pakistan maps DFNB1 centromeric to D13S175.", 
+"source": "Hum. Molec. Genet. 5: 169-173, 1996. Note: Erratum: Hum. Molec. Genet. 5: 710 only, 1996.", 
+"pubmedID": 8789457
+} },
+{"reference": { 
+"mimNumber": 121011, 
+"referenceNumber": 18, 
+"authors": "Carranza, C., Menendez, I., Herrera, M., Castellanos, P., Amado, C., Maldonado, F., Rosales, L., Escobar, N., Guerra, M., Alvarez, D., Foster, J., II, Guo, S., Blanton, S. H., Bademci, G., Tekin, M.", 
+"title": "A Mayan founder mutation is a common cause of deafness in Guatemala.", 
+"source": "Clin. Genet. 89: 461-465, 2016.", 
+"pubmedID": 26346709, 
+"articleUrl": "https://doi.org/10.1111/cge.12676", 
+"doi": "10.1111/cge.12676"
+} },
+{"reference": { 
+"mimNumber": 121011, 
+"referenceNumber": 19, 
+"authors": "Carrasquillo, M. M., Zlotogora, J., Barges, S., Chakravarti, A.", 
+"title": "Two different connexin 26 mutations in an inbred kindred segregating non-syndromic recessive deafness: implications for genetic studies in isolated populations.", 
+"source": "Hum. Molec. Genet. 6: 2163-2172, 1997.", 
+"pubmedID": 9328482
+} },
+{"reference": { 
+"mimNumber": 121011, 
+"referenceNumber": 20, 
+"authors": "Cheng, X., Li, L., Brashears, S., Morlet, T., Ng, S. S., Berlin, C., Hood, L., Keats, B.", 
+"title": "Connexin 26 variants and auditory neuropathy/dys-synchrony among children in schools for the deaf.", 
+"source": "Am. J. Med. Genet. 139A: 13-18, 2005.", 
+"pubmedID": 16222667, 
+"articleUrl": "https://doi.org/10.1002/ajmg.a.30929", 
+"doi": "10.1002/ajmg.a.30929"
+} },
+{"reference": { 
+"mimNumber": 121011, 
+"referenceNumber": 21, 
+"authors": "Chong, J. X., Ouwenga, R., Anderson, R. L., Waggoner, D. J., Ober, C.", 
+"title": "A population-based study of autosomal-recessive disease-causing mutations in a founder population.", 
+"source": "Am. J. Hum. Genet. 91: 608-620, 2012.", 
+"pubmedID": 22981120, 
+"pubmedImages": "present", 
+"articleUrl": "https://linkinghub.elsevier.com/retrieve/pii/S0002-9297(12)00419-3", 
+"doi": "10.1016/j.ajhg.2012.08.007"
+} },
+{"reference": { 
+"mimNumber": 121011, 
+"referenceNumber": 22, 
+"authors": "Cohen-Salmon, M., Ott, T., Michel, V., Hardelin, J.-P., Perfettini, I., Eybalin, M., Wu, T., Marcus, D. C., Wangemann, P., Willecke, K., Petit, C.", 
+"title": "Targeted ablation of connexin26 in the inner ear epithelial gap junction network causes hearing impairment and cell death.", 
+"source": "Curr. Biol. 12: 1106-1111, 2002.", 
+"pubmedID": 12121617, 
+"pubmedImages": "present", 
+"articleUrl": "https://linkinghub.elsevier.com/retrieve/pii/S0960-9822(02)00904-1"
+} },
+{"reference": { 
+"mimNumber": 121011, 
+"referenceNumber": 23, 
+"authors": "Common, J. E. A., Di, W.-L., Davies, D., Kelsell, D. P.", 
+"title": "Further evidence for heterozygote advantage of GJB2 deafness mutations: a link with cell survival. (Letter)", 
+"source": "J. Med. Genet. 41: 573-575, 2004.", 
+"pubmedID": 15235031, 
+"articleUrl": "http://jmg.bmj.com/cgi/pmidlookup?view=long&pmid=15235031"
+} },
+{"reference": { 
+"mimNumber": 121011, 
+"referenceNumber": 24, 
+"authors": "Cryns, K., Orzan, E., Murgia, A., Huygen, P. L. M., Moreno, F., del Castillo, I., Parker Chamberlin, G., Azaiez, H., Prasad, S., Cucci, R. A., Leonardi, E., Snoeckx, R. L., Govaerts, P. J., Van de Heyning, P. H., Van de Heyning, C. M., Smith, R. J. H., Van Camp, G.", 
+"title": "A genotype-phenotype correlation for GJB2 (connexin 26) deafness.", 
+"source": "J. Med. Genet. 41: 147-154, 2004.", 
+"pubmedID": 14985372, 
+"articleUrl": "http://jmg.bmj.com/cgi/pmidlookup?view=long&pmid=14985372"
+} },
+{"reference": { 
+"mimNumber": 121011, 
+"referenceNumber": 25, 
+"authors": "D'Andrea, P., Veronesi, V., Bicego, M., Melchionda, S., Zelante, L., Di Iorio, E., Bruzzone, R., Gasparini, P.", 
+"title": "Hearing loss: frequency and functional studies of the most common connexin26 alleles.", 
+"source": "Biochem. Biophys. Res. Commun. 296: 685-691, 2002.", 
+"pubmedID": 12176036, 
+"articleUrl": "https://linkinghub.elsevier.com/retrieve/pii/S0006291X02008914"
+} },
+{"reference": { 
+"mimNumber": 121011, 
+"referenceNumber": 26, 
+"authors": "Dahl, H.-H. M., Tobin, S. E., Poulakis, Z., Rickards, F. W., Xu, X., Gillam, L., Williams, J., Saunders, K., Cone-Wesson, B., Wake, M.", 
+"title": "The contribution of GJB2 mutations to slight or mild hearing loss in Australian elementary school children.", 
+"source": "J. Med. Genet. 43: 850-855, 2006.", 
+"pubmedID": 16840571, 
+"pubmedImages": "present", 
+"articleUrl": "http://jmg.bmj.com/cgi/pmidlookup?view=long&pmid=16840571", 
+"doi": "10.1136/jmg.2006.042051"
+} },
+{"reference": { 
+"mimNumber": 121011, 
+"referenceNumber": 27, 
+"authors": "Dai, P., Yu, F., Han, B., Yuan, Y., Li, Q., Wang, G., Liu, X., He, J., Huang, D., Kang, D. Y., Zhang, X., Yuan, H., Schmitt, E., Han, D., Wong, L.-J.", 
+"title": "The prevalence of the 235delC GJB2 mutation in a Chinese deaf population.", 
+"source": "Genet. Med. 9: 283-289, 2007.", 
+"pubmedID": 17505205, 
+"articleUrl": "https://dx.doi.org/10.1097GIM.0b013e31804d2371", 
+"doi": "10.1097GIM.0b013e31804d2371"
+} },
+{"reference": { 
+"mimNumber": 121011, 
+"referenceNumber": 28, 
+"authors": "de Brouwer, A. P. M., Pennings, R. J. E., Roeters, M., Van Hauwe, P., Astuto, L. M., Hoefsloot, L. H., Huygen, P. L. M., van den Helm, B., Deutman, A. F., Bork, J. M., Kimberling, W. J., Cremers, F. P. M., Cremers, C. W. R. J., Kremer, H.", 
+"title": "Mutations in the calcium-binding motifs of CDH23 and the 35delG mutation in GJB2 cause hearing loss in one family.", 
+"source": "Hum. Genet. 112: 156-163, 2003.", 
+"pubmedID": 12522556, 
+"articleUrl": "https://dx.doi.org/10.1007/s00439-002-0833-0", 
+"doi": "10.1007/s00439-002-0833-0"
+} },
+{"reference": { 
+"mimNumber": 121011, 
+"referenceNumber": 29, 
+"authors": "de Zwart-Storm, E. A., Hamm, H., Stoevesandt, J., Steijlen, P. M., Martin, P. E., van Geel, M., van Steensel, M. A. M.", 
+"title": "A novel missense mutation in GJB2 disturbs gap junction protein transport and causes focal palmoplantar keratoderma with deafness. (Letter)", 
+"source": "J. Med. Genet. 45: 161-166, 2008.", 
+"pubmedID": 17993581, 
+"articleUrl": "http://jmg.bmj.com/cgi/pmidlookup?view=long&pmid=17993581", 
+"doi": "10.1136/jmg.2007.052332"
+} },
+{"reference": { 
+"mimNumber": 121011, 
+"referenceNumber": 30, 
+"authors": "de Zwart-Storm, E. A., van Geel, M., Veysey, E., Burge, S., Cooper, S., Steijlen, P. M., Martin, P. E., van Steensel, M. A. M.", 
+"title": "A novel missense mutation in GJB2, tyr65his, causes severe Vohwinkel syndrome.", 
+"source": "Brit. J. Derm. 164: 197-199, 2011.", 
+"pubmedID": 20854437, 
+"articleUrl": "https://doi.org/10.1111/j.1365-2133.2010.10058.x", 
+"doi": "10.1111/j.1365-2133.2010.10058.x"
+} },
+{"reference": { 
+"mimNumber": 121011, 
+"referenceNumber": 31, 
+"authors": "del Castillo, I., Villamar, M., Moreno-Pelayo, M. A., del Castillo, F. J., Alvarez, A., Telleria, D., Menendez, I., Moreno, F.", 
+"title": "A deletion involving the connexin 30 gene in nonsyndromic hearing impairment.", 
+"source": "New Eng. J. Med. 346: 243-249, 2002.", 
+"pubmedID": 11807148, 
+"articleUrl": "http://www.nejm.org/doi/full/10.1056/NEJMoa012052?url_ver=Z39.88-2003&rfr_id=ori:rid:crossref.org&rfr_dat=cr_pub%3dpubmed", 
+"doi": "10.1056/NEJMoa012052"
+} },
+{"reference": { 
+"mimNumber": 121011, 
+"referenceNumber": 32, 
+"authors": "Denoyelle, F., Lina-Granade, G., Plauchu, H., Bruzzone, R., Chaib, H., Levi-Acobas, F., Weil, D., Petit, C.", 
+"title": "Connexin 26 gene linked to a dominant deafness.", 
+"source": "Nature 393: 319-320, 1998.", 
+"pubmedID": 9620796, 
+"articleUrl": "https://doi.org/10.1038/30639", 
+"doi": "10.1038/30639"
+} },
+{"reference": { 
+"mimNumber": 121011, 
+"referenceNumber": 33, 
+"authors": "Denoyelle, F., Marlin, S., Weil, D., Moatti, L., Chauvin, P., Garabedian, E.-N., Petit, C.", 
+"title": "Clinical features of the prevalent form of childhood deafness, DFNB1, due to a connexin-26 gene defect: implications for genetic counselling.", 
+"source": "Lancet 353: 1298-1303, 1999.", 
+"pubmedID": 10218527, 
+"articleUrl": "https://linkinghub.elsevier.com/retrieve/pii/S0140-6736(98)11071-1", 
+"doi": "10.1016/S0140-6736(98)11071-1"
+} },
+{"reference": { 
+"mimNumber": 121011, 
+"referenceNumber": 34, 
+"authors": "Denoyelle, F., Weil, D., Maw, M. A., Wilcox, S. A., Lench, N. J., Allen-Powell, D. R., Osborn, A. H., Dahl, H.-H. M., Middleton, A., Houseman, M. J., Dode, C., Marlin, S., {and 17 others}", 
+"title": "Prelingual deafness: high prevalence of a 30delG mutation in the connexin 26 gene.", 
+"source": "Hum. Molec. Genet. 6: 2173-2177, 1997.", 
+"pubmedID": 9336442
+} },
+{"reference": { 
+"mimNumber": 121011, 
+"referenceNumber": 35, 
+"authors": "Djalilian, A. R., McGaughey, D., Patel, S., Seo, E. Y., Yang, C., Cheng, J., Tomic, M., Sinha, S., Ishida-Yamamoto, A., Segre, J. A.", 
+"title": "Connexin 26 regulates epidermal barrier and wound remodeling and promotes psoriasiform response.", 
+"source": "J. Clin. Invest. 116: 1243-1253, 2006.", 
+"pubmedID": 16628254, 
+"pubmedImages": "present", 
+"articleUrl": "https://doi.org/10.1172/JCI27186", 
+"doi": "10.1172/JCI27186"
+} },
+{"reference": { 
+"mimNumber": 121011, 
+"referenceNumber": 36, 
+"authors": "Elias, L. A. B., Wang, D. D., Kriegstein, A. R.", 
+"title": "Gap junction adhesion is necessary for radial migration in the neocortex.", 
+"source": "Nature 448: 901-907, 2007.", 
+"pubmedID": 17713529, 
+"articleUrl": "https://doi.org/10.1038/nature06063", 
+"doi": "10.1038/nature06063"
+} },
+{"reference": { 
+"mimNumber": 121011, 
+"referenceNumber": 37, 
+"authors": "Estivill, X., Fortina, P., Surrey, S., Rabionet, R., Melchionda, S., D'Agruma, L., Mansfield, E., Rappaport, E., Govea, N., Mila, M., Zelante, L., Gasparini, P.", 
+"title": "Connexin-26 mutations in sporadic and inherited sensorineural deafness.", 
+"source": "Lancet 351: 394-398, 1998.", 
+"pubmedID": 9482292, 
+"articleUrl": "https://linkinghub.elsevier.com/retrieve/pii/S0140-6736(97)11124-2", 
+"doi": "10.1016/S0140-6736(97)11124-2"
+} },
+{"reference": { 
+"mimNumber": 121011, 
+"referenceNumber": 38, 
+"authors": "Feldmann, D., Denoyelle, F., Blons, H., Lyonnet, S., Loundon, N., Rouillon, I., Hadj-Rabia, S., Petit, C., Couderc, R., Garabedian, E.-N., Marlin, S.", 
+"title": "The GJB2 mutation R75Q can cause nonsyndromic hearing loss DFNA3 or hereditary palmoplantar keratoderma with deafness.", 
+"source": "Am. J. Med. Genet. 137A: 225-227, 2005.", 
+"pubmedID": 16059934, 
+"articleUrl": "https://doi.org/10.1002/ajmg.a.30765", 
+"doi": "10.1002/ajmg.a.30765"
+} },
+{"reference": { 
+"mimNumber": 121011, 
+"referenceNumber": 39, 
+"authors": "Feldmann, D., Denoyelle, F., Chauvin, P., Garabedian, E.-N., Couderc, R., Odent, S., Joannard, A., Schmerber, S., Delobel, B., Leman, J., Journel, H., Catros, H., {and 20 others}", 
+"title": "Large deletion of the GJB6 gene in deaf patients heterozygous for the GJB2 gene mutation: genotypic and phenotypic analysis.", 
+"source": "Am. J. Med. Genet. 127A: 263-267, 2004.", 
+"pubmedID": 15150777, 
+"articleUrl": "https://doi.org/10.1002/ajmg.a.20588", 
+"doi": "10.1002/ajmg.a.20588"
+} },
+{"reference": { 
+"mimNumber": 121011, 
+"referenceNumber": 40, 
+"authors": "Feldmann, D., Denoyelle, F., Loundon, N., Weil, D., Garabedian, E.-N., Couderc, R., Joannard, A., Schmerber, S., Delobel, B., Leman, J., Journel, H., Catros, H., Ferrec, C., Drouin-Garraud, V., Obstoy, M.-F., Moati, L., Petit, C., Marlin, S.", 
+"title": "Clinical evidence of the nonpathogenic nature of the M34T variant in the connexin 26 gene.", 
+"source": "Europ. J. Hum. Genet. 12: 279-284, 2004.", 
+"pubmedID": 14694360, 
+"articleUrl": "https://dx.doi.org/10.1038/sj.ejhg.5201147", 
+"doi": "10.1038/sj.ejhg.5201147"
+} },
+{"reference": { 
+"mimNumber": 121011, 
+"referenceNumber": 41, 
+"authors": "Frei, K., Szuhai, K., Lucas, T., Weipoltshammer, K., Schofer, C., Ramsebner, R., Baumgartner, W.-D., Raap, A. K., Bittner, R., Wachtler, F. J., Kirschhofer, K.", 
+"title": "Connexin 26 mutations in cases of sensorineural deafness in eastern Austria.", 
+"source": "Europ. J. Hum. Genet. 10: 427-432, 2002.", 
+"pubmedID": 12107817, 
+"articleUrl": "https://dx.doi.org/10.1038/sj.ejhg.5200826", 
+"doi": "10.1038/sj.ejhg.5200826"
+} },
+{"reference": { 
+"mimNumber": 121011, 
+"referenceNumber": 42, 
+"authors": "Gasparini, P., Rabionet, R., Barbujani, G., Melchionda, S., Petersen, M., Brondum-Nielsen, K., Metspalu, A., Oitmaa, E., Pisano, M., Fortina, P., Zelante, L., Estivill, X., {Genetic Analysis Consortium of GJB2 35delG}", 
+"title": "High carrier frequency of the 35delG deafness mutation in European populations.", 
+"source": "Europ. J. Hum. Genet. 8: 19-23, 2000.", 
+"pubmedID": 10713883, 
+"articleUrl": "https://dx.doi.org/10.1038/sj.ejhg.5200406", 
+"doi": "10.1038/sj.ejhg.5200406"
+} },
+{"reference": { 
+"mimNumber": 121011, 
+"referenceNumber": 43, 
+"authors": "Green, G. E., Scott, D. A., McDonald, J. M., Teagle, H. F. B., Tomblin, B. J., Spencer, L. J., Woodworth, G. G., Knutson, J. F., Gantz, B. J., Sheffield, V. C., Smith, R. J. H.", 
+"title": "Performance of cochlear implant recipients with GJB2-related deafness.", 
+"source": "Am. J. Med. Genet. 109: 167-170, 2002.", 
+"pubmedID": 11977173, 
+"pubmedImages": "present", 
+"articleUrl": "https://onlinelibrary.wiley.com/resolve/openurl?genre=article&sid=nlm:pubmed&issn=0148-7299&date=2002&volume=109&issue=3&spage=167", 
+"doi": "10.1002/ajmg.10330"
+} },
+{"reference": { 
+"mimNumber": 121011, 
+"referenceNumber": 44, 
+"authors": "Green, G. E., Scott, D. A., McDonald, J. M., Woodworth, G. G., Sheffield, V. C., Smith, R. J. H.", 
+"title": "Carrier rates in the midwestern United States for GJB2 mutations causing inherited deafness.", 
+"source": "JAMA 281: 2211-2216, 1999.", 
+"pubmedID": 10376574, 
+"articleUrl": "https://jamanetwork.com/journals/jama/fullarticle/vol/281/pg/2211"
+} },
+{"reference": { 
+"mimNumber": 121011, 
+"referenceNumber": 45, 
+"authors": "Griffith, A. J., Chowdhry, A. A., Kurima, K., Hood, L. J., Keats, B., Berlin, C. I., Morell, R. J., Friedman, T. B.", 
+"title": "Autosomal recessive nonsyndromic neurosensory deafness at DFNB1 not associated with the compound-heterozygous GJB2 (connexin 26) genotype M34T/167delT.", 
+"source": "Am. J. Hum. Genet. 67: 745-749, 2000.", 
+"pubmedID": 10903123, 
+"pubmedImages": "present", 
+"articleUrl": "https://linkinghub.elsevier.com/retrieve/pii/S0002-9297(07)63260-1", 
+"doi": "10.1086/303045"
+} },
+{"reference": { 
+"mimNumber": 121011, 
+"referenceNumber": 46, 
+"authors": "Gualandi, F., Ravani, A., Berto, A., Sensi, A., Trabanelli, C., Falciano, F., Trevisi, P., Mazzoli, M., Tibiletti, M. G., Cristofari, E., Burdo, S., Ferlini, A., Martini, A., Calzolari, E.", 
+"title": "Exploring the clinical and epidemiological complexity of GJB2-linked deafness.", 
+"source": "Am. J. Med. Genet. 112: 38-45, 2002.", 
+"pubmedID": 12239718, 
+"articleUrl": "https://onlinelibrary.wiley.com/resolve/openurl?genre=article&sid=nlm:pubmed&issn=0148-7299&date=2002&volume=112&issue=1&spage=38", 
+"doi": "10.1002/ajmg.10621"
+} },
+{"reference": { 
+"mimNumber": 121011, 
+"referenceNumber": 47, 
+"authors": "Haefliger, J.-A., Bruzzone, R., Jenkins, N. A., Gilbert, D. J., Copeland, N. G., Paul, D. L.", 
+"title": "Four novel members of the connexin family of gap junction proteins: molecular cloning, expression, and chromosome mapping.", 
+"source": "J. Biol. Chem. 267: 2057-2064, 1992.", 
+"pubmedID": 1370487, 
+"articleUrl": "http://www.jbc.org/cgi/pmidlookup?view=long&pmid=1370487"
+} },
+{"reference": { 
+"mimNumber": 121011, 
+"referenceNumber": 48, 
+"authors": "Heathcote, K., Syrris, P., Carter, N. D., Patton, M. A.", 
+"title": "A connexin 26 mutation causes a syndrome of sensorineural hearing loss and palmoplantar hyperkeratosis (MIM 148350).", 
+"source": "J. Med. Genet. 37: 50-51, 2000.", 
+"pubmedID": 10633135, 
+"articleUrl": "http://jmg.bmj.com/cgi/pmidlookup?view=long&pmid=10633135"
+} },
+{"reference": { 
+"mimNumber": 121011, 
+"referenceNumber": 49, 
+"authors": "Hilgert, N., Huentelman, M. J., Thorburn, A. Q., Fransen, E., Dieltjens, N., Mueller-Malesinska, M., Pollak, A., Skorka, A., Waligora, J., Ploski, R., Castorina, P., Primignani, P., {and 45 others}", 
+"title": "Phenotypic variability of patients homozygous for the GJB2 mutation 35delG cannot be explained by the influence of one major modifier gene.", 
+"source": "Europ. J. Hum. Genet. 17: 517-524, 2009.", 
+"pubmedID": 18985073, 
+"articleUrl": "https://dx.doi.org/10.1038/ejhg.2008.201", 
+"doi": "10.1038/ejhg.2008.201"
+} },
+{"reference": { 
+"mimNumber": 121011, 
+"referenceNumber": 50, 
+"authors": "Houseman, M. J., Ellis, L. A., Pagnamenta, A., Di, W.-L., Rickard, S., Osborn, A. H., Dahl, H.-H. M., Taylor, G. R., Bitner-Glindzicz, M., Reardon, W., Mueller, R. F., Kelsell, D. P.", 
+"title": "Genetic analysis of the connexin-26 M34T variant: identification of genotype M34T/M34T segregating with mild-moderate non-syndromic sensorineural hearing loss.", 
+"source": "J. Med. Genet. 38: 20-25, 2001.", 
+"pubmedID": 11134236, 
+"articleUrl": "http://jmg.bmj.com/cgi/pmidlookup?view=long&pmid=11134236"
+} },
+{"reference": { 
+"mimNumber": 121011, 
+"referenceNumber": 51, 
+"authors": "Hsieh, C.-L., Kumar, N. M., Gilula, N. B., Francke, U.", 
+"title": "Distribution of genes for gap junction membrane channel proteins on human and mouse chromosomes.", 
+"source": "Somat. Cell Molec. Genet. 17: 191-200, 1991.", 
+"pubmedID": 1849321
+} },
+{"reference": { 
+"mimNumber": 121011, 
+"referenceNumber": 52, 
+"authors": "Huculak, C., Bruyere, H., Nelson, T. N., Kozak, F. K., Langlois, S.", 
+"title": "V37I connexin 26 allele in patients with sensorineural hearing loss: evidence of its pathogenicity.", 
+"source": "Am. J. Med. Genet. 140A: 2394-2400, 2006.", 
+"pubmedID": 17036313, 
+"articleUrl": "https://doi.org/10.1002/ajmg.a.31486", 
+"doi": "10.1002/ajmg.a.31486"
+} },
+{"reference": { 
+"mimNumber": 121011, 
+"referenceNumber": 53, 
+"authors": "Iossa, S., Chinetti, V., Corvino, V., Marciano, E., Franze, A.", 
+"title": "R75Q dominant mutation in GJB2 gene silenced by the in cis recessive mutation c.35delG. (Letter)", 
+"source": "Am. J. Med. Genet. 152A: 2658-2660, 2010.", 
+"pubmedID": 20815033, 
+"articleUrl": "https://doi.org/10.1002/ajmg.a.33630", 
+"doi": "10.1002/ajmg.a.33630"
+} },
+{"reference": { 
+"mimNumber": 121011, 
+"referenceNumber": 54, 
+"authors": "Janecke, A. R., Hennies, H. C., Gunther, B., Gansl, G., Smolle, J., Messmer, E. M., Utermann, G., Rittinger, O.", 
+"title": "GJB2 mutations in keratitis-ichthyosis-deafness syndrome including its fatal form.", 
+"source": "Am. J. Med. Genet. 133A: 128-131, 2005.", 
+"pubmedID": 15633193, 
+"articleUrl": "https://doi.org/10.1002/ajmg.a.30515", 
+"doi": "10.1002/ajmg.a.30515"
+} },
+{"reference": { 
+"mimNumber": 121011, 
+"referenceNumber": 55, 
+"authors": "Janecke, A. R., Hirst-Stadlmann, A., Gunther, B., Utermann, B., Muller, T., Loffler, J., Utermann, G., Nekahm-Heis, D.", 
+"title": "Progressive hearing loss, and recurrent sudden sensorineural hearing loss associated with GJB2 mutations--phenotypic spectrum and frequencies of GJB2 mutations in Austria.", 
+"source": "Hum. Genet. 111: 145-153, 2002.", 
+"pubmedID": 12189487, 
+"articleUrl": "https://dx.doi.org/10.1007/s00439-002-0762-y", 
+"doi": "10.1007/s00439-002-0762-y"
+} },
+{"reference": { 
+"mimNumber": 121011, 
+"referenceNumber": 56, 
+"authors": "Janecke, A. R., Nekahm, D., Loffler, J., Hirst-Stadlmann, A., Muller, T., Utermann, G.", 
+"title": "De novo mutation of the connexin 26 gene associated with dominant non-syndromic sensorineural hearing loss.", 
+"source": "Hum. Genet. 108: 269-270, 2001.", 
+"pubmedID": 11354642
+} },
+{"reference": { 
+"mimNumber": 121011, 
+"referenceNumber": 57, 
+"authors": "Kelley, P. M., Harris, D. J., Comer, B. C., Askew, J. W., Fowler, T., Smith, S. D., Kimberling, W. J.", 
+"title": "Novel mutations in the connexin 26 gene (GJB2) that cause autosomal recessive (DFNB1) hearing loss.", 
+"source": "Am. J. Hum. Genet. 62: 792-799, 1998.", 
+"pubmedID": 9529365, 
+"articleUrl": "https://linkinghub.elsevier.com/retrieve/pii/S0002-9297(07)60970-7", 
+"doi": "10.1086/301807"
+} },
+{"reference": { 
+"mimNumber": 121011, 
+"referenceNumber": 58, 
+"authors": "Kelsell, D. P., Di, W.-L., Houseman, M. J.", 
+"title": "Connexin mutations in skin disease and hearing loss.", 
+"source": "Am. J. Hum. Genet. 68: 559-568, 2001.", 
+"pubmedID": 11179004, 
+"pubmedImages": "present", 
+"articleUrl": "https://linkinghub.elsevier.com/retrieve/pii/S0002-9297(07)63096-1", 
+"doi": "10.1086/318803"
+} },
+{"reference": { 
+"mimNumber": 121011, 
+"referenceNumber": 59, 
+"authors": "Kelsell, D. P., Dunlop, J., Stevens, H. P., Lench, N. J., Liang, J. N., Parry, G., Mueller, R. F., Leigh, I. M.", 
+"title": "Connexin 26 mutations in hereditary non-syndromic sensorineural deafness.", 
+"source": "Nature 387: 80-83, 1997.", 
+"pubmedID": 9139825, 
+"articleUrl": "https://doi.org/10.1038/387080a0", 
+"doi": "10.1038/387080a0"
+} },
+{"reference": { 
+"mimNumber": 121011, 
+"referenceNumber": 60, 
+"authors": "Kelsell, D. P., Wilgoss, A. L., Richard, G., Stevens, H. P., Munro, C. S., Leigh, I. M.", 
+"title": "Connexin mutations associated with palmoplantar keratoderma and profound deafness in a single family.", 
+"source": "Europ. J. Hum. Genet. 8: 141-144, 2000. Note: Erratum: Europ. J. Hum. Genet. 8: 468 only, 2000.", 
+"pubmedID": 10757647, 
+"articleUrl": "https://dx.doi.org/10.1038/sj.ejhg.5200407", 
+"doi": "10.1038/sj.ejhg.5200407"
+} },
+{"reference": { 
+"mimNumber": 121011, 
+"referenceNumber": 61, 
+"authors": "Kenna, M. A., Wu, B.-L., Cotanche, D. A., Korf, B. R., Rehm, H. L.", 
+"title": "Connexin 26 studies in patients with sensorineural hearing loss.", 
+"source": "Arch. Otolaryng. Head Neck Surg. 127: 1037-1042, 2001.", 
+"pubmedID": 11556849, 
+"articleUrl": "https://jamanetwork.com/journals/jamaotolaryngology/fullarticle/vol/127/pg/1037"
+} },
+{"reference": { 
+"mimNumber": 121011, 
+"referenceNumber": 62, 
+"authors": "Kenneson, A., Van Naarden Braun, K., Boyle, C.", 
+"title": "GJB2 (connexin 26) variants and nonsyndromic sensorineural hearing loss: a HuGE review.", 
+"source": "Genet. Med. 4: 258-274, 2002.", 
+"pubmedID": 12172392, 
+"articleUrl": "https://dx.doi.org/10.1097/00125817-200207000-00004", 
+"doi": "10.1097/00125817-200207000-00004"
+} },
+{"reference": { 
+"mimNumber": 121011, 
+"referenceNumber": 63, 
+"authors": "Kiang, D. T., Jin, N., Tu, Z.-J., Lin, H. H.", 
+"title": "Upstream genomic sequence of the human connexin26 gene.", 
+"source": "Gene 199: 165-171, 1997.", 
+"pubmedID": 9358053, 
+"articleUrl": "https://linkinghub.elsevier.com/retrieve/pii/S0378-1119(97)00365-X"
+} },
+{"reference": { 
+"mimNumber": 121011, 
+"referenceNumber": 64, 
+"authors": "Kokotas, H., Van Laer, L., Grigoriadou, M., Iliadou, V., Economides, J., Pomoni, S., Pampanos, A., Eleftheriades, N., Ferekidou, E., Korres, S., Giannoulia-Karantana, A., Van Camp, G., Petersen, M. B.", 
+"title": "Strong linkage disequilibrium for the frequent GJB2 35delG mutation in the Greek population.", 
+"source": "Am. J. Med. Genet. 146A: 2879-2884, 2008.", 
+"pubmedID": 18925674, 
+"articleUrl": "https://doi.org/10.1002/ajmg.a.32546", 
+"doi": "10.1002/ajmg.a.32546"
+} },
+{"reference": { 
+"mimNumber": 121011, 
+"referenceNumber": 65, 
+"authors": "Korge, B. P., Ishida-Yamamoto, A., Punter, C., Dopping-Hepenstal, P. J. C., Iizuka, H., Stephenson, A., Eady, R. A. J., Munro, C. S.", 
+"title": "Loricrin mutation in Vohwinkel's keratoderma is unique to the variant with ichthyosis.", 
+"source": "J. Invest. Derm. 109: 604-610, 1997.", 
+"pubmedID": 9326398, 
+"articleUrl": "https://linkinghub.elsevier.com/retrieve/pii/S0022-202X(15)43032-5"
+} },
+{"reference": { 
+"mimNumber": 121011, 
+"referenceNumber": 66, 
+"authors": "Kudo, T., Ikeda, K., Kure, S., Matsubara, Y., Oshima, T., Watanabe, K., Kawase, T., Narisawa, K., Takasaka, T.", 
+"title": "Novel mutations in the connexin 26 gene (GJB2) responsible for childhood deafness in the Japanese population.", 
+"source": "Am. J. Med. Genet. 90: 141-145, 2000.", 
+"pubmedID": 10607953, 
+"articleUrl": "https://onlinelibrary.wiley.com/resolve/openurl?genre=article&sid=nlm:pubmed&issn=0148-7299&date=2000&volume=90&issue=2&spage=141"
+} },
+{"reference": { 
+"mimNumber": 121011, 
+"referenceNumber": 67, 
+"authors": "Kudo, T., Kure, S., Ikeda, K., Xia, A.-P., Katori, Y., Suzuki, M., Kojima, K., Ichinohe, A., Suzuki, Y., Aoki, Y., Kobayashi, T., Matsubara, Y.", 
+"title": "Transgenic expression of a dominant-negative connexin26 causes degeneration of the organ of Corti and non-syndromic deafness.", 
+"source": "Hum. Molec. Genet. 12: 995-1004, 2003.", 
+"pubmedID": 12700168
+} },
+{"reference": { 
+"mimNumber": 121011, 
+"referenceNumber": 68, 
+"authors": "Lee, S. W., Tomasetto, C., Paul, D., Keyomarsi, K., Sager, R.", 
+"title": "Transcriptional downregulation of gap-junction proteins blocks junctional communication in human mammary tumor cell lines.", 
+"source": "J. Cell Biol. 118: 1213-1221, 1992.", 
+"pubmedID": 1324944, 
+"articleUrl": "http://jcb.rupress.org/cgi/pmidlookup?view=long&pmid=1324944"
+} },
+{"reference": { 
+"mimNumber": 121011, 
+"referenceNumber": 69, 
+"authors": "Lench, N., Houseman, M., Newton, V., Van Camp, G., Mueller, R.", 
+"title": "Connexin-26 mutations in sporadic non-syndromal sensorineural deafness.", 
+"source": "Lancet 351: 415 only, 1998.", 
+"pubmedID": 9482297, 
+"articleUrl": "https://linkinghub.elsevier.com/retrieve/pii/S0140673698240062"
+} },
+{"reference": { 
+"mimNumber": 121011, 
+"referenceNumber": 70, 
+"authors": "Lezirovitz, K., Nicastro, F. S., Pardono, E., Abreu-Silva, R. S., Batissoco, A. C., Neustein, I., Spinelli, M., Mingroni-Netto, R. C.", 
+"title": "Is autosomal recessive deafness associated with oculocutaneous albinism a 'coincidence syndrome'?", 
+"source": "J. Hum. Genet. 51: 716-720, 2006.", 
+"pubmedID": 16868655, 
+"doi": "10.1007/s10038-006-0003-7"
+} },
+{"reference": { 
+"mimNumber": 121011, 
+"referenceNumber": 71, 
+"authors": "Liu, X. Z., Xia, X. J., Ke, X. M., Ouyang, X. M., Du, L. L., Liu, Y. H., Angeli, S., Telischi, F. F., Nance, W. E., Balkany, T., Xu, L. R.", 
+"title": "The prevalence of connexin 26 (GJB2) mutations in the Chinese population.", 
+"source": "Hum. Genet. 111: 394-397, 2002.", 
+"pubmedID": 12384781, 
+"articleUrl": "https://dx.doi.org/10.1007/s00439-002-0811-6", 
+"doi": "10.1007/s00439-002-0811-6"
+} },
+{"reference": { 
+"mimNumber": 121011, 
+"referenceNumber": 72, 
+"authors": "Liu, X. Z., Yuan, Y., Yan, D., Ding, E. H., Ouyang, X. M., Fei, Y., Tang, W., Yuan, H., Chang, Q., Du, L. L., Zhang, X., Wang, G., Ahmad, S., Kang, D., Lin, X., Dai, P.", 
+"title": "Digenic inheritance of non-syndromic deafness caused by mutations at the gap junction proteins Cx26 and Cx31.", 
+"source": "Hum. Genet. 125: 53-62, 2009.", 
+"pubmedID": 19050930, 
+"pubmedImages": "present", 
+"articleUrl": "https://dx.doi.org/10.1007/s00439-008-0602-9", 
+"doi": "10.1007/s00439-008-0602-9"
+} },
+{"reference": { 
+"mimNumber": 121011, 
+"referenceNumber": 73, 
+"authors": "Loffler, J., Nekahm, D., Hirst-Stadlmann, A., Gunther, B., Menzel, H.-J., Utermann, G., Janecke, A. R.", 
+"title": "Sensorineural hearing loss and the incidence of Cx26 mutations in Austria.", 
+"source": "Europ. J. Hum. Genet. 9: 226-230, 2001.", 
+"pubmedID": 11313763, 
+"articleUrl": "https://dx.doi.org/10.1038/sj.ejhg.5200607", 
+"doi": "10.1038/sj.ejhg.5200607"
+} },
+{"reference": { 
+"mimNumber": 121011, 
+"referenceNumber": 74, 
+"authors": "Lucotte, G., Pinna, A.", 
+"title": "Elevated frequencies of the 35delG allele of the connexin 26 gene in Corsica, France. (Letter)", 
+"source": "Clin. Genet. 64: 517-518, 2003.", 
+"pubmedID": 14986832, 
+"articleUrl": "https://onlinelibrary.wiley.com/resolve/openurl?genre=article&sid=nlm:pubmed&issn=0009-9163&date=2003&volume=64&issue=6&spage=517"
+} },
+{"reference": { 
+"mimNumber": 121011, 
+"referenceNumber": 75, 
+"authors": "Maeda, S., Nakagawa, S., Suga, M., Yamashita, E., Oshima, A., Fujiyoshi, Y., Tsukihara, T.", 
+"title": "Structure of the connexin 26 gap junction channel at 3.5-angstrom resolution.", 
+"source": "Nature 458: 597-602, 2009.", 
+"pubmedID": 19340074, 
+"articleUrl": "https://doi.org/10.1038/nature07869", 
+"doi": "10.1038/nature07869"
+} },
+{"reference": { 
+"mimNumber": 121011, 
+"referenceNumber": 76, 
+"authors": "Maestrini, E., Korge, B. P., Ocana-Sierra, J., Calzolari, E., Cambiaghi, S., Scudder, P. M., Hovnanian, A., Monaco, A. P., Munro, C. S.", 
+"title": "A missense mutation in connexin26, D66H, causes mutilating keratoderma with sensorineural deafness (Vohwinkel's syndrome) in three unrelated families.", 
+"source": "Hum. Molec. Genet. 8: 1237-1243, 1999.", 
+"pubmedID": 10369869
+} },
+{"reference": { 
+"mimNumber": 121011, 
+"referenceNumber": 77, 
+"authors": "Mahdieh, N., Nishimura, C., Ali-Madadi, K., Riazalhosseini, Y., Yazdan, H., Arzhangi, S., Jalalvand, K., Ebrahimi, A., Kazemi, S., Smith, R. J. H., Najmabadi, H.", 
+"title": "The frequency of GJB2 mutations and the delta (GJB6-D13S1830) deletion as a cause of autosomal recessive non-syndromic deafness in the Kurdish population. (Letter)", 
+"source": "Clin. Genet. 65: 506-508, 2004.", 
+"pubmedID": 15151513, 
+"articleUrl": "https://onlinelibrary.wiley.com/resolve/openurl?genre=article&sid=nlm:pubmed&issn=0009-9163&date=2004&volume=65&issue=6&spage=506", 
+"doi": "10.1111/j.1399-0004.2004.00262.x"
+} },
+{"reference": { 
+"mimNumber": 121011, 
+"referenceNumber": 78, 
+"authors": "Maheshwari, M., Vijaya, R., Ghosh, M., Shastri, S., Kabra, M., Menon, P. S. N.", 
+"title": "Screening of families with autosomal recessive non-syndromic hearing impairment (ARNSHI) for mutations in GJB2 gene: Indian scenario.", 
+"source": "Am. J. Med. Genet. 120A: 180-184, 2003.", 
+"pubmedID": 12833397, 
+"articleUrl": "https://doi.org/10.1002/ajmg.a.20014", 
+"doi": "10.1002/ajmg.a.20014"
+} },
+{"reference": { 
+"mimNumber": 121011, 
+"referenceNumber": 79, 
+"authors": "Mani, R. S., Ganapathy, A., Jalvi, R., Srisailapathy, C. R. S., Malhotra, V., Chadha, S., Agarwal, A., Ramesh, A., Rangasayee, R. R., Anand, A.", 
+"title": "Functional consequences of novel connexin 26 mutations associated with hereditary hearing loss.", 
+"source": "Europ. J. Hum. Genet. 17: 502-509, 2009.", 
+"pubmedID": 18941476, 
+"pubmedImages": "present", 
+"articleUrl": "https://dx.doi.org/10.1038/ejhg.2008.179", 
+"doi": "10.1038/ejhg.2008.179"
+} },
+{"reference": { 
+"mimNumber": 121011, 
+"referenceNumber": 80, 
+"authors": "Marres, H. A. M., Cremers, C. W. R. J.", 
+"title": "Autosomal recessive nonsyndromal profound childhood deafness in a large pedigree: audiometric features of the affected persons and the obligate carriers.", 
+"source": "Arch Otolaryng. Head Neck Surg. 115: 591-595, 1989.", 
+"pubmedID": 2706105, 
+"articleUrl": "https://jamanetwork.com/journals/jamaotolaryngology/fullarticle/vol/115/pg/591"
+} },
+{"reference": { 
+"mimNumber": 121011, 
+"referenceNumber": 81, 
+"authors": "Marziano, N. K., Casalotti, S. O., Portelli, A. E., Becker, D. L., Forge, A.", 
+"title": "Mutations in the gene for connexin 26 (GJB2) that cause hearing loss have a dominant negative effect on connexin 30.", 
+"source": "Hum. Molec. Genet. 12: 805-812, 2003.", 
+"pubmedID": 12668604
+} },
+{"reference": { 
+"mimNumber": 121011, 
+"referenceNumber": 82, 
+"authors": "Matos, T. D., Caria, H., Simoes-Teixeira, H., Aasen, T., Nickel, R., Jagger, D. J., O'Neill, A., Kelsell, D. P., Fialho, G.", 
+"title": "A novel hearing loss-related mutation occurring in the GJB2 basal promoter. (Letter)", 
+"source": "J. Med. Genet. 44: 721-725, 2007.", 
+"pubmedID": 17660464, 
+"pubmedImages": "present", 
+"articleUrl": "http://jmg.bmj.com/cgi/pmidlookup?view=long&pmid=17660464", 
+"doi": "10.1136/jmg.2007.050682"
+} },
+{"reference": { 
+"mimNumber": 121011, 
+"referenceNumber": 83, 
+"authors": "Medlej-Hashim, M., Mustapha, M., Chouery, E., Weil, D., Parronaud, J., Salem, N., Delague, V., Loiselet, J., Lathrop, M., Petit, C., Megarbane, A.", 
+"title": "Non-syndromic recessive deafness in Jordan: mapping of a new locus to chromosome 9q34.3 and prevalence of DFNB1 mutations.", 
+"source": "Europ. J. Hum. Genet. 10: 391-394, 2002.", 
+"pubmedID": 12080392, 
+"articleUrl": "https://dx.doi.org/10.1038/sj.ejhg.5200813", 
+"doi": "10.1038/sj.ejhg.5200813"
+} },
+{"reference": { 
+"mimNumber": 121011, 
+"referenceNumber": 84, 
+"authors": "Mese, G., Londin, E., Mui, R., Brink, P. R., White, T. W.", 
+"title": "Altered gating properties of functional Cx26 mutants associated with recessive non-syndromic hearing loss.", 
+"source": "Hum. Genet. 115: 191-199, 2004.", 
+"pubmedID": 15241677, 
+"articleUrl": "https://dx.doi.org/10.1007/s00439-004-1142-6", 
+"doi": "10.1007/s00439-004-1142-6"
+} },
+{"reference": { 
+"mimNumber": 121011, 
+"referenceNumber": 85, 
+"authors": "Mese, G., Sellitto, C., Li, L., Wang, H.-Z., Valiunas, V., Richard, G., Brink, P. R., White, T. W.", 
+"title": "The Cx26-G45E mutation displays increased hemichannel activity in a mouse model of the lethal form of keratitis-ichthyosis-deafness syndrome.", 
+"source": "Molec. Biol. Cell 22: 4776-4786, 2011.", 
+"pubmedID": 22031297, 
+"pubmedImages": "present", 
+"articleUrl": "https://www.molbiolcell.org/doi/full/10.1091/mbc.E11-09-0778?url_ver=Z39.88-2003&rfr_id=ori:rid:crossref.org&rfr_dat=cr_pub%3dpubmed", 
+"doi": "10.1091/mbc.E11-09-0778"
+} },
+{"reference": { 
+"mimNumber": 121011, 
+"referenceNumber": 86, 
+"authors": "Meyer, C. G., Amedofu, G. K., Brandner, J. M., Pohland, D., Timmann, C., Horstmann, R. D.", 
+"title": "Selection for deafness? (Letter)", 
+"source": "Nature Med. 8: 1332-1333, 2002.", 
+"pubmedID": 12457154, 
+"articleUrl": "https://dx.doi.org/10.1038/nm1202-1332", 
+"doi": "10.1038/nm1202-1332"
+} },
+{"reference": { 
+"mimNumber": 121011, 
+"referenceNumber": 87, 
+"authors": "Mignon, C., Fromaget, C., Mattei, M.-G., Gros, D., Yamasaki, H., Mesnil, M.", 
+"title": "Assignment of connexin 26 (GJB2) and 46 (GJA3) genes to human chromosome 13q11-q12 and mouse chromosome 14D1-E1 by in situ hybridization.", 
+"source": "Cytogenet. Cell Genet. 72: 185-186, 1996.", 
+"pubmedID": 8978770, 
+"doi": "10.1159/000134183"
+} },
+{"reference": { 
+"mimNumber": 121011, 
+"referenceNumber": 88, 
+"authors": "Morell, R. J., Kim, H. J., Hood, L. J., Goforth, L., Friderici, K., Fisher, R., Van Camp, G., Berlin, C. I., Oddoux, C., Ostrer, H., Keats, B., Friedman, T. B.", 
+"title": "Mutations in the connexin 26 gene (GJB2) among Ashkenazi Jews with nonsyndromic recessive deafness.", 
+"source": "New Eng. J. Med. 339: 1500-1505, 1998.", 
+"pubmedID": 9819448, 
+"articleUrl": "http://www.nejm.org/doi/full/10.1056/NEJM199811193392103?url_ver=Z39.88-2003&rfr_id=ori:rid:crossref.org&rfr_dat=cr_pub%3dpubmed", 
+"doi": "10.1056/NEJM199811193392103"
+} },
+{"reference": { 
+"mimNumber": 121011, 
+"referenceNumber": 89, 
+"authors": "Morle, L., Bozon, M., Alloisio, N., Latour, P., Vandenberghe, A., Plauchu, H., Collet, L., Edery, P., Godet, J., Lina-Granade, G.", 
+"title": "A novel C202F mutation in the connexin26 gene (GJB2) associated with autosomal dominant isolated hearing loss.", 
+"source": "J. Med. Genet. 37: 368-370, 2000.", 
+"pubmedID": 10807696, 
+"articleUrl": "http://jmg.bmj.com/cgi/pmidlookup?view=long&pmid=10807696"
+} },
+{"reference": { 
+"mimNumber": 121011, 
+"referenceNumber": 90, 
+"authors": "Murgia, A., Orzan, E., Polli, R., Martella, M., Vinanzi, C., Leonardi, E., Arslan, E., Zacchello, F.", 
+"title": "Cx26 deafness: mutation analysis and clinical variability.", 
+"source": "J. Med. Genet. 36: 829-832, 1999.", 
+"pubmedID": 10544226, 
+"articleUrl": "http://jmg.bmj.com/cgi/pmidlookup?view=long&pmid=10544226"
+} },
+{"reference": { 
+"mimNumber": 121011, 
+"referenceNumber": 91, 
+"authors": "Najmabadi, H., Nishimura, C., Kahrizi, K., Riazalhosseini, Y., Malekpour, M., Daneshi, A., Farhadi, M., Mohseni, M., Mahdieh, N., Ebrahimi, A., Bazazzadegan, N., Naghavi, A., Avenarius, M., Arzhangi, S., Smith, R. J. H.", 
+"title": "GJB2 mutations: passage through Iran.", 
+"source": "Am. J. Med. Genet. 133A: 132-137, 2005.", 
+"pubmedID": 15666300, 
+"articleUrl": "https://doi.org/10.1002/ajmg.a.30576", 
+"doi": "10.1002/ajmg.a.30576"
+} },
+{"reference": { 
+"mimNumber": 121011, 
+"referenceNumber": 92, 
+"authors": "Nance, W. E., Liu, X.-Z., Pandya, A.", 
+"title": "Relation between choice of partner and high frequency of connexin-26 deafness.", 
+"source": "Lancet 356: 500-501, 2000.", 
+"pubmedID": 10981905, 
+"articleUrl": "https://linkinghub.elsevier.com/retrieve/pii/S0140-6736(00)02565-4", 
+"doi": "10.1016/S0140-6736(00)02565-4"
+} },
+{"reference": { 
+"mimNumber": 121011, 
+"referenceNumber": 93, 
+"authors": "Nyquist, G. G., Mumm, C., Grau, R., Crowson, A. N., Shurman, D. L., Benedetto, P., Allen, P., Lovelace, K., Smith, D. W., Frieden, I., Hybarger, C. P., Richard, G.", 
+"title": "Malignant proliferating pilar tumors arising in KID syndrome: a report of two patients.", 
+"source": "Am. J. Med. Genet. 143A: 734-741, 2007.", 
+"pubmedID": 17330861, 
+"articleUrl": "https://doi.org/10.1002/ajmg.a.31635", 
+"doi": "10.1002/ajmg.a.31635"
+} },
+{"reference": { 
+"mimNumber": 121011, 
+"referenceNumber": 94, 
+"authors": "Ogawa, Y., Takeichi, T., Kono, M., Hamajima, N., Yamamoto, T., Sugiura, K., Akiyama, M.", 
+"title": "Revertant mutation releases confined lethal mutation, opening Pandora's Box: a novel genetic pathogenesis.", 
+"source": "PLoS Genet. 10: e1004276, 2014. Note: Electronic Article.", 
+"pubmedID": 24785414, 
+"pubmedImages": "present", 
+"articleUrl": "http://dx.plos.org/10.1371/journal.pgen.1004276", 
+"doi": "10.1371/journal.pgen.1004276"
+} },
+{"reference": { 
+"mimNumber": 121011, 
+"referenceNumber": 95, 
+"authors": "Oguchi, T., Ohtsuka, A., Hashimoto, S., Oshima, A., Abe, S., Kobayashi, Y., Nagai, K., Matsunaga, T., Iwasaki, S., Nakagawa, T., Usami, S.", 
+"title": "Clinical features of patients with GJB2 (connexin 26) mutations: severity of hearing loss is correlated with genotypes and protein expression patterns.", 
+"source": "J. Hum. Genet. 50: 76-83, 2005.", 
+"pubmedID": 15700112, 
+"doi": "10.1007/s10038-004-0223-7"
+} },
+{"reference": { 
+"mimNumber": 121011, 
+"referenceNumber": 96, 
+"authors": "Ohtsuka, A., Yuge, I., Kimura, S., Namba, A., Abe, S., Van Laer, L., Van Camp, G., Usami, S.", 
+"title": "GJB2 deafness gene shows a specific spectrum of mutations in Japan, including a frequent founder mutation.", 
+"source": "Hum. Genet. 112: 329-333, 2003.", 
+"pubmedID": 12560944, 
+"articleUrl": "https://dx.doi.org/10.1007/s00439-002-0889-x", 
+"doi": "10.1007/s00439-002-0889-x"
+} },
+{"reference": { 
+"mimNumber": 121011, 
+"referenceNumber": 97, 
+"authors": "Oliveira, C. A., Maciel-Guerra, A. T., Sartorato, E. L.", 
+"title": "Deafness resulting from mutations in the GJB2 (connexin 26) gene in Brazilian patients.", 
+"source": "Clin. Genet. 61: 354-358, 2002.", 
+"pubmedID": 12081719, 
+"articleUrl": "https://onlinelibrary.wiley.com/resolve/openurl?genre=article&sid=nlm:pubmed&issn=0009-9163&date=2002&volume=61&issue=5&spage=354"
+} },
+{"reference": { 
+"mimNumber": 121011, 
+"referenceNumber": 98, 
+"authors": "Oshima, A., Doi, T., Mitsuoka, K., Maeda, S., Fujiyoshi, Y.", 
+"title": "Roles of Met-34, Cys-64, and Arg-75 in the assembly of human connexin 26: implication for key amino acid residues for channel formation and function.", 
+"source": "J. Biol. Chem. 278: 1807-1816, 2003.", 
+"pubmedID": 12384501, 
+"articleUrl": "http://www.jbc.org/cgi/pmidlookup?view=long&pmid=12384501", 
+"doi": "10.1074/jbc.M207713200"
+} },
+{"reference": { 
+"mimNumber": 121011, 
+"referenceNumber": 99, 
+"authors": "Pampanos, A., Economides, J., Iliadou, V., Neou, P., Leotsakos, P., Voyiatzis, N., Eleftheriades, N., Tsakanikos, M., Antoniadi, T., Hatzaki, A., Konstantopoulou, I., Yannoukakos, D., Gronskov, K., Brondum-Nielsen, K., Grigoriadou, M., Gyftodimou, J., Iliades, T., Skevas, A., Petersen, M. B.", 
+"title": "Prevalence of GJB2 mutations in prelingual deafness in the Greek population.", 
+"source": "Int. J. Pediat. Otorhinolaryng. 65: 101-108, 2002.", 
+"pubmedID": 12176179, 
+"articleUrl": "https://linkinghub.elsevier.com/retrieve/pii/S0165587602001775"
+} },
+{"reference": { 
+"mimNumber": 121011, 
+"referenceNumber": 100, 
+"authors": "Pampanos, A., Neou, P., Iliades, T., Apostolopoulos, N., Voyiatzis, N., Grigoriadou, M., Katsichti, L., Skevas, A., Petersen, M. B.", 
+"title": "Pseudodominant inheritance of DFNB1 deafness due to the common 35delG mutation. (Letter)", 
+"source": "Clin. Genet. 57: 232-234, 2000.", 
+"pubmedID": 10782932, 
+"articleUrl": "https://onlinelibrary.wiley.com/resolve/openurl?genre=article&sid=nlm:pubmed&issn=0009-9163&date=2000&volume=57&issue=3&spage=232"
+} },
+{"reference": { 
+"mimNumber": 121011, 
+"referenceNumber": 101, 
+"authors": "Pandya, A., Arnos, K. S., Xia, X. J., Welch, K. O., Blanton, S. H., Friedman, T. B., Sanchez, G. G., Liu, X. Z., Morell, R., Nance, W. E.", 
+"title": "Frequency and distribution of GJB2 (connexin 26) and GJB6 (connexin 30) mutations in a large North American repository of deaf probands.", 
+"source": "Genet. Med. 5: 295-303, 2003.", 
+"pubmedID": 12865758, 
+"articleUrl": "https://dx.doi.org/10.1097/01.GIM.0000078026.01140.68", 
+"doi": "10.1097/01.GIM.0000078026.01140.68"
+} },
+{"reference": { 
+"mimNumber": 121011, 
+"referenceNumber": 102, 
+"authors": "Piazza, V., Beltramello, M., Menniti, M., Colao, E., Malatesta, P., Argento, R., Chiarella, G., Gallo, L. V., Catalano, M., Perrotti, N., Mammano, F., Cassandro, E.", 
+"title": "Functional analysis of R75Q mutation in the gene coding for connexin 26 identified in a family with nonsyndromic hearing loss.", 
+"source": "Clin. Genet. 68: 161-166, 2005.", 
+"pubmedID": 15996214, 
+"articleUrl": "https://doi.org/10.1111/j.1399-0004.2005.00468.x", 
+"doi": "10.1111/j.1399-0004.2005.00468.x"
+} },
+{"reference": { 
+"mimNumber": 121011, 
+"referenceNumber": 103, 
+"authors": "Pollak, A., Skorka, A., Mueller-Malesinska, M., Kostrzewa, G., Kisiel, B., Waligora, J., Krajewski, P., Oldak, M., Korniszewski, L., Skarzynski, H., Ploski, R.", 
+"title": "M34T and V37I mutations in GJB2 associated hearing impairment: evidence for pathogenicity and reduced penetrance.", 
+"source": "Am. J. Med. Genet. 143A: 2534-2543, 2007.", 
+"pubmedID": 17935238, 
+"articleUrl": "https://doi.org/10.1002/ajmg.a.31982", 
+"doi": "10.1002/ajmg.a.31982"
+} },
+{"reference": { 
+"mimNumber": 121011, 
+"referenceNumber": 104, 
+"authors": "Primignani, P., Castorina, P., Sironi, F., Curcio, C., Ambrosetti, U., Coviello, D. A.", 
+"title": "A novel dominant missense mutation--D179N--in the GJB2 gene (connexin 26) associated with non-syndromic hearing loss.", 
+"source": "Clin. Genet. 63: 516-521, 2003.", 
+"pubmedID": 12786758, 
+"articleUrl": "https://onlinelibrary.wiley.com/resolve/openurl?genre=article&sid=nlm:pubmed&issn=0009-9163&date=2003&volume=63&issue=6&spage=516"
+} },
+{"reference": { 
+"mimNumber": 121011, 
+"referenceNumber": 105, 
+"authors": "Rabionet, R., Gasparini, P., Estivill, X.", 
+"title": "Molecular genetics of hearing impairment due to mutations in gap junction genes encoding beta connexins.", 
+"source": "Hum. Mutat. 16: 190-202, 2000.", 
+"pubmedID": 10980526, 
+"articleUrl": "https://doi.org/10.1002/1098-1004(200009)16:3<190::AID-HUMU2>3.0.CO;2-I", 
+"doi": "10.1002/1098-1004(200009)16:3&lt;190::AID-HUMU2&gt;3.0.CO;2-I"
+} },
+{"reference": { 
+"mimNumber": 121011, 
+"referenceNumber": 106, 
+"authors": "Rabionet, R., Zelante, L., Lopez-Bigas, N., D'Agruma, L., Melchionda, S., Restagno, G., Arbones, M. L., Gasparini, P., Estivill, X.", 
+"title": "Molecular basis of childhood deafness resulting from mutations in the GJB2 (connexin 26) gene.", 
+"source": "Hum. Genet. 106: 40-44, 2000.", 
+"pubmedID": 10982180
+} },
+{"reference": { 
+"mimNumber": 121011, 
+"referenceNumber": 107, 
+"authors": "Richard, G., Brown, N., Ishida-Yamamoto, A., Krol, A.", 
+"title": "Expanding the phenotypic spectrum of Cx26 disorders: Bart-Pumphrey syndrome is caused by a novel missense mutation in GJB2.", 
+"source": "J. Invest. Derm. 123: 856-863, 2004.", 
+"pubmedID": 15482471, 
+"articleUrl": "https://linkinghub.elsevier.com/retrieve/pii/S0022-202X(15)32022-4", 
+"doi": "10.1111/j.0022-202X.2004.23470.x"
+} },
+{"reference": { 
+"mimNumber": 121011, 
+"referenceNumber": 108, 
+"authors": "Richard, G., Rouan, F., Willoughby, C. E., Brown, N., Chung, P., Ryynanen, M., Jabs, E. W., Bale, S. J., DiGiovanna, J. J., Uitto, J., Russell, L.", 
+"title": "Missense mutations in GJB2 encoding connexin-26 cause the ectodermal dysplasia keratitis-ichthyosis-deafness syndrome.", 
+"source": "Am. J. Hum. Genet. 70: 1341-1348, 2002.", 
+"pubmedID": 11912510, 
+"pubmedImages": "present", 
+"articleUrl": "https://linkinghub.elsevier.com/retrieve/pii/S0002-9297(07)62527-0", 
+"doi": "10.1086/339986"
+} },
+{"reference": { 
+"mimNumber": 121011, 
+"referenceNumber": 109, 
+"authors": "Richard, G., White, T. W., Smith, L. E., Bailey, R. A., Compton, J. G., Paul, D. L., Bale, S. J.", 
+"title": "Functional defects of Cx26 resulting from a heterozygous missense mutation in a family with dominant deaf-mutism and palmoplantar keratoderma.", 
+"source": "Hum. Genet. 103: 393-399, 1998.", 
+"pubmedID": 9856479
+} },
+{"reference": { 
+"mimNumber": 121011, 
+"referenceNumber": 110, 
+"authors": "Ross, S. A., Novak, Z., Kumbla, R. A., Zhang, K., Fowler, K. B., Boppana, S.", 
+"title": "GJB2 and GJB6 mutations in children with congenital cytomegalovirus infection.", 
+"source": "Pediat. Res. 61: 687-691, 2007.", 
+"pubmedID": 17426645, 
+"articleUrl": "https://dx.doi.org/10.1203/pdr.0b013e3180536609", 
+"doi": "10.1203/pdr.0b013e3180536609"
+} },
+{"reference": { 
+"mimNumber": 121011, 
+"referenceNumber": 111, 
+"authors": "Rothrock, C. R., Murgia, A., Sartorato, E. L., Leonardi, E., Wei, S., Lebeis, S. L., Yu, L. E., Elfenbein, J. L., Fisher, R. A., Friderici, K. H.", 
+"title": "Connexin 26 35delG does not represent a mutational hotspot.", 
+"source": "Hum. Genet. 113: 18-23, 2003.", 
+"pubmedID": 12684873, 
+"articleUrl": "https://dx.doi.org/10.1007/s00439-003-0944-2", 
+"doi": "10.1007/s00439-003-0944-2"
+} },
+{"reference": { 
+"mimNumber": 121011, 
+"referenceNumber": 112, 
+"authors": "Salvinelli, F., Casale, M., Alemanno, I., Greco, F., Trivelli, M., Baldi, A.", 
+"title": "Low prevalence of the deafness-associated 35delG mutation in the connexin-26 (GJB2) gene in a Sicilian population. (Letter)", 
+"source": "Clin. Genet. 63: 541-542, 2003."
+} },
+{"reference": { 
+"mimNumber": 121011, 
+"referenceNumber": 113, 
+"authors": "Sbidian, E., Feldmann, D., Bengoa, J., Fraitag, S., Abadie, V., de Prost, Y., Bodemer, C., Hadj-Rabia, S.", 
+"title": "Germline mosaicism in keratitis-ichthyosis-deafness syndrome: pre-natal diagnosis in a familial lethal form.", 
+"source": "Clin. Genet. 77: 587-592, 2010.", 
+"pubmedID": 20412116, 
+"articleUrl": "https://doi.org/10.1111/j.1399-0004.2009.01339.x", 
+"doi": "10.1111/j.1399-0004.2009.01339.x"
+} },
+{"reference": { 
+"mimNumber": 121011, 
+"referenceNumber": 114, 
+"authors": "Scott, D. A., Kraft, M. L., Stone, E. M., Sheffield, V. C., Smith, R. J. H.", 
+"title": "Connexin mutations and hearing loss.", 
+"source": "Nature 391: 32 only, 1998.", 
+"pubmedID": 9422505, 
+"articleUrl": "https://doi.org/10.1038/34079", 
+"doi": "10.1038/34079"
+} },
+{"reference": { 
+"mimNumber": 121011, 
+"referenceNumber": 115, 
+"authors": "Seeman, P., Malikova, M., Raskova, D., Bendova, O., Groh, D., Kubalkova, M., Sakmaryova, I., Seemanova, E., Kabelka, Z.", 
+"title": "Spectrum and frequencies of mutations in GJB2 (Cx26) gene among 156 Czech patients with pre-lingual deafness.", 
+"source": "Clin. Genet. 66: 152-157, 2004.", 
+"pubmedID": 15253766, 
+"articleUrl": "https://onlinelibrary.wiley.com/resolve/openurl?genre=article&sid=nlm:pubmed&issn=0009-9163&date=2004&volume=66&issue=2&spage=152", 
+"doi": "10.1111/j.1399-0004.2004.00283.x"
+} },
+{"reference": { 
+"mimNumber": 121011, 
+"referenceNumber": 116, 
+"authors": "Seeman, P., Sakmaryova, I.", 
+"title": "High prevalence of the IVS1+1G to A/GJB2 mutation among Czech hearing impaired patients with monoallelic mutation in the coding region of the GJB2.", 
+"source": "Clin. Genet. 69: 410-413, 2006.", 
+"pubmedID": 16650079, 
+"articleUrl": "https://doi.org/10.1111/j.1399-0004.2006.00602.x", 
+"doi": "10.1111/j.1399-0004.2006.00602.x"
+} },
+{"reference": { 
+"mimNumber": 121011, 
+"referenceNumber": 117, 
+"authors": "Shahin, H., Walsh, T., Sobe, T., Lynch, E., King, M.-C., Avraham, K. B., Kanaan, M.", 
+"title": "Genetics of congenital deafness in the Palestinian population: multiple connexin 26 alleles with shared origins in the Middle East.", 
+"source": "Hum. Genet. 110: 284-289, 2002.", 
+"pubmedID": 11935342, 
+"articleUrl": "https://dx.doi.org/10.1007/s00439-001-0674-2", 
+"doi": "10.1007/s00439-001-0674-2"
+} },
+{"reference": { 
+"mimNumber": 121011, 
+"referenceNumber": 118, 
+"authors": "Shalev, S. A., Hujirat, Y.", 
+"title": "Maternal origin of a de novo mutation of the connexin 26 gene resulting in recessive nonsyndromic deafness. (Letter)", 
+"source": "Am. J. Med. Genet. 124A: 411-412, 2004.", 
+"pubmedID": 14735592, 
+"articleUrl": "https://doi.org/10.1002/ajmg.a.20406", 
+"doi": "10.1002/ajmg.a.20406"
+} },
+{"reference": { 
+"mimNumber": 121011, 
+"referenceNumber": 119, 
+"authors": "Shearer, A. E., Eppsteiner, R. W., Booth, K. T., Ephraim, S. S., Gurrola, J., II, Simpson, A., Black-Ziegelbein, E. A., Joshi, S., Ravi, H., Giuffre, A. C., Happe, S., Hildebrand, M. S., {and 20 others}", 
+"title": "Utilizing ethnic-specific differences in minor allele frequency to recategorize reported pathogenic deafness variants.", 
+"source": "Am. J. Hum. Genet. 95: 445-453, 2014.", 
+"pubmedID": 25262649, 
+"pubmedImages": "present", 
+"articleUrl": "https://linkinghub.elsevier.com/retrieve/pii/S0002-9297(14)00384-X", 
+"doi": "10.1016/j.ajhg.2014.09.001"
+} },
+{"reference": { 
+"mimNumber": 121011, 
+"referenceNumber": 120, 
+"authors": "Snoeckx, R. L., Huygen, P. L. M., Feldmann, D., Marlin, S., Denoyelle, F., Waligora, J., Mueller-Malesinska, M., Pollak, A., Ploski, R., Murgia, A., Orzan, E., Castorina, P., {and 52 others}", 
+"title": "GJB2 mutations and degree of hearing loss: a multicenter study.", 
+"source": "Am. J. Hum. Genet. 77: 945-957, 2005.", 
+"pubmedID": 16380907, 
+"pubmedImages": "present", 
+"articleUrl": "https://linkinghub.elsevier.com/retrieve/pii/S0002-9297(07)63380-1", 
+"doi": "10.1086/497996"
+} },
+{"reference": { 
+"mimNumber": 121011, 
+"referenceNumber": 121, 
+"authors": "Sobe, T., Vreugde, S., Shahin, H., Berlin, M., Davis, N., Kanaan, M., Yaron, Y., Orr-Urtreger, A., Frydman, M., Shohat, M., Avraham, K. B.", 
+"title": "The prevalence and expression of inherited connexin 26 mutations associated with nonsyndromic hearing loss in the Israeli population.", 
+"source": "Hum. Genet. 106: 50-57, 2000.", 
+"pubmedID": 10982182
+} },
+{"reference": { 
+"mimNumber": 121011, 
+"referenceNumber": 122, 
+"authors": "Sohl, G., Nielsen, P. A., Eiberger, J., Willecke, K.", 
+"title": "Expression profiles of the novel human connexin genes hCx30.2, hCx40.1, and hCx62 differ from their putative mouse orthologues.", 
+"source": "Cell Commun. Adhes. 10: 27-36, 2003.", 
+"pubmedID": 12881038
+} },
+{"reference": { 
+"mimNumber": 121011, 
+"referenceNumber": 123, 
+"authors": "Sonoda, S., Uchino, E., Sonoda, K.-H., Yotsumoto, S., Uchio, E., Isashiki, Y., Sakamoto, T.", 
+"title": "Two patients with severe corneal disease in KID syndrome.", 
+"source": "Am. J. Ophthal. 137: 181-183, 2004.", 
+"pubmedID": 14700667, 
+"articleUrl": "https://linkinghub.elsevier.com/retrieve/pii/S0002939403007396"
+} },
+{"reference": { 
+"mimNumber": 121011, 
+"referenceNumber": 124, 
+"authors": "Su, C.-C., Li, S.-Y., Su, M.-C., Chen, W.-C., Yang, J.-J.", 
+"title": "Mutation R184Q of connexin 26 in hearing loss patients has a dominant-negative effect on connexin 26 and connexin 30.", 
+"source": "Europ. J. Hum. Genet. 18: 1061-1064, 2010.", 
+"pubmedID": 20442751, 
+"pubmedImages": "present", 
+"articleUrl": "https://dx.doi.org/10.1038/ejhg.2010.50", 
+"doi": "10.1038/ejhg.2010.50"
+} },
+{"reference": { 
+"mimNumber": 121011, 
+"referenceNumber": 125, 
+"authors": "Tang, H.-Y., Fang, P., Ward, P. A., Schmitt, E., Darilek, S., Manolidis, S., Oghalai, J. S., Roa, B. B., Alford, R. L.", 
+"title": "DNA sequence analysis of GJB2, encoding connexin 26: observations from a population of hearing impaired cases and variable carrier rates, complex genotypes, and ethnic stratification of alleles among controls.", 
+"source": "Am. J. Med. Genet. 140A: 2401-2415, 2006. Note: Erratum: Am. J. Med. Genet. 146A: 2979 only, 2008.", 
+"pubmedID": 17041943, 
+"articleUrl": "https://doi.org/10.1002/ajmg.a.31525", 
+"doi": "10.1002/ajmg.a.31525"
+} },
+{"reference": { 
+"mimNumber": 121011, 
+"referenceNumber": 126, 
+"authors": "Tekin, M., Arnos, K. S., Xia, X. J., Oelrich, M. K., Liu, X. Z., Nance, W. E., Pandya, A.", 
+"title": "W44C mutation in the connexin 26 gene associated with dominant non-syndromic deafness.", 
+"source": "Clin. Genet. 59: 269-273, 2001.", 
+"pubmedID": 11298683, 
+"articleUrl": "https://onlinelibrary.wiley.com/resolve/openurl?genre=article&sid=nlm:pubmed&issn=0009-9163&date=2001&volume=59&issue=4&spage=269"
+} },
+{"reference": { 
+"mimNumber": 121011, 
+"referenceNumber": 127, 
+"authors": "Thonnissen, E., Rabionet, R., Arbones, M. L., Estivill, X., Willecke, K., Ott, T.", 
+"title": "Human connexin26 (GJB2) deafness mutations affect the function of gap junction channels at different levels of protein expression.", 
+"source": "Hum. Genet. 111: 190-197, 2002.", 
+"pubmedID": 12189493, 
+"articleUrl": "https://dx.doi.org/10.1007/s00439-002-0750-2", 
+"doi": "10.1007/s00439-002-0750-2"
+} },
+{"reference": { 
+"mimNumber": 121011, 
+"referenceNumber": 128, 
+"authors": "Titeux, M., Mendonca, V., Decha, A., Moreira, E., Magina, S., Maia, A., Lacaze-Buzy, L., Mejia, J. E., Torrao, L., Carvalho, F., Eca-Guimaraes, J., Hovnanian, A.", 
+"title": "Keratitis-ichthyosis-deafness syndrome caused by GJB2 maternal mosaicism. (Letter)", 
+"source": "J. Invest. Derm 129: 776-779, 2009.", 
+"pubmedID": 18843290, 
+"articleUrl": "https://linkinghub.elsevier.com/retrieve/pii/S0022-202X(15)34232-9", 
+"doi": "10.1038/jid.2008.312"
+} },
+{"reference": { 
+"mimNumber": 121011, 
+"referenceNumber": 129, 
+"authors": "Tsukada, K., Nishio, S., Usami, S., {Deafness Gene Study Consortium}", 
+"title": "A large cohort study of GJB2 mutations in Japanese hearing loss patients.", 
+"source": "Clin. Genet. 78: 464-470, 2010.", 
+"pubmedID": 20497192, 
+"articleUrl": "https://doi.org/10.1111/j.1399-0004.2010.01407.x", 
+"doi": "10.1111/j.1399-0004.2010.01407.x"
+} },
+{"reference": { 
+"mimNumber": 121011, 
+"referenceNumber": 130, 
+"authors": "Uyguner, O., Tukel, T., Baykal, C., Eris, H., Emiroglu, M., Hafiz, G., Ghanbari, A., Baserer, N., Yuksel-Apak, M., Wollnik, B.", 
+"title": "The novel R75Q mutation in the GJB2 gene causes autosomal dominant hearing loss and palmoplantar keratoderma in a Turkish family.", 
+"source": "Clin. Genet. 62: 306-309, 2002.", 
+"pubmedID": 12372058, 
+"articleUrl": "https://onlinelibrary.wiley.com/resolve/openurl?genre=article&sid=nlm:pubmed&issn=0009-9163&date=2002&volume=62&issue=4&spage=306"
+} },
+{"reference": { 
+"mimNumber": 121011, 
+"referenceNumber": 131, 
+"authors": "van Geel, M., van Steensel, M. A. M., Kuster, W., Hennies, H. C., Happle, R., Steijlen, P. M., Konig, A.", 
+"title": "HID and KID syndromes are associated with the same connexin 26 mutation.", 
+"source": "Brit. J. Derm. 146: 938-942, 2002.", 
+"pubmedID": 12072059, 
+"articleUrl": "https://onlinelibrary.wiley.com/resolve/openurl?genre=article&sid=nlm:pubmed&issn=0007-0963&date=2002&volume=146&issue=6&spage=938"
+} },
+{"reference": { 
+"mimNumber": 121011, 
+"referenceNumber": 132, 
+"authors": "Van Laer, L., Coucke, P., Mueller, R. F., Caethoven, G., Flothmann, K., Prasad, S. D., Chamberlin, G. P., Houseman, M., Taylor, G. R., Van de Heyning, C. M., Fransen, E., Rowland, J., Cucci, R. A., Smith, R. J. H., Van Camp, G.", 
+"title": "A common founder for the 35delG GJB2 gene mutation in connexin 26 hearing impairment.", 
+"source": "J. Med. Genet. 38: 515-518, 2001.", 
+"pubmedID": 11483639, 
+"articleUrl": "http://jmg.bmj.com/cgi/pmidlookup?view=long&pmid=11483639"
+} },
+{"reference": { 
+"mimNumber": 121011, 
+"referenceNumber": 133, 
+"authors": "Verbov, J.", 
+"title": "Palmoplantar keratoderma, deafness and atopy.(Letter)", 
+"source": "Brit. J. Derm. 116: 881-882, 1987.", 
+"pubmedID": 2956987, 
+"articleUrl": "https://onlinelibrary.wiley.com/resolve/openurl?genre=article&sid=nlm:pubmed&issn=0007-0963&date=1987&volume=116&issue=6&spage=881"
+} },
+{"reference": { 
+"mimNumber": 121011, 
+"referenceNumber": 134, 
+"authors": "Vohwinkel, K. H.", 
+"title": "Keratoma hereditarium mutilans.", 
+"source": "Arch. Derm. Syph. 158: 354-364, 1929."
+} },
+{"reference": { 
+"mimNumber": 121011, 
+"referenceNumber": 135, 
+"authors": "Wang, Y.-C., Kung, C.-Y., Su, M.-C., Su, C.-C., Hsu, H.-M., Tsai, C.-C., Lin, C.-C., Li, S.-Y.", 
+"title": "Mutations of Cx26 gene (GJB2) for prelingual deafness in Taiwan.", 
+"source": "Europ. J. Hum. Genet. 10: 495-498, 2002.", 
+"pubmedID": 12111646, 
+"articleUrl": "https://dx.doi.org/10.1038/sj.ejhg.5200838", 
+"doi": "10.1038/sj.ejhg.5200838"
+} },
+{"reference": { 
+"mimNumber": 121011, 
+"referenceNumber": 136, 
+"authors": "White, T. W., Deans, M. R., Kelsell, D. P., Paul, D. L.", 
+"title": "Connexin mutations in deafness.", 
+"source": "Nature 394: 630-631, 1998.", 
+"pubmedID": 9716127, 
+"articleUrl": "https://doi.org/10.1038/29202", 
+"doi": "10.1038/29202"
+} },
+{"reference": { 
+"mimNumber": 121011, 
+"referenceNumber": 137, 
+"authors": "Wigley, J. E. M.", 
+"title": "A case of hyperkeratosis palmaris et plantaris associated with ainhum-like constriction of the fingers.", 
+"source": "Brit. J. Derm. 41: 188-191, 1929."
+} },
+{"reference": { 
+"mimNumber": 121011, 
+"referenceNumber": 138, 
+"authors": "Wilch, E., Azaiez, H., Fisher, R. A., Elfenbein, J., Murgia, A., Birkenhager, R., Bolz, H. J., da Silva-Costa, S. M., del Castillo, I., Haaf, T., Hoefsloot, L., Kremer, H., {and 9 others}", 
+"title": "A novel DFNB1 deletion allele supports the existence of a distant cis-regulatory region that controls GJB2 and GJB6 expression.", 
+"source": "Clin. Genet. 78: 267-274, 2010.", 
+"pubmedID": 20236118, 
+"pubmedImages": "present", 
+"articleUrl": "https://doi.org/10.1111/j.1399-0004.2010.01387.x", 
+"doi": "10.1111/j.1399-0004.2010.01387.x"
+} },
+{"reference": { 
+"mimNumber": 121011, 
+"referenceNumber": 139, 
+"authors": "Wilch, E., Zhu, M., Burkhart, K. B., Regier, M., Elfenbein, J. L., Fisher, R. A., Friderici, K. H.", 
+"title": "Expression of GJB2 and GJB6 is reduced in a novel DFNB1 allele.", 
+"source": "Am. J. Hum. Genet. 79: 174-179, 2006.", 
+"pubmedID": 16773579, 
+"pubmedImages": "present", 
+"articleUrl": "https://linkinghub.elsevier.com/retrieve/pii/S0002-9297(07)60022-6", 
+"doi": "10.1086/505333"
+} },
+{"reference": { 
+"mimNumber": 121011, 
+"referenceNumber": 140, 
+"authors": "Wilcox, S. A., Saunders, K., Osborn, A. H., Arnold, A., Wunderlich, J., Kelly, T., Collins, V., Wilcox, L. J., McKinlay Gardner, R. J., Kamarinos, M., Cone-Wesson, B., Williamson, R., Dahl, H.-H. M.", 
+"title": "High frequency hearing loss correlated with mutations in the GJB2 gene.", 
+"source": "Hum. Genet. 106: 399-405, 2000.", 
+"pubmedID": 10830906
+} },
+{"reference": { 
+"mimNumber": 121011, 
+"referenceNumber": 141, 
+"authors": "Willecke, K., Jungbluth, S., Dahl, E., Hennemann, H., Heynkes, R., Grzeschik, K.-H.", 
+"title": "Six genes of the human connexin gene family coding for gap junctional proteins are assigned to four different human chromosomes.", 
+"source": "Europ. J. Cell Biol. 53: 275-280, 1990.", 
+"pubmedID": 1964417
+} },
+{"reference": { 
+"mimNumber": 121011, 
+"referenceNumber": 142, 
+"authors": "Wu, B. L., Lindeman, N., Lip, V., Adams, A., Amato, R. S., Cox, G., Irons, M., Kenna, M., Korf, B., Raisen, J., Platt, O.", 
+"title": "Effectiveness of sequencing connexin 26 (GJB2) in cases of familial or sporadic childhood deafness referred for molecular diagnostic testing.", 
+"source": "Genet. Med. 4: 279-288, 2002.", 
+"pubmedID": 12172394, 
+"articleUrl": "https://dx.doi.org/10.109700125817-200207000-00006", 
+"doi": "10.109700125817-200207000-00006"
+} },
+{"reference": { 
+"mimNumber": 121011, 
+"referenceNumber": 143, 
+"authors": "Yan, D., Ouyang, X. M., Angeli, S. I., Du, L. L., Liu, X. Z.", 
+"title": "Paternal uniparental disomy of chromosome 13 causing homozygous 35delG mutation of the GJB2 gene and hearing loss. (Letter)", 
+"source": "Am. J. Med. Genet. 143A: 385-386, 2007.", 
+"pubmedID": 17256794, 
+"articleUrl": "https://doi.org/10.1002/ajmg.a.31553", 
+"doi": "10.1002/ajmg.a.31553"
+} },
+{"reference": { 
+"mimNumber": 121011, 
+"referenceNumber": 144, 
+"authors": "Yan, D., Park, H.-J., Ouyang, X. M., Pandya, A., Doi, K., Erdenetungalag, R., Du, L. L., Matsushiro, N., Nance, W. E., Griffith, A. J., Liu, X. Z.", 
+"title": "Evidence of a founder effect for the 235delC mutation of GJB2 (connexin 26) in east Asians.", 
+"source": "Hum. Genet. 114: 44-50, 2003.", 
+"pubmedID": 14505035, 
+"articleUrl": "https://dx.doi.org/10.1007/s00439-003-1018-1", 
+"doi": "10.1007/s00439-003-1018-1"
+} },
+{"reference": { 
+"mimNumber": 121011, 
+"referenceNumber": 145, 
+"authors": "Yotsumoto, S., Hashiguchi, T., Chen, X., Ohtake, N., Tomitaka, A., Akamatsu, H., Matsunaga, K., Shiraishi, S., Miura, H., Adachi, J., Kanzaki, T.", 
+"title": "Novel mutations in GJB2 encoding connexin-26 in Japanese patients with keratitis-ichthyosis-deafness syndrome.", 
+"source": "Brit. J. Derm. 148: 649-653, 2003.", 
+"pubmedID": 12752120, 
+"articleUrl": "https://onlinelibrary.wiley.com/resolve/openurl?genre=article&sid=nlm:pubmed&issn=0007-0963&date=2003&volume=148&issue=4&spage=649"
+} },
+{"reference": { 
+"mimNumber": 121011, 
+"referenceNumber": 146, 
+"authors": "Zelante, L., Gasparini, P., Estivill, X., Melchionda, S., D'Agruma, L., Govea, N., Mila, M., Della Monica, M., Lutfi, J., Shohat, M., Mansfield, E., Delgrosso, K., Rappaport, E., Surrey, S., Fortina, P.", 
+"title": "Connexin26 mutations associated with the most common form of non-syndromic neurosensory autosomal recessive deafness (DFNB1) in Mediterraneans.", 
+"source": "Hum. Molec. Genet. 6: 1605-1609, 1997.", 
+"pubmedID": 9285800
+} },
+{"reference": { 
+"mimNumber": 121011, 
+"referenceNumber": 147, 
+"authors": "Ziprkowski, L., Adam, A.", 
+"title": "Recessive total albinism and congenital deafmutism.", 
+"source": "Arch. Derm. 89: 151-155, 1964.", 
+"pubmedID": 14070830, 
+"articleUrl": "https://jamanetwork.com/journals/jamadermatology/fullarticle/vol/89/pg/151"
+} 
+} ] , 
+"geneMap": { 
+"sequenceID": 10601, 
+"chromosome": 13, 
+"chromosomeSymbol": "13", 
+"chromosomeSort": 15, 
+"chromosomeLocationStart": 20187462, 
+"chromosomeLocationEnd": 20192974, 
+"transcript": "ENST00000645189.1", 
+"cytoLocation": "13q11-q12", 
+"computedCytoLocation": "13q12.11", 
+"mimNumber": 121011, 
+"geneSymbols": "GJB2, CX26, DFNB1A, PPK, DFNA3A, KID, HID", 
+"geneName": "Gap junction protein, beta-2, 26kD (connexin 26)", 
+"mappingMethod": "REa, A, Fd", 
+"confidence": "C", 
+"mouseGeneSymbol": "Gjb2", 
+"mouseMgiID": "MGI:95720", 
+"geneInheritance": null, 
+"phenotypeMapList": [ 
+{"phenotypeMap": { 
+"mimNumber": 121011, 
+"phenotype": "Bart-Pumphrey syndrome", 
+"phenotypeMimNumber": 149200, 
+"phenotypeMappingKey": 3, 
+"phenotypeInheritance": "Autosomal dominant"
+} },
+{"phenotypeMap": { 
+"mimNumber": 121011, 
+"phenotype": "Deafness, autosomal dominant 3A", 
+"phenotypeMimNumber": 601544, 
+"phenotypicSeriesNumber": "PS124900", 
+"phenotypeMappingKey": 3, 
+"phenotypeInheritance": "Autosomal dominant"
+} },
+{"phenotypeMap": { 
+"mimNumber": 121011, 
+"phenotype": "Deafness, autosomal recessive 1A", 
+"phenotypeMimNumber": 220290, 
+"phenotypicSeriesNumber": "PS220290", 
+"phenotypeMappingKey": 3, 
+"phenotypeInheritance": "Autosomal recessive"
+} },
+{"phenotypeMap": { 
+"mimNumber": 121011, 
+"phenotype": "Hystrix-like ichthyosis with deafness", 
+"phenotypeMimNumber": 602540, 
+"phenotypeMappingKey": 3, 
+"phenotypeInheritance": "Autosomal dominant"
+} },
+{"phenotypeMap": { 
+"mimNumber": 121011, 
+"phenotype": "Keratitis-ichthyosis-deafness syndrome", 
+"phenotypeMimNumber": 148210, 
+"phenotypeMappingKey": 3, 
+"phenotypeInheritance": "Autosomal dominant"
+} },
+{"phenotypeMap": { 
+"mimNumber": 121011, 
+"phenotype": "Keratoderma, palmoplantar, with deafness", 
+"phenotypeMimNumber": 148350, 
+"phenotypeMappingKey": 3, 
+"phenotypeInheritance": "Autosomal dominant"
+} },
+{"phenotypeMap": { 
+"mimNumber": 121011, 
+"phenotype": "Vohwinkel syndrome", 
+"phenotypeMimNumber": 124500, 
+"phenotypeMappingKey": 3, 
+"phenotypeInheritance": "Autosomal dominant"
+} 
+} ] 
+} 
+} 
+} ] 
+} }

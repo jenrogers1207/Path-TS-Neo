@@ -49,12 +49,31 @@ dataLoad.loadFile().then(d=> {
   
     dataOb.fileVariants = varArray;
     search.searchBySymbol(dataOb).then(q=> {
+        /*
+        neoAPI.addNode(q);
+        console.log(q.fileVariants);
+        q.fileVariants.forEach((variant) => {
+           // neoAPI.addNode(variant);
+           console.log(variant)
+        });*/
+      
+        
         search.geneIdtoMim(q).then(d=> {
             searchOMIM(d).then(om=>{  
                 search.getPathways(om);
                 gCanvas.renderGeneDetail(om);
-                neoAPI.addNodes(om);
+                neoAPI.addNode(om, 'Gene');
+                om.properties.allelicVariantList.forEach((variant) => {
+                    variant.gene = om.value
+                    neoAPI.addNode(variant, 'Variant').then(()=> neoAPI.addRelation(om.value,'Gene', variant.name, 'Variant', 'Mutation'));
+                    console.log(variant)
+                 });
+                //.then(()=> neoAPI.getGraph().then(g => gCanvas.drawGraph(g)));
             });
+
+        });
         
 
-//neoAPI.getGraph().then(g => gCanvas.drawGraph(g));
+neoAPI.getGraph().then(g => gCanvas.drawGraph(g));
+    });
+});
