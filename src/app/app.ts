@@ -7,6 +7,7 @@ var neoAPI = require('./neo4jLoader');
 var search = require('./search');
 var dataLoad = require('./fileDataLoad');
 const qo = require('./queryObject');
+import ky from 'ky';
 
 
 
@@ -48,6 +49,18 @@ dataLoad.loadFile().then(d=> {
     });
   
     dataOb.fileVariants = varArray;
+    dataOb.fileVariants.forEach(variant => {
+        console.log(variant);
+        let value = variant;
+
+        let proxy = 'https://cors-anywhere.herokuapp.com/';
+        let url = 'https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esummary.fcgi?db=clinvar&id='+value+'&retmode=json&apiKey=mUYjhLsCRVOuShEhrHLG_w";'
+    
+        let req = ky.get(proxy + url).json().then(d=> console.log(d));
+    
+        console.log(req);
+        
+    });
     search.searchBySymbol(dataOb).then(q=> {
         /*
         neoAPI.addNode(q);
@@ -65,10 +78,11 @@ dataLoad.loadFile().then(d=> {
                 neoAPI.addNode(om, 'Gene');
                 om.properties.allelicVariantList.forEach((variant) => {
                     variant.gene = om.value
-                    neoAPI.addNode(variant, 'Variant').then(()=> neoAPI.addRelation(om.value,'Gene', variant.name, 'Variant', 'Mutation'));
-                    console.log(variant)
-                 });
-                //.then(()=> neoAPI.getGraph().then(g => gCanvas.drawGraph(g)));
+                    neoAPI.addNode(variant, 'Variant').then(()=>{ 
+                        neoAPI.addRelation(om.value,'Gene', variant.name, 'Variant', 'Mutation');
+                    });
+                 }).then(()=> neoAPI.getGraph().then(g => gCanvas.drawGraph(g)));
+              //  .then(()=> neoAPI.getGraph().then(g => gCanvas.drawGraph(g)));
             });
 
         });

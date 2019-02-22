@@ -25,17 +25,7 @@ export async function searchBySymbol(queryOb:object) {
     let ids = { 'symbol': props.symbol, 'ncbi': props._id, 'entrezgene': props.entrezgene, 'description': props.name };
               
     query.properties.ids = ids
-    /*
-    neoAPI.checkForNode(value).then(found => {
-    if (found.length > 0) {
-        for (let prop in properties) {
-            neoAPI.setNodeProperty(value, prop, properties[prop]);
-            }
-            };
-    });
 
-    convert_id(query);
-        */
 
     return query;
     
@@ -129,12 +119,6 @@ export async function getPathways(queryOb) {
 
     console.log(req2);
 
-  
-          //  grabId(null, resp.rawRequest.responseText).then(ids => link_format(ids));
-
-
-
-   // return data;
 }
 
 async function grabId(query, list) {
@@ -246,7 +230,6 @@ async function linkData(queryOb, idArray) {
                 let splits = d.filter(d => d != id_link);
 
                 splits.map(path => {
-
                     neoAPI.addToGraph(path, 'Pathway').then(neoAPI.addRelation(queryOb.name, path).then(() => neoAPI.getGraph().then(g => gCanvas.drawGraph(g))));
                 });
             });

@@ -14,27 +14,20 @@ export async function addNode(queryOb:object, type:string){
     }else{
         console.log('add node');
         console.log(queryOb);
-        let prop = {'name': queryOb.value};
+        let name = queryOb.value ? queryOb.value : queryOb.name;
+        let prop = {};
 
         let properties = queryOb.properties ? queryOb.properties : queryOb;
        
         let keyArray = d3.keys(properties);
 
         keyArray.forEach(el => {
-          //  prop[el] = typeof properties[el] == 'string' ? properties : JSON.stringify(properties[el]);
-          prop[el] = JSON.stringify(properties[el]);
+            console.log(typeof properties[el])
+            prop[el] = typeof properties[el] === 'string' ? properties[el] : JSON.stringify(properties[el]);
+         // prop[el] = JSON.stringify(properties[el]);
         });
-        //p.name = queryOb.value;
-       
-        console.log(queryOb)
-      
-        /*
-        let properties = {
-            'ids': JSON.stringify(p.ids),
-            'name': queryOb.value,
-          //  'geneMap': JSON.stringify(p.geneMap),
-          //  'titles': JSON.stringify(p.titles),
-        }*/
+
+        prop.name = name;
      
        // let command = 'CREATE (n:' + queryOb.type + ' {name:"' + queryOb.value + '"})';
         let command = `CREATE (n:`+type+` $props)`;
@@ -84,6 +77,7 @@ export async function checkForNode(name:string, type:string) {
 }
 
 export function setNodeProperty(name:string, prop:string, propValue:string) {
+    //
     let command = 'MATCH (n:Gene { name: "' + name + '" }) SET n.' + prop + '= "' + propValue + '"';
     var session = driver.session();
 
@@ -99,8 +93,8 @@ export function setNodeProperty(name:string, prop:string, propValue:string) {
 
 export async function getGraph() {
 
-    let command = 'MATCH (g:Gene)-[p:path]->(a:Pathway) \
-    RETURN g AS gene, collect(a.name) AS pathway';
+    let command = 'MATCH (g:Gene)-[p:Mutation]->(a:Variant) \
+    RETURN g AS gene, collect(a.name) AS variant';
     //(a)-[p:path]->(b)
 
   //  let command = 'RETURN *'
@@ -121,8 +115,8 @@ export async function getGraph() {
                 var target = i;
                 i++;
 
-                res.get('pathway').forEach(name => {
-                    var path = { title: name, label: 'pathway' };
+                res.get('variant').forEach(name => {
+                    var path = { title: name, label: 'variant' };
                     var source = _.findIndex(nodes, path);
                     if (source == -1) {
                         nodes.push(path);
