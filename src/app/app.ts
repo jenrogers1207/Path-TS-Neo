@@ -1,6 +1,6 @@
 import "./styles.scss";
 import * as d3 from 'D3';
-import { QueryObject } from "./queryObject";
+import { QueryObject, VariantObject } from "./queryObject";
 import { searchOMIM } from "./search";
 const gCanvas = require('./graphRender');
 var neoAPI = require('./neo4jLoader');
@@ -44,23 +44,14 @@ dataLoad.loadFile().then(d=> {
         Object.keys(v).map(key=> {
             variant.properties[key.toString()] = v[key];
             variant.Gene = d[0].key;
+            variant.description = variant.name;
+            variant.name = variant.dbSnps;
         });
         return variant
     });
   
     dataOb.fileVariants = varArray;
-    dataOb.fileVariants.forEach(variant => {
-        console.log(variant);
-        let value = variant;
-
-        let proxy = 'https://cors-anywhere.herokuapp.com/';
-        let url = 'https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esummary.fcgi?db=clinvar&id='+value+'&retmode=json&apiKey=mUYjhLsCRVOuShEhrHLG_w";'
     
-        let req = ky.get(proxy + url).json().then(d=> console.log(d));
-    
-        console.log(req);
-        
-    });
     search.searchBySymbol(dataOb).then(q=> {
         /*
         neoAPI.addNode(q);
@@ -73,6 +64,68 @@ dataLoad.loadFile().then(d=> {
         
         search.geneIdtoMim(q).then(d=> {
             searchOMIM(d).then(om=>{  
+                console.log(om);
+                neoAPI.addNode(om, 'Gene');
+
+        console.log('OM', om)
+
+    let knownVariants = om.properties.allelicVariantList.map(v=> {
+        let variantOb = new qo.VariantObject(v.dbSnps);
+       // variantOb.properties = v;
+       console.log('v', v)
+        variantOb.name = v.dbSnps;
+        variantOb.gene = om.value;
+        variantOb.mimNumber = v.mimNumber;
+        variantOb.mutations = v.mutations;
+        variantOb.description = v.name;
+        variantOb.clinvarAccessions = variantOb.clinvarAccessions;
+        variantOb.text = v.text;
+        
+        return variantOb;
+    });
+
+    neoAPI.addVariants(knownVariants).then(()=> {
+        knownVariants.forEach(v=>{
+            neoAPI.addRelation(v.name, 'Variant', om.value, 'Gene', 'Mutation');
+        })
+        neoAPI.getGraph().then(g => gCanvas.drawGraph(g));
+    });
+
+    /*
+    om.fileVariants.forEach(variant => {
+        console.log(variant);
+        let value = variant.properties.id;
+
+        let proxy = 'https://cors-anywhere.herokuapp.com/';
+        let url = 'https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esummary.fcgi?db=clinvar&id='+value+'&retmode=json&apiKey=mUYjhLsCRVOuShEhrHLG_w'
+       // 'https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esummary.fcgi?db=clinvar&id=328931&retmode=json&apiKey=mUYjhLsCRVOuShEhrHLG_w'
+        let req = ky.get(proxy + url).json().then(d=> {
+            
+            console.log(d);
+            console.log(d.result[value])
+        
+        });
+    
+       // console.log(req);
+
+        
+    });*/
+/*
+    let variantIds = om.fileVariants.map(v=> v.properties.id);
+
+    let varIdQuery = variantIds.join(',')
+
+    let proxy = 'https://cors-anywhere.herokuapp.com/';
+    let url = 'https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esummary.fcgi?db=clinvar&id='+varIdQuery+'&retmode=json&apiKey=mUYjhLsCRVOuShEhrHLG_w'
+   // 'https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esummary.fcgi?db=clinvar&id=328931&retmode=json&apiKey=mUYjhLsCRVOuShEhrHLG_w'
+    let req = ky.get(proxy + url).json().then(d=> console.log(d));
+
+    console.log(req);
+
+
+    console.log(varIdQuery);
+    /*
+                /*
                 search.getPathways(om);
                 gCanvas.renderGeneDetail(om);
                 neoAPI.addNode(om, 'Gene');
@@ -81,13 +134,13 @@ dataLoad.loadFile().then(d=> {
                     neoAPI.addNode(variant, 'Variant').then(()=>{ 
                         neoAPI.addRelation(om.value,'Gene', variant.name, 'Variant', 'Mutation');
                     });
-                 }).then(()=> neoAPI.getGraph().then(g => gCanvas.drawGraph(g)));
+                 }).then(()=> neoAPI.getGraph().then(g => gCanvas.drawGraph(g)));*/
               //  .then(()=> neoAPI.getGraph().then(g => gCanvas.drawGraph(g)));
             });
 
         });
         
 
-neoAPI.getGraph().then(g => gCanvas.drawGraph(g));
+//neoAPI.getGraph().then(g => gCanvas.drawGraph(g));
     });
 });

@@ -1,7 +1,7 @@
 import * as d3 from 'D3';
 export class QueryObject {
 
-    value:string
+    value:string;
     ncbi:string;
     keggId:string;
     properties: object;
@@ -15,6 +15,21 @@ export class QueryObject {
             'ids': {}
         };
     }
+}
+
+export class VariantObject {
+
+    type:string;
+   // value:string;
+    gene:string;
+    dbSnp:string;
+    properties:object;
+
+    constructor(snpId:string) {
+        this.type = 'Variant'
+        this.dbSnp = snpId;
+      
+}
 }
 
 export class SelectedQuery {

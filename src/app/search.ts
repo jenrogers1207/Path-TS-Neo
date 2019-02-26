@@ -39,8 +39,10 @@ export async function searchOMIM(queryOb:any){
     let json = JSON.parse(req.body);
 
     let props = json.omim.entryList[0].entry;
-    console.log("OMIM", props);
-    queryOb.properties.allelicVariantList = props.allelicVariantList.map(p=> p.allelicVariant);
+ 
+    //queryOb.properties.allelicVariantList = 
+    queryOb.properties.allelicVariantList = props.allelicVariantList.map(p=> p['allelicVariant']);
+ 
     queryOb.properties.titles = props.titles;
     queryOb.properties.geneMap = props.geneMap;
     queryOb.properties.referenceList = props.referenceList.map(p=> p.reference);

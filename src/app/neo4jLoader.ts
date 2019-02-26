@@ -10,6 +10,7 @@ export async function addNode(queryOb:object, type:string){
     let node = await checkForNode(value, type);
     if(node.length > 0){
         console.log('node exists');
+        console.log('existing node', node);
 
     }else{
         console.log('add node');
@@ -18,16 +19,23 @@ export async function addNode(queryOb:object, type:string){
         let prop = {};
 
         let properties = queryOb.properties ? queryOb.properties : queryOb;
-       
-        let keyArray = d3.keys(properties);
 
-        keyArray.forEach(el => {
-            console.log(typeof properties[el])
+        let idKeys = d3.keys(queryOb.properties.ids);
+       
+        let propKeys = d3.keys(properties).filter(f=> f != 'ids');
+
+        propKeys.forEach(el => {
             prop[el] = typeof properties[el] === 'string' ? properties[el] : JSON.stringify(properties[el]);
-         // prop[el] = JSON.stringify(properties[el]);
         });
 
+    
+        idKeys.forEach((id, i)=> {
+           // console.log(id, properties.ids[id])
+            prop[id] = properties.ids[id];
+        })
+
         prop.name = name;
+        console.log(prop);
      
        // let command = 'CREATE (n:' + queryOb.type + ' {name:"' + queryOb.value + '"})';
         let command = `CREATE (n:`+type+` $props)`;
@@ -44,6 +52,24 @@ export async function addNode(queryOb:object, type:string){
             });
         }
     }
+
+export async function addVariants(varObs:Array<object>){
+    let prop = varObs;
+    console.log(varObs);
+    let command = 'UNWIND $props AS map CREATE (n:Variant) SET n = map'
+   
+    var session = driver.session();
+    session
+        .run(command, {props: prop})
+        .then(function(result) {
+            session.close();
+            console.log(result)
+            console.log("adding to graph");
+        })
+        .catch(function(error:any) {
+            console.log(error);
+        });
+}
 
 
 export async function addToGraph(query:string, type:string) {
@@ -76,9 +102,9 @@ export async function checkForNode(name:string, type:string) {
         });
 }
 
-export function setNodeProperty(name:string, prop:string, propValue:string) {
+export function setNodeProperty(type: string, name:string, prop:string, propValue:string) {
     //
-    let command = 'MATCH (n:Gene { name: "' + name + '" }) SET n.' + prop + '= "' + propValue + '"';
+    let command = 'MATCH (n:"'+type+'"{name: "' + name + '" }) SET n.' + prop + '= "' + propValue + '"';
     var session = driver.session();
 
     session
@@ -93,8 +119,8 @@ export function setNodeProperty(name:string, prop:string, propValue:string) {
 
 export async function getGraph() {
 
-    let command = 'MATCH (g:Gene)-[p:Mutation]->(a:Variant) \
-    RETURN g AS gene, collect(a.name) AS variant';
+    let command = 'MATCH (v:Variant)-[p:Mutation]->(g:Gene) \
+    RETURN v AS variant, collect(g.name) AS gene';
     //(a)-[p:path]->(b)
 
   //  let command = 'RETURN *'
@@ -108,7 +134,7 @@ export async function getGraph() {
             var nodes = [],
                 rels = [],
                 i = 0;
-            console.log("graph rresult" + result);
+            console.log("graph result" + result);
             result.records.forEach(res => {
                
                 nodes.push({ title: res.get('gene').properties.name, label: 'gene', data: res.get('gene').properties });
@@ -116,6 +142,7 @@ export async function getGraph() {
                 i++;
 
                 res.get('variant').forEach(name => {
+                    console.log(name);
                     var path = { title: name, label: 'variant' };
                     var source = _.findIndex(nodes, path);
                     if (source == -1) {
@@ -138,7 +165,7 @@ export async function getGraph() {
 export async function addRelation(sourceName:string, sourceType:string, targetName:string, targetType:string, linkType:string) {
     
     let command = 'MATCH (a:'+sourceType+'),(b:'+targetType+') WHERE a.name = "' + sourceName + '" AND b.name = "' + targetName + '" CREATE (a)-[p:'+linkType+']->(b) RETURN p';
-    console.log(command)
+    
     var session = driver.session();
     return session
         .run(command)
