@@ -170,40 +170,6 @@ function renderText(idArray, response) {
 }
 
 //Formater for LINK. Passed as param to query
-function link_format(idArray) {
-    let keggId = null;
-
-    keggId = (idArray.length > 1) ? idArray[1] : idArray[0];
-
-    let url = 'http://rest.kegg.jp/link/pathway/' + keggId;
-    let proxy = 'https://cors-anywhere.herokuapp.com/';
-
-    let data = xhr({
-            url: proxy + url,
-            method: 'GET',
-            encoding: undefined,
-            headers: {
-                "Content-Type": "text/plain"
-            }
-        },
-        function done(err, resp, body) {
-            if (err) {
-                console.error(err);
-                return;
-            }
-
-
-            return resp;
-        }
-
-    );
-
-
-    return data;
-
-}
-
-//Formater for LINK. Passed as param to query
 async function linkData(queryOb, idArray) {
 
     let keggId = (idArray.length > 1) ? idArray[1] : idArray[0];

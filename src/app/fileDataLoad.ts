@@ -18,33 +18,65 @@ export async function loadFile(){
 }
 
 export async function renderSidebar(data: Object){
-
+    console.log('data', data)
     let sidebar = d3.select('#left-nav');
     let callTable = sidebar.select('.call-table');
-    let geneDiv = callTable.selectAll('.gene').data(data);
+    let geneDiv = callTable.selectAll('.gene').data([data]);
     geneDiv.exit().remove();
-    let geneEnterDiv = geneDiv.enter().append('div').attr('class', d=> d.key).classed('gene', true);
-    let geneHeader = geneEnterDiv.append('div').classed('gene-header', true)
-    geneHeader.append('text').text(d=> d.key);
-    geneDiv = geneEnterDiv.merge(geneDiv);
+/*
+    if(data.key != undefined){
 
-    let variantBox = geneDiv.append('div').classed('variant-wrapper', true);
+        let geneEnterDiv = geneDiv.enter().append('div').attr('class', d=> d.key).classed('gene', true);
+        let geneHeader = geneEnterDiv.append('div').classed('gene-header', true)
+        geneHeader.append('text').text(d=> d.key);
+        geneDiv = geneEnterDiv.merge(geneDiv);
+    
+        let variantBox = geneDiv.append('div').classed('variant-wrapper', true);
+    
+        let variants = variantBox.selectAll('.variant').data(d=>d.values);
+        variants.exit().remove();
+        let varEnter = variants.enter().append('div').classed('variant', true);
+        let varText = varEnter.append('h5').text(d=>d.id);
+        let varDes = varEnter.append('div').classed('var-descript', true).classed('hidden', true);
+        let blurbs = varDes.selectAll('.blurb').data(d=>d3.entries(d)).enter().append('div').classed('blurb', true);
+        blurbs.append('text').text(d=> d.key + ": "+ d.value);
 
-    let variants = variantBox.selectAll('.variant').data(d=>d.values);
-    variants.exit().remove();
-    let varEnter = variants.enter().append('div').classed('variant', true);
-    let varText = varEnter.append('h5').text(d=>d.id);
-    let varDes = varEnter.append('div').classed('var-descript', true).classed('hidden', true);
-    let blurbs = varDes.selectAll('.blurb').data(d=>d3.entries(d)).enter().append('div').classed('blurb', true);
-    blurbs.append('text').text(d=> d.key + ": "+ d.value);
-    variants = varEnter.merge(variants);
+        variants = varEnter.merge(variants);
   
-    variants.on('click', function(d){
-        console.log(d);
-        let blurb = d3.select(this).select('.var-descript');
-        blurb.classed('hidden')? blurb.classed('hidden', false) : blurb.classed('hidden', true);
+        variants.on('click', function(d){
+            console.log(d);
+            let blurb = d3.select(this).select('.var-descript');
+            blurb.classed('hidden')? blurb.classed('hidden', false) : blurb.classed('hidden', true);
+    
+        });
 
-    });
+    }else{*/
+       // console.log('data value', data.value)
+        let geneEnterDiv = geneDiv.enter().append('div').attr('class', d=> d.value).classed('gene', true);
+        let geneHeader = geneEnterDiv.append('div').classed('gene-header', true)
+        geneHeader.append('text').text(d=> d.value);
+        geneDiv = geneEnterDiv.merge(geneDiv);
+    
+        let variantBox = geneDiv.append('div').classed('variant-wrapper', true);
+    
+        let variants = variantBox.selectAll('.variant').data(d=>d.properties.allelicVariantList);
+        variants.exit().remove();
+        let varEnter = variants.enter().append('div').classed('variant', true);
+        let varText = varEnter.append('h5').text(d=>d.dbSnps);
+        let varDes = varEnter.append('div').classed('var-descript', true).classed('hidden', true);
+        let blurbs = varDes.selectAll('.blurb').data(d=>d3.entries(d).filter(f=> f.key != 'allelicVariantList')).enter().append('div').classed('blurb', true);
+        blurbs.append('text').text(d=> d.key + ": "+ d.value);
+
+        variants = varEnter.merge(variants);
+  
+        variants.on('click', function(d){
+            let blurb = d3.select(this).select('.var-descript');
+            blurb.classed('hidden')? blurb.classed('hidden', false) : blurb.classed('hidden', true);
+    
+        });
+ //   }
+  
+   
 }
 
 export async function loadCalls(file){

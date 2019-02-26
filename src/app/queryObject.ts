@@ -27,19 +27,21 @@ export class VariantObject {
 
     constructor(snpId:string) {
         this.type = 'Variant'
-        this.dbSnp = snpId;
-      
+        this.dbSnp = snpId;   
 }
 }
 
-export class SelectedQuery {
-    queryOb: QueryObject;
+export class PathwayObject {
 
-    constructor(queryObPassed: QueryObject) {
+    type:string;
+    genes:string;
+    properties:object;
 
-        this.queryOb = queryObPassed;
-    }
+    constructor(pathId:string) {
+        this.type = 'Pathway'
 }
+}
+
 
 export class QueryKeeper{
     queryKeeper: Array<QueryObject>;
@@ -52,8 +54,6 @@ export class QueryKeeper{
         this.queryKeeper.push(queryOb);
     }
 }
-
-export const SelectedTest = new SelectedQuery(null);
 
 export async function drawSelectedPanel(query) {
     let panel = d3.select('#query-panel');

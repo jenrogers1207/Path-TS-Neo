@@ -14,7 +14,7 @@ export async function addNode(queryOb:object, type:string){
 
     }else{
         console.log('add node');
-        console.log(queryOb);
+     
         let name = queryOb.value ? queryOb.value : queryOb.name;
         let prop = {};
 
@@ -28,15 +28,13 @@ export async function addNode(queryOb:object, type:string){
             prop[el] = typeof properties[el] === 'string' ? properties[el] : JSON.stringify(properties[el]);
         });
 
-    
         idKeys.forEach((id, i)=> {
            // console.log(id, properties.ids[id])
             prop[id] = properties.ids[id];
         })
 
         prop.name = name;
-        console.log(prop);
-     
+ 
        // let command = 'CREATE (n:' + queryOb.type + ' {name:"' + queryOb.value + '"})';
         let command = `CREATE (n:`+type+` $props)`;
       //  console.log(command, {props: properties});
@@ -55,7 +53,7 @@ export async function addNode(queryOb:object, type:string){
 
 export async function addVariants(varObs:Array<object>){
     let prop = varObs;
-    console.log(varObs);
+
     let command = 'UNWIND $props AS map CREATE (n:Variant) SET n = map'
    
     var session = driver.session();
@@ -63,7 +61,7 @@ export async function addVariants(varObs:Array<object>){
         .run(command, {props: prop})
         .then(function(result) {
             session.close();
-            console.log(result)
+
             console.log("adding to graph");
         })
         .catch(function(error:any) {
@@ -120,7 +118,7 @@ export function setNodeProperty(type: string, name:string, prop:string, propValu
 export async function getGraph() {
 
     let command = 'MATCH (v:Variant)-[p:Mutation]->(g:Gene) \
-    RETURN v AS variant, collect(g.name) AS gene';
+    RETURN g AS gene, collect(v.name) AS variant';
     //(a)-[p:path]->(b)
 
   //  let command = 'RETURN *'
@@ -134,7 +132,7 @@ export async function getGraph() {
             var nodes = [],
                 rels = [],
                 i = 0;
-            console.log("graph result" + result);
+     
             result.records.forEach(res => {
                
                 nodes.push({ title: res.get('gene').properties.name, label: 'gene', data: res.get('gene').properties });
@@ -142,7 +140,7 @@ export async function getGraph() {
                 i++;
 
                 res.get('variant').forEach(name => {
-                    console.log(name);
+                  
                     var path = { title: name, label: 'variant' };
                     var source = _.findIndex(nodes, path);
                     if (source == -1) {

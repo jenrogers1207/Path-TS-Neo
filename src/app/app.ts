@@ -34,10 +34,9 @@ let toolDiv = d3.select('body').append("div")
 let queryPanel = d3.select('#wrapper').append('div').attr('id', 'query-panel');
 
 dataLoad.loadFile().then(d=> {
-    dataLoad.renderSidebar(d);
+  //  dataLoad.renderSidebar(d);
     let dataOb = new qo.QueryObject(d[0].key);
     dataOb.type = "Gene";
-
     let varArray = d[0].values.map(v=> {
         let variant = new qo.QueryObject(v.id);
         variant.type = "Variant";
@@ -53,26 +52,14 @@ dataLoad.loadFile().then(d=> {
     dataOb.fileVariants = varArray;
     
     search.searchBySymbol(dataOb).then(q=> {
-        /*
-        neoAPI.addNode(q);
-        console.log(q.fileVariants);
-        q.fileVariants.forEach((variant) => {
-           // neoAPI.addNode(variant);
-           console.log(variant)
-        });*/
-      
-        
+
         search.geneIdtoMim(q).then(d=> {
             searchOMIM(d).then(om=>{  
-                console.log(om);
                 neoAPI.addNode(om, 'Gene');
 
-        console.log('OM', om)
-
+       
     let knownVariants = om.properties.allelicVariantList.map(v=> {
         let variantOb = new qo.VariantObject(v.dbSnps);
-       // variantOb.properties = v;
-       console.log('v', v)
         variantOb.name = v.dbSnps;
         variantOb.gene = om.value;
         variantOb.mimNumber = v.mimNumber;
@@ -84,13 +71,15 @@ dataLoad.loadFile().then(d=> {
         return variantOb;
     });
 
+    dataLoad.renderSidebar(om);
+    gCanvas.renderGeneDetail(om);
+  
     neoAPI.addVariants(knownVariants).then(()=> {
         knownVariants.forEach(v=>{
             neoAPI.addRelation(v.name, 'Variant', om.value, 'Gene', 'Mutation');
         })
         neoAPI.getGraph().then(g => gCanvas.drawGraph(g));
     });
-
     /*
     om.fileVariants.forEach(variant => {
         console.log(variant);
@@ -121,7 +110,6 @@ dataLoad.loadFile().then(d=> {
     let req = ky.get(proxy + url).json().then(d=> console.log(d));
 
     console.log(req);
-
 
     console.log(varIdQuery);
     /*
