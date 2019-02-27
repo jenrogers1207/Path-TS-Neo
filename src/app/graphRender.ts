@@ -12,7 +12,8 @@ export function removeThings(){
 
 export async function renderGeneDetail(data: Object){
     console.log(data);
-    let headers = d3.keys(data.properties);
+    let headers = d3.keys(data.properties).filter(d=> d != 'allelicVariantList');
+    console.log(headers)
     let sidebar = d3.select('#left-nav');
     let geneDet = sidebar.select('.gene-detail');
     let geneHeader = geneDet.append('div').attr('class', 'detail-head').append('h3').text(data.value);
@@ -23,19 +24,17 @@ export async function renderGeneDetail(data: Object){
    // let secEnter = sections.enter().append('div').classed('sections', true);
     //sections = secEnter.merge(sections);
     let titles = propEnter.filter(d=> d == "titles");
-    let titleSec = titles.selectAll('.sections').data(d=> data.properties[d]);
+    let titleSec = titles.selectAll('.sections').data(d=> d3.entries(data.properties[d]));
     let titleEnter = titleSec.enter().append('div').classed('title sections', true);
-    titleEnter.append('text').text(d=> d);
-
-    let variants = propEnter.filter(d=> d == 'allelicVariantList');
-    let varSec = variants.selectAll('.sections').data(d=> data.properties[d]);
-    let varSecEnter = varSec.enter().append('div').classed('var sections', true);
-    varSecEnter.append('text').text(d=> d.dbSnps);
+    titleEnter.append('text').text(d=> d.value);
 
     let geneMap = propEnter.filter(d=> d == 'geneMap');
-    let geneSec = geneMap.selectAll('.sections').data(d=>data.properties[d]);
+    let geneSec = geneMap.selectAll('.sections').data(d=> {
+        console.log(d3.entries(data.properties[d]));
+        return d3.entries(data.properties[d]);
+    });
     let geneEnter = geneSec.enter().append('div').classed('gmap sections', true);
-    geneEnter.append('text').text(d=> d);
+    geneEnter.append('text').text(d=> d.key + ': ' + d.value " <br>");
 
 
 
