@@ -98,6 +98,13 @@ export async function renderGeneDetail(data: Object){
     let geneEnter = geneSec.enter().append('div').classed('geneMap sections', true);
     geneEnter.append('text').text(d=> d.key + ': ' + d.value " <br>");
 
+    let phenoHead = geneMap.append('h5').text('Phenotype');
+    let phenoSec = geneMap.selectAll('.pheno').data(d => {
+        console.log(d3.entries(data.properties[d]).filter(d=> d.key == "phenotypeMapList")[0].value);
+        return d3.entries(data.properties[d]).filter(d=> d.key == "phenotypeMapList")[0].value })
+    let phenoEnter = phenoSec.enter().append('div').classed('pheno sections', true);
+    phenoEnter.append('text').text(d=> d.phenotypeMap.phenotype + ': ' + d.phenotypeMap.phenotypeInheritance " <br>");
+
     let textProp = propEnter.filter(d=> d == 'text');
     let textSec = textProp.selectAll('.sections').data(d=> {
         return data.properties[d];
@@ -107,8 +114,6 @@ export async function renderGeneDetail(data: Object){
     let textText = textEnter.append('text').text(d=> d.textSectionContent);
 
     propertyDivs = propEnter.merge(propertyDivs);
-
-    
 
 }
 
@@ -188,7 +193,7 @@ export function drawGraph(data: Object) {
                 .duration(500)
                 .style("opacity", 0);
         });
-        
+
 //YOU NEED TO FIX THE SELECTED NODE
 
         /*
