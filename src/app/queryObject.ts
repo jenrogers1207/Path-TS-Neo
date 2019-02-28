@@ -20,14 +20,15 @@ export class QueryObject {
 export class VariantObject {
 
     type:string;
-   // value:string;
+    name:string;
     gene:string;
     dbSnp:string;
     properties:object;
 
     constructor(snpId:string) {
         this.type = 'Variant'
-        this.dbSnp = snpId;   
+        this.name = snpId;  
+        this.dbSnp = snpId; 
 }
 }
 
@@ -38,7 +39,18 @@ export class PathwayObject {
     properties:object;
 
     constructor(pathId:string) {
-        this.type = 'Pathway'
+        this.type = 'Pathway';
+}
+}
+
+export class PhenotypeObject {
+
+    type: string;
+    name: string;
+
+    constructor(phenoId:string) {
+        this.type = 'Phenotype';
+        this.name = phenoId;
 }
 }
 

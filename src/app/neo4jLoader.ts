@@ -51,17 +51,18 @@ export async function addNode(queryOb:object, type:string){
         }
     }
 
-export async function addVariants(varObs:Array<object>){
-    let names: Array<string> = varObs.map(v=> v.dbSnp);
-    let originalNames : Array<string> = await checkForNodeArray(names, 'Variant');
+//NEED TO CHANGE THIS NAME
+export async function addNodeArray(phenoObs:Array<object>){
+    let names: Array<string> = phenoObs.map(v=> v.phenotype);
+    let type = phenoObs[0].type;
+    let originalNames : Array<string> = await checkForNodeArray(names, type);
 
     let newNames = names.filter(n=> originalNames.indexOf(n) == -1);
-
+    console.log('phenoObs',phenoObs);
     if(newNames.length > 0){
-        console.log('ADDING VARIANTS')
-        let newObs = varObs.filter(ob=> newNames.indexOf(ob.dbSnp) > -1)
-
-        let command = 'UNWIND $props AS map CREATE (n:Variant) SET n = map'
+        console.log('ADDING ARRAY')
+        let newObs = phenoObs.filter(ob=> newNames.indexOf(ob.phenotype) > -1)
+        let command = 'UNWIND $props AS map CREATE (n:'+type+') SET n = map'
    
         var session = driver.session();
         session

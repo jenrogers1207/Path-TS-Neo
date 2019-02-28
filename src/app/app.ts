@@ -71,18 +71,51 @@ dataLoad.loadFile().then(d=> {
         return variantOb;
     });
 
+    let knownPhenotypes = om.properties.geneMap.phenotypeMapList.map(p=> {
+        let pheno = p.phenotypeMap
+        let phenoOb = new qo.PhenotypeObject(pheno.phenotype);
+        phenoOb.mimNumber = pheno.momNumber;
+        phenoOb.phenotype = phenoOb.phenotype;// "Bart-Pumphrey syndrome"
+        phenoOb.phenotypeInheritance = pheno.phenotypeInheritance;
+        phenoOb.phenotypeMappingKey = pheno.phenotypeMappingKey;
+        phenoOb.phenotypeMimNumber = pheno.phenotypeMimNumber;
+        return phenoOb;
+    })
+
     gCanvas.renderSidebar(om);
     gCanvas.renderGeneDetail(om);
   
-    neoAPI.addVariants(knownVariants).then(()=> {
+    neoAPI.addNodeArray(knownVariants).then(()=> {
         knownVariants.forEach(v=>{
             neoAPI.addRelation(v.name, 'Variant', om.value, 'Gene', 'Mutation');
-        })
+        });
         neoAPI.getGraph().then(g => gCanvas.drawGraph(g));
+    });
+
+
+  
+    neoAPI.addNodeArray(knownPhenotypes).then(()=> {
+        let varNames = knownVariants.map(v=> v.description.toString())
+        console.log(varNames)
+        let relatedPhenoTypes = knownPhenotypes.map(p=>{
+            console.log(p.name.toUpperCase())
+            console.log(varNames.indexOf(p.name.toUpperCase().toString()))
+            let pindex = varNames.indexOf(p.name.toUpperCase().toString())
+            if(pindex > -1 ){
+                p.varIds = knownVariants[pindex].name;
+            }else{
+                p.varIds = null;
+            }
+            return p;
+        }).filter(p=> p.varIds != null);
+
+        relatedPhenoTypes.forEach(rel => {
+            neoAPI.addRelation(rel.name, 'Phenotype', rel.varIds, 'Variant', 'Phenotype');
+        });
     });
     /*
     om.fileVariants.forEach(variant => {
-        console.log(variant);
+       
         let value = variant.properties.id;
 
         let proxy = 'https://cors-anywhere.herokuapp.com/';
@@ -90,13 +123,8 @@ dataLoad.loadFile().then(d=> {
        // 'https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esummary.fcgi?db=clinvar&id=328931&retmode=json&apiKey=mUYjhLsCRVOuShEhrHLG_w'
         let req = ky.get(proxy + url).json().then(d=> {
             
-            console.log(d);
-            console.log(d.result[value])
         
         });
-    
-       // console.log(req);
-
         
     });*/
 /*
@@ -109,9 +137,7 @@ dataLoad.loadFile().then(d=> {
    // 'https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esummary.fcgi?db=clinvar&id=328931&retmode=json&apiKey=mUYjhLsCRVOuShEhrHLG_w'
     let req = ky.get(proxy + url).json().then(d=> console.log(d));
 
-    console.log(req);
-
-    console.log(varIdQuery);
+  
     /*
                 /*
                 search.getPathways(om);

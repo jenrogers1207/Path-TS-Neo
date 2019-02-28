@@ -95,6 +95,17 @@ function get_format(id, geneId) {
         });
 }
 
+export async function linkData(ob1, ob2){
+    console.log(ob1);
+    console.log(ob2);
+
+    let namesToMatch = ob1.map(p=> {
+        p.phenotype.toUpperCase()
+    });
+    let namesToCheck = ob2.map(v=> v.description);
+
+}
+
 //Formater for CONVERT. Passed as param to query
 export async function getPathways(queryOb) {
 
@@ -169,8 +180,10 @@ function renderText(idArray, response) {
 
 }
 
+
+
 //Formater for LINK. Passed as param to query
-async function linkData(queryOb, idArray) {
+async function getPathway(queryOb, idArray) {
 
     let keggId = (idArray.length > 1) ? idArray[1] : idArray[0];
 
