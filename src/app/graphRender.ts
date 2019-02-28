@@ -10,16 +10,78 @@ export function removeThings(){
     d3.select('#gene-id').selectAll('*').remove();
 }
 
+export async function renderSidebar(data: Object){
+    console.log('data', data)
+    let sidebar = d3.select('#left-nav');
+    let callTable = sidebar.select('.call-table');
+    let geneDiv = callTable.selectAll('.gene').data([data]);
+    geneDiv.exit().remove();
+/*
+    if(data.key != undefined){
+
+        let geneEnterDiv = geneDiv.enter().append('div').attr('class', d=> d.key).classed('gene', true);
+        let geneHeader = geneEnterDiv.append('div').classed('gene-header', true)
+        geneHeader.append('text').text(d=> d.key);
+        geneDiv = geneEnterDiv.merge(geneDiv);
+    
+        let variantBox = geneDiv.append('div').classed('variant-wrapper', true);
+    
+        let variants = variantBox.selectAll('.variant').data(d=>d.values);
+        variants.exit().remove();
+        let varEnter = variants.enter().append('div').classed('variant', true);
+        let varText = varEnter.append('h5').text(d=>d.id);
+        let varDes = varEnter.append('div').classed('var-descript', true).classed('hidden', true);
+        let blurbs = varDes.selectAll('.blurb').data(d=>d3.entries(d)).enter().append('div').classed('blurb', true);
+        blurbs.append('text').text(d=> d.key + ": "+ d.value);
+
+        variants = varEnter.merge(variants);
+  
+        variants.on('click', function(d){
+            console.log(d);
+            let blurb = d3.select(this).select('.var-descript');
+            blurb.classed('hidden')? blurb.classed('hidden', false) : blurb.classed('hidden', true);
+    
+        });
+
+    }else{*/
+       // console.log('data value', data.value)
+        let geneEnterDiv = geneDiv.enter().append('div').attr('class', d=> d.value).classed('gene', true);
+        let geneHeader = geneEnterDiv.append('div').classed('gene-header', true)
+        geneHeader.append('text').text(d=> d.value);
+        geneDiv = geneEnterDiv.merge(geneDiv);
+    
+        let variantBox = geneDiv.append('div').classed('variant-wrapper', true);
+    
+        let variants = variantBox.selectAll('.variant').data(d=>d.properties.allelicVariantList);
+        variants.exit().remove();
+        let varEnter = variants.enter().append('div').classed('variant', true);
+        let varText = varEnter.append('h5').text(d=>d.dbSnps);
+        let varDes = varEnter.append('div').classed('var-descript', true).classed('hidden', true);
+        let blurbs = varDes.selectAll('.blurb').data(d=>d3.entries(d).filter(f=> f.key != 'allelicVariantList')).enter().append('div').classed('blurb', true);
+        blurbs.append('text').text(d=> d.key + ": "+ d.value);
+
+        variants = varEnter.merge(variants);
+  
+        variants.on('click', function(d){
+            let blurb = d3.select(this).select('.var-descript');
+            blurb.classed('hidden')? blurb.classed('hidden', false) : blurb.classed('hidden', true);
+    
+        });
+ //   }
+  
+   
+}
+
 export async function renderGeneDetail(data: Object){
     console.log(data);
-    let headers = d3.keys(data.properties).filter(d=> d != 'allelicVariantList');
-    console.log(headers)
+    let headers = d3.keys(data.properties).filter(d=> d != 'allelicVariantList' && d != 'referenceList');
+    
     let sidebar = d3.select('#left-nav');
     let geneDet = sidebar.select('.gene-detail');
     let geneHeader = geneDet.append('div').attr('class', 'detail-head').append('h3').text(data.value);
     let propertyDivs = geneDet.selectAll('.prop-headers').data(headers);
     let propEnter = propertyDivs.enter().append('div').classed('prop-headers', true);
-    propEnter.append('h5').text((d)=> d)
+    propEnter.append('h4').text((d)=> d)
    // let sections = propEnter.selectAll('.sections').data(d=> data.properties[d]);
    // let secEnter = sections.enter().append('div').classed('sections', true);
     //sections = secEnter.merge(sections);
@@ -30,13 +92,19 @@ export async function renderGeneDetail(data: Object){
 
     let geneMap = propEnter.filter(d=> d == 'geneMap');
     let geneSec = geneMap.selectAll('.sections').data(d=> {
-        console.log(d3.entries(data.properties[d]));
-        return d3.entries(data.properties[d]);
+        console.log(d3.entries(data.properties[d]).filter(d=> d.key != "phenotypeMapList"));
+        return d3.entries(data.properties[d]).filter(d=> d.key != "phenotypeMapList");
     });
-    let geneEnter = geneSec.enter().append('div').classed('gmap sections', true);
+    let geneEnter = geneSec.enter().append('div').classed('geneMap sections', true);
     geneEnter.append('text').text(d=> d.key + ': ' + d.value " <br>");
 
-
+    let textProp = propEnter.filter(d=> d == 'text');
+    let textSec = textProp.selectAll('.sections').data(d=> {
+        return data.properties[d];
+    });
+    let textEnter = textSec.enter().append('div').classed('text sections', true);
+    let headText = textEnter.append('h5').text(d=> d.textSectionTitle + ': ');
+    let textText = textEnter.append('text').text(d=> d.textSectionContent);
 
     propertyDivs = propEnter.merge(propertyDivs);
 
@@ -45,7 +113,7 @@ export async function renderGeneDetail(data: Object){
 }
 
 export function drawGraph(data: Object) {
-
+    console.log(data)
     let canvas = d3.select('#graph-render').select('.graph-canvas'),
         width = +canvas.attr("width"),
         height = +canvas.attr("height"),
@@ -120,7 +188,10 @@ export function drawGraph(data: Object) {
                 .duration(500)
                 .style("opacity", 0);
         });
+        
+//YOU NEED TO FIX THE SELECTED NODE
 
+        /*
     let selectedNode = node.filter(d => {
       
         node.classed('selected', false);
@@ -131,7 +202,7 @@ export function drawGraph(data: Object) {
     selectedNode != null ? selectedNode.classed('selected', true) : console.log('no node');
 
     SelectedTest.queryOb != null ? drawSelectedPanel(SelectedTest.queryOb) : console.log('no code');
-
+*/
     simulation
         .nodes(data.nodes)
         .on("tick", ticked);

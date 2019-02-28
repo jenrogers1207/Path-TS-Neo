@@ -71,7 +71,7 @@ dataLoad.loadFile().then(d=> {
         return variantOb;
     });
 
-    dataLoad.renderSidebar(om);
+    gCanvas.renderSidebar(om);
     gCanvas.renderGeneDetail(om);
   
     neoAPI.addVariants(knownVariants).then(()=> {

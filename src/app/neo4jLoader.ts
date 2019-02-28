@@ -2,7 +2,7 @@ import { searchGeneIds } from "./search";
 import * as d3 from 'D3';
 
 var neo4j = require('neo4j-driver').v1;
-var driver = neo4j.driver("bolt://localhost:11008", neo4j.auth.basic("neo4j", "1234"));
+var driver = neo4j.driver("bolt://localhost:11001", neo4j.auth.basic("neo4j", "1234"));
 var _ = require('lodash');
 
 export async function addNode(queryOb:object, type:string){
@@ -52,21 +52,29 @@ export async function addNode(queryOb:object, type:string){
     }
 
 export async function addVariants(varObs:Array<object>){
-    let prop = varObs;
+    let names: Array<string> = varObs.map(v=> v.dbSnp);
+    let originalNames : Array<string> = await checkForNodeArray(names, 'Variant');
 
-    let command = 'UNWIND $props AS map CREATE (n:Variant) SET n = map'
+    let newNames = names.filter(n=> originalNames.indexOf(n) == -1);
+
+    if(newNames.length > 0){
+        console.log('ADDING VARIANTS')
+        let newObs = varObs.filter(ob=> newNames.indexOf(ob.dbSnp) > -1)
+
+        let command = 'UNWIND $props AS map CREATE (n:Variant) SET n = map'
    
-    var session = driver.session();
-    session
-        .run(command, {props: prop})
-        .then(function(result) {
-            session.close();
+        var session = driver.session();
+        session
+            .run(command, {props: newObs})
+            .then(function(result) {
+                session.close();
 
             console.log("adding to graph");
-        })
-        .catch(function(error:any) {
-            console.log(error);
-        });
+            })
+            .catch(function(error:any) {
+                console.log(error);
+            });
+        }else{ console.log('ALREADY THERE')}
 }
 
 
@@ -83,6 +91,7 @@ export async function addToGraph(query:string, type:string) {
         .catch(function(error:any) {
             console.log(error);
         });
+
 }
 
 export async function checkForNode(name:string, type:string) {
@@ -94,6 +103,24 @@ export async function checkForNode(name:string, type:string) {
         .then(function(result:any) {
             session.close();
             return result.records;
+        })
+        .catch(function(error:any) {
+            console.log(error);
+        });
+}
+
+export async function checkForNodeArray(names:Array<string>, type:string) {
+    let command = 'UNWIND $vars as val MATCH (n:'+type+' {name: val}) RETURN n.name'
+    var session = driver.session();
+    
+    return session
+        .run(command, {vars: names})
+        .then(function(result) {
+            session.close();
+            let resultArray = result.records.map(res => {
+                return res.get('n.name');
+            });
+            return resultArray;
         })
         .catch(function(error:any) {
             console.log(error);
