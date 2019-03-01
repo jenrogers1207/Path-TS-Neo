@@ -144,12 +144,14 @@ export function setNodeProperty(type: string, name:string, prop:string, propValu
 }
 
 export async function getGraph() {
-
-    let command = 'MATCH (v:Variant)-[p:Mutation]->(g:Gene) \
-    RETURN g AS gene, collect(v.name) AS variant';
-    //(a)-[p:path]->(b)
-
-  //  let command = 'RETURN *'
+/*
+    let command = 'MATCH (v, p)-[p:Mutation]->(g) \
+    RETURN g AS gene, collect(v.name) AS variant, collect(p.name) AS phenotype';
+*/
+    let command = 'OPTIONAL MATCH (v)-[m:Mutation]->(g) \
+    OPTIONAL MATCH (p)-[r:Phenotype]->(v) \
+    RETURN collect(v.name) AS variant, collect(p.name) AS phenotype, g AS gene'
+                   
 
     var session = driver.session();
 
@@ -160,7 +162,9 @@ export async function getGraph() {
             var nodes = [],
                 rels = [],
                 i = 0;
-     
+            console.log("result stuff",result);
+
+         
             result.records.forEach(res => {
                
                 nodes.push({ title: res.get('gene').properties.name, label: 'gene', data: res.get('gene').properties });
@@ -170,6 +174,18 @@ export async function getGraph() {
                 res.get('variant').forEach(name => {
                   
                     var path = { title: name, label: 'variant' };
+                    var source = _.findIndex(nodes, path);
+                    if (source == -1) {
+                        nodes.push(path);
+                        source = i;
+                        i++;
+                    }
+                    rels.push({ source, target });
+                });
+
+                res.get('phenotype').forEach(name => {
+                  
+                    var path = { title: name, label: 'phenotype' };
                     var source = _.findIndex(nodes, path);
                     if (source == -1) {
                         nodes.push(path);
@@ -190,13 +206,15 @@ export async function getGraph() {
 
 export async function addRelation(sourceName:string, sourceType:string, targetName:string, targetType:string, linkType:string) {
     
-    let command = 'MATCH (a:'+sourceType+'),(b:'+targetType+') WHERE a.name = "' + sourceName + '" AND b.name = "' + targetName + '" CREATE (a)-[p:'+linkType+']->(b) RETURN p';
-    
+    let command = 'MATCH (a:'+sourceType+'),(b:'+targetType+') \
+    WHERE a.name = "' + sourceName + '" AND b.name = "' + targetName + '"MERGE (a)-[r:'+linkType+']->(b) ON CREATE SET r.alreadyExisted=false ON MATCH SET r.alreadyExisted=true RETURN r.alreadyExisted';
+
     var session = driver.session();
     return session
         .run(command)
         .then(function(result) {
             session.close();
+            console.log('pathway exists?', result)
             return result;
         })
         .catch(function(error) {

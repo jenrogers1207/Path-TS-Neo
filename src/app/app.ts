@@ -96,10 +96,9 @@ dataLoad.loadFile().then(d=> {
   
     neoAPI.addNodeArray(knownPhenotypes).then(()=> {
         let varNames = knownVariants.map(v=> v.description.toString())
-        console.log(varNames)
-        let relatedPhenoTypes = knownPhenotypes.map(p=>{
-            console.log(p.name.toUpperCase())
-            console.log(varNames.indexOf(p.name.toUpperCase().toString()))
+      
+        let relatedPhenotypes = knownPhenotypes.map(p=>{
+         
             let pindex = varNames.indexOf(p.name.toUpperCase().toString())
             if(pindex > -1 ){
                 p.varIds = knownVariants[pindex].name;
@@ -109,10 +108,14 @@ dataLoad.loadFile().then(d=> {
             return p;
         }).filter(p=> p.varIds != null);
 
-        relatedPhenoTypes.forEach(rel => {
+        relatedPhenotypes.forEach(rel => {
             neoAPI.addRelation(rel.name, 'Phenotype', rel.varIds, 'Variant', 'Phenotype');
         });
+
+  
     });
+
+ 
     /*
     om.fileVariants.forEach(variant => {
        
