@@ -1,5 +1,6 @@
 import { searchGeneIds } from "./search";
 import * as d3 from 'D3';
+import { readdirSync } from "fs";
 
 var neo4j = require('neo4j-driver').v1;
 var driver = neo4j.driver("bolt://localhost:11001", neo4j.auth.basic("neo4j", "1234"));
@@ -81,7 +82,7 @@ export async function addNodeArray(phenoObs:Array<object>){
 
 export async function addToGraph(query:string, type:string) {
     let command = 'CREATE (n:' + type + ' {name:"' + query + '"})';
-    console.log(command);
+   // console.log(command);
     var session = driver.session();
     session
         .run(command)
@@ -148,8 +149,8 @@ export async function getGraph() {
     RETURN g AS gene, collect(v.name) AS variant, collect(p.name) AS phenotype';
 */
     let command = 'OPTIONAL MATCH (v)-[m:Mutation]->(g) \
-    OPTIONAL MATCH (p)-[r:Phenotype]->(v) \
-    RETURN collect(v.name) AS variant, collect(p.name) AS phenotype, g AS gene'
+    OPTIONAL MATCH (p)-[r:Pheno]->(v) \
+    RETURN collect(v) AS variant, collect(p) AS phenotype, g AS gene, collect(r) AS phenoRel, collect(m) AS mutationRel'
                    
     var session = driver.session();
 
@@ -161,7 +162,45 @@ export async function getGraph() {
                 rels = [],
                 i = 0;
             console.log("result stuff",result);
+            let test = result.records.map(r=> {
+                let gene = r.get('gene');
+                let vars = r.get('variant').map(v=> {
+                    let vari = new Object();
+                    vari.index = v.identity.low;
+                    vari.title = v.properties.name;
+                    vari.data = v.properties;
+                    vari.label = v.labels[0];
+                    return vari;
+                });
+                
+                let pheno = r.get('phenotype').map(p=> {
+                    let ph = new Object();
+                    ph.index = p.identity.low;
+                    ph.title = p.properties.name;
+                    ph.data = p.properties;
+                    ph.label = p.labels[0];
+                    return ph;
+                });
+                console.log('nodes', pheno, gene, vars)
+               
+                let phenopaths = r.get('phenoRel').map(p=>{
+                    p.start = p.start.low;
+                    p.end = p.end.low;
+                    return p;
+                });
+                let mutationpaths = r.get('mutationRel').map(m=> {
+                    m.start = m.start.low;
+                    m.end = m.end.low;
+                    return m;
+                });
+                console.log('paths', phenopaths, mutationpaths);
+                let nodes = new Array(gene);
+                nodes = nodes.concat(vars, pheno);
+                console.log(nodes)
+                return nodes;
 
+         //   console.log(test.get('variant'));
+            /*
             result.records.forEach(res => {
                
                 nodes.push({ title: res.get('gene').properties.name, label: 'gene', data: res.get('gene').properties });
@@ -179,9 +218,9 @@ export async function getGraph() {
                     }
                     rels.push({ source, target });
                 });
-
+                console.log(res.get('phenotype').properties)
                 res.get('phenotype').forEach(name => {
-                  
+                  console.log(name)
                     var path = { title: name, label: 'phenotype' };
                     var source = _.findIndex(nodes, path);
                     if (source == -1) {
@@ -192,13 +231,17 @@ export async function getGraph() {
                     rels.push({ source, target });
                 });
             });
+           
             console.log(nodes, rels)
             return { nodes, links: rels };
-          
-        })
+          */
+        });
+    })
         .catch(function(error) {
             console.log(error);
         });
+
+
 }
 
 export async function addRelation(sourceName:string, sourceType:string, targetName:string, targetType:string, linkType:string) {
@@ -211,7 +254,7 @@ export async function addRelation(sourceName:string, sourceType:string, targetNa
         .run(command)
         .then(function(result) {
             session.close();
-            console.log('pathway exists '+linkType+'?', result)
+          //  console.log('pathway exists '+linkType+'?', result)
             return result;
         })
         .catch(function(error) {
