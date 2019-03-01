@@ -53,15 +53,16 @@ export async function addNode(queryOb:object, type:string){
 
 //NEED TO CHANGE THIS NAME
 export async function addNodeArray(phenoObs:Array<object>){
-    let names: Array<string> = phenoObs.map(v=> v.phenotype);
+    let names: Array<string> = phenoObs.map(v=> v.name);
     let type = phenoObs[0].type;
     let originalNames : Array<string> = await checkForNodeArray(names, type);
 
     let newNames = names.filter(n=> originalNames.indexOf(n) == -1);
-    console.log('phenoObs',phenoObs);
+   
     if(newNames.length > 0){
         console.log('ADDING ARRAY')
-        let newObs = phenoObs.filter(ob=> newNames.indexOf(ob.phenotype) > -1)
+        let newObs = phenoObs.filter(ob=> newNames.indexOf(ob.name) > -1)
+        console.log(newObs);
         let command = 'UNWIND $props AS map CREATE (n:'+type+') SET n = map'
    
         var session = driver.session();
@@ -78,7 +79,6 @@ export async function addNodeArray(phenoObs:Array<object>){
         }else{ console.log('ALREADY THERE')}
 }
 
-
 export async function addToGraph(query:string, type:string) {
     let command = 'CREATE (n:' + type + ' {name:"' + query + '"})';
     console.log(command);
@@ -92,7 +92,6 @@ export async function addToGraph(query:string, type:string) {
         .catch(function(error:any) {
             console.log(error);
         });
-
 }
 
 export async function checkForNode(name:string, type:string) {
@@ -152,7 +151,6 @@ export async function getGraph() {
     OPTIONAL MATCH (p)-[r:Phenotype]->(v) \
     RETURN collect(v.name) AS variant, collect(p.name) AS phenotype, g AS gene'
                    
-
     var session = driver.session();
 
     return session
@@ -164,7 +162,6 @@ export async function getGraph() {
                 i = 0;
             console.log("result stuff",result);
 
-         
             result.records.forEach(res => {
                
                 nodes.push({ title: res.get('gene').properties.name, label: 'gene', data: res.get('gene').properties });
@@ -214,7 +211,7 @@ export async function addRelation(sourceName:string, sourceType:string, targetNa
         .run(command)
         .then(function(result) {
             session.close();
-            console.log('pathway exists?', result)
+            console.log('pathway exists '+linkType+'?', result)
             return result;
         })
         .catch(function(error) {

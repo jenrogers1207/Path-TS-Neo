@@ -73,9 +73,9 @@ dataLoad.loadFile().then(d=> {
 
     let knownPhenotypes = om.properties.geneMap.phenotypeMapList.map(p=> {
         let pheno = p.phenotypeMap
-        let phenoOb = new qo.PhenotypeObject(pheno.phenotype);
-        phenoOb.mimNumber = pheno.momNumber;
-        phenoOb.phenotype = phenoOb.phenotype;// "Bart-Pumphrey syndrome"
+        let phenoOb = new qo.PhenotypeObject(pheno.phenotypeMimNumber.toString());
+        phenoOb.mimNumber = pheno.mimNumber;
+        phenoOb.description = pheno.phenotype;// "Bart-Pumphrey syndrome"
         phenoOb.phenotypeInheritance = pheno.phenotypeInheritance;
         phenoOb.phenotypeMappingKey = pheno.phenotypeMappingKey;
         phenoOb.phenotypeMimNumber = pheno.phenotypeMimNumber;
@@ -99,7 +99,7 @@ dataLoad.loadFile().then(d=> {
       
         let relatedPhenotypes = knownPhenotypes.map(p=>{
          
-            let pindex = varNames.indexOf(p.name.toUpperCase().toString())
+            let pindex = varNames.indexOf(p.description.toString().toUpperCase())
             if(pindex > -1 ){
                 p.varIds = knownVariants[pindex].name;
             }else{
@@ -109,7 +109,8 @@ dataLoad.loadFile().then(d=> {
         }).filter(p=> p.varIds != null);
 
         relatedPhenotypes.forEach(rel => {
-            neoAPI.addRelation(rel.name, 'Phenotype', rel.varIds, 'Variant', 'Phenotype');
+            console.log('rels', rel);
+            neoAPI.addRelation(rel.name, 'Phenotype', rel.varIds, 'Variant', 'Pheno');
         });
 
   
