@@ -50,7 +50,7 @@ export async function addNode(queryOb:object, type:string){
                 console.log(error);
             });
         }
-    }
+}
 
 //NEED TO CHANGE THIS NAME
 export async function addNodeArray(phenoObs:Array<object>){
@@ -162,8 +162,15 @@ export async function getGraph() {
                 rels = [],
                 i = 0;
             console.log("result stuff",result);
-            let test = result.records.map(r=> {
-                let gene = r.get('gene');
+            return result.records.map(r=> {
+                let gene = new Array(r.get('gene')).map(g=> {
+                    let gen = new Object();
+                    gen.index = g.identity.low;
+                    gen.title = g.properties.name;
+                    gen.data = g.properties;
+                    gen.label = g.labels[0];
+                    return  gen;
+                });
                 let vars = r.get('variant').map(v=> {
                     let vari = new Object();
                     vari.index = v.identity.low;
@@ -172,7 +179,6 @@ export async function getGraph() {
                     vari.label = v.labels[0];
                     return vari;
                 });
-                
                 let pheno = r.get('phenotype').map(p=> {
                     let ph = new Object();
                     ph.index = p.identity.low;
@@ -181,60 +187,74 @@ export async function getGraph() {
                     ph.label = p.labels[0];
                     return ph;
                 });
-                console.log('nodes', pheno, gene, vars)
-               
+
                 let phenopaths = r.get('phenoRel').map(p=>{
-                    p.start = p.start.low;
-                    p.end = p.end.low;
-                    return p;
+                    let ph = new Object();
+                    ph.start = p.start.low;
+                    ph.end = p.end.low;
+                    ph.index = p.identity.low;
+                    ph.type = p.type;
+                    return ph;
                 });
                 let mutationpaths = r.get('mutationRel').map(m=> {
-                    m.start = m.start.low;
-                    m.end = m.end.low;
-                    return m;
+                    let meh = new Object();
+                    meh.start = m.start.low;
+                    meh.end = m.end.low;
+                    meh.index = m.identity.low;
+                    meh.type = m.type;
+                    return meh;
                 });
-                console.log('paths', phenopaths, mutationpaths);
-                let nodes = new Array(gene);
-                nodes = nodes.concat(vars, pheno);
-                console.log(nodes)
-                return nodes;
-
-         //   console.log(test.get('variant'));
-            /*
-            result.records.forEach(res => {
+        
+                let nodes = gene.concat(vars, pheno);
+                let relations = phenopaths.concat(mutationpaths);
+                let indexArray = nodes.map(n=> n.index);
+              //  console.log(indexArray);
+                let rels = relations.map(r=> {
+                   // console.log(r)
+                    var source = indexArray.indexOf(r.start);
+                    var target = indexArray.indexOf(r.end);
+                   // console.log(source, target)
+                    return {source, target}
+                })
+                
+                /*
+                result.records.forEach(res => {
                
-                nodes.push({ title: res.get('gene').properties.name, label: 'gene', data: res.get('gene').properties });
-                var target = i;
-                i++;
+                    nodes.push({ title: res.get('gene').properties.name, label: 'gene', data: res.get('gene').properties });
+                    var target = i;
+                    i++;
+    
+                    res.get('variant').forEach(name => {
+                      
+                        var path = { title: name, label: 'variant' };
+                        var source = _.findIndex(nodes, path);
+                        if (source == -1) {
+                            nodes.push(path);
+                            source = i;
+                            i++;
+                        }
+                        rels.push({ source, target });
+                    });
+                    console.log(res.get('phenotype').properties)
+                    res.get('phenotype').forEach(name => {
+            
+                        var path = { title: name, label: 'phenotype' };
+                        var source = _.findIndex(nodes, path);
+                        if (source == -1) {
+                            nodes.push(path);
+                            source = i;
+                            i++;
+                        }
+                        console.log(source, target)
+                        rels.push({ source, target });
+                    });
+                });
+               
+                console.log(nodes, rels)
+            */
+                
+                return { nodes, links: rels };
 
-                res.get('variant').forEach(name => {
-                  
-                    var path = { title: name, label: 'variant' };
-                    var source = _.findIndex(nodes, path);
-                    if (source == -1) {
-                        nodes.push(path);
-                        source = i;
-                        i++;
-                    }
-                    rels.push({ source, target });
-                });
-                console.log(res.get('phenotype').properties)
-                res.get('phenotype').forEach(name => {
-                  console.log(name)
-                    var path = { title: name, label: 'phenotype' };
-                    var source = _.findIndex(nodes, path);
-                    if (source == -1) {
-                        nodes.push(path);
-                        source = i;
-                        i++;
-                    }
-                    rels.push({ source, target });
-                });
-            });
-           
-            console.log(nodes, rels)
-            return { nodes, links: rels };
-          */
         });
     })
         .catch(function(error) {

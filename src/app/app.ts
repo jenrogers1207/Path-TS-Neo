@@ -112,10 +112,7 @@ dataLoad.loadFile().then(d=> {
             console.log('rels', rel);
             neoAPI.addRelation(rel.name, 'Phenotype', rel.varIds, 'Variant', 'Pheno');
         });
-
-  
     });
-
  
     /*
     om.fileVariants.forEach(variant => {

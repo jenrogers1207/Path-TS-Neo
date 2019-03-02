@@ -89,8 +89,9 @@ export async function renderGeneDetail(data: Object){
 
 }
 
-export function drawGraph(data: Object) {
-    console.log(data)
+export function drawGraph(dataArr: Object) {
+   
+    let data = dataArr[0];
     let canvas = d3.select('#graph-render').select('.graph-canvas'),
         width = +canvas.attr("width"),
         height = +canvas.attr("height"),
@@ -208,7 +209,7 @@ export function drawGraph(data: Object) {
         link.attr("x1", d => {
             return d.source.x;
         }).attr("y1", d => {
-            return d.source.y;
+            return d.sourcet.y;
         }).attr("x2", d => {
             return d.target.x;
         }).attr("y2", d => {
