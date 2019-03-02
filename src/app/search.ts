@@ -108,8 +108,11 @@ export async function linkData(ob1, ob2){
 
 //Formater for CONVERT. Passed as param to query
 export async function getPathways(queryOb) {
+    console.log(queryOb);
+    console.log(queryOb.properties.titles.preferredTitle.contains('PRROTEIN'))
 
     let value = queryOb.properties.ids.ncbi;
+
 
     let proxy = 'https://cors-anywhere.herokuapp.com/';
     let url = 'http://rest.kegg.jp/conv/genes/ncbi-geneid:'+value;

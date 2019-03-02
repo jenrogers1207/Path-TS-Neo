@@ -39,6 +39,10 @@ export async function renderSidebar(data: Object){
             blurb.classed('hidden')? blurb.classed('hidden', false) : blurb.classed('hidden', true);
     
         });
+
+        variants.on('mouseover', function(d){
+            console.log(d);
+        });
  //   }
   
    
@@ -54,9 +58,6 @@ export async function renderGeneDetail(data: Object){
     let propertyDivs = geneDet.selectAll('.prop-headers').data(headers);
     let propEnter = propertyDivs.enter().append('div').classed('prop-headers', true);
     propEnter.append('h4').text((d)=> d)
-   // let sections = propEnter.selectAll('.sections').data(d=> data.properties[d]);
-   // let secEnter = sections.enter().append('div').classed('sections', true);
-    //sections = secEnter.merge(sections);
     let titles = propEnter.filter(d=> d == "titles");
     let titleSec = titles.selectAll('.sections').data(d=> d3.entries(data.properties[d]));
     let titleEnter = titleSec.enter().append('div').classed('title sections', true);
@@ -70,7 +71,7 @@ export async function renderGeneDetail(data: Object){
     let geneEnter = geneSec.enter().append('div').classed('geneMap sections', true);
     geneEnter.append('text').text(d=> d.key + ': ' + d.value " <br>");
 
-    let phenoHead = geneMap.append('h5').text('Phenotype');
+    let phenoHead = geneMap.append('h4').text('Phenotype');
     let phenoSec = geneMap.selectAll('.pheno').data(d => {
         console.log(d3.entries(data.properties[d]).filter(d=> d.key == "phenotypeMapList")[0].value);
         return d3.entries(data.properties[d]).filter(d=> d.key == "phenotypeMapList")[0].value })
@@ -90,8 +91,9 @@ export async function renderGeneDetail(data: Object){
 }
 
 export function drawGraph(dataArr: Object) {
-   
+  // console.log(dataArr)
     let data = dataArr[0];
+  // let data = dataArr;
     let canvas = d3.select('#graph-render').select('.graph-canvas'),
         width = +canvas.attr("width"),
         height = +canvas.attr("height"),
@@ -209,7 +211,7 @@ export function drawGraph(dataArr: Object) {
         link.attr("x1", d => {
             return d.source.x;
         }).attr("y1", d => {
-            return d.sourcet.y;
+            return d.source.y;
         }).attr("x2", d => {
             return d.target.x;
         }).attr("y2", d => {

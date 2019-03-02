@@ -158,10 +158,7 @@ export async function getGraph() {
         .run(command)
         .then(function(result) {
             session.close();
-            var nodes = [],
-                rels = [],
-                i = 0;
-            console.log("result stuff",result);
+     
             return result.records.map(r=> {
                 let gene = new Array(r.get('gene')).map(g=> {
                     let gen = new Object();
@@ -208,53 +205,12 @@ export async function getGraph() {
                 let nodes = gene.concat(vars, pheno);
                 let relations = phenopaths.concat(mutationpaths);
                 let indexArray = nodes.map(n=> n.index);
-              //  console.log(indexArray);
                 let rels = relations.map(r=> {
-                   // console.log(r)
                     var source = indexArray.indexOf(r.start);
                     var target = indexArray.indexOf(r.end);
-                   // console.log(source, target)
-                    return {source, target}
+                    return {'source': source, 'target': target}
                 })
-                
-                /*
-                result.records.forEach(res => {
-               
-                    nodes.push({ title: res.get('gene').properties.name, label: 'gene', data: res.get('gene').properties });
-                    var target = i;
-                    i++;
-    
-                    res.get('variant').forEach(name => {
-                      
-                        var path = { title: name, label: 'variant' };
-                        var source = _.findIndex(nodes, path);
-                        if (source == -1) {
-                            nodes.push(path);
-                            source = i;
-                            i++;
-                        }
-                        rels.push({ source, target });
-                    });
-                    console.log(res.get('phenotype').properties)
-                    res.get('phenotype').forEach(name => {
-            
-                        var path = { title: name, label: 'phenotype' };
-                        var source = _.findIndex(nodes, path);
-                        if (source == -1) {
-                            nodes.push(path);
-                            source = i;
-                            i++;
-                        }
-                        console.log(source, target)
-                        rels.push({ source, target });
-                    });
-                });
-               
-                console.log(nodes, rels)
-            */
-                
-                return { nodes, links: rels };
-
+                return { nodes, links: rels };  
         });
     })
         .catch(function(error) {

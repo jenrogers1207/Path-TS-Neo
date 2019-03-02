@@ -57,7 +57,6 @@ dataLoad.loadFile().then(d=> {
             searchOMIM(d).then(om=>{  
                 neoAPI.addNode(om, 'Gene');
 
-       
     let knownVariants = om.properties.allelicVariantList.map(v=> {
         let variantOb = new qo.VariantObject(v.dbSnps);
         variantOb.name = v.dbSnps;
@@ -92,8 +91,6 @@ dataLoad.loadFile().then(d=> {
         neoAPI.getGraph().then(g => gCanvas.drawGraph(g));
     });
 
-
-  
     neoAPI.addNodeArray(knownPhenotypes).then(()=> {
         let varNames = knownVariants.map(v=> v.description.toString())
       
@@ -109,10 +106,11 @@ dataLoad.loadFile().then(d=> {
         }).filter(p=> p.varIds != null);
 
         relatedPhenotypes.forEach(rel => {
-            console.log('rels', rel);
             neoAPI.addRelation(rel.name, 'Phenotype', rel.varIds, 'Variant', 'Pheno');
         });
     });
+
+    search.getPathways(om);
  
     /*
     om.fileVariants.forEach(variant => {
