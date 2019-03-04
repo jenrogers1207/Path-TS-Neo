@@ -27,7 +27,7 @@ export async function renderSidebar(data: Object){
         let variants = variantBox.selectAll('.variant').data(d=>d.properties.allelicVariantList);
         variants.exit().remove();
         let varEnter = variants.enter().append('div').classed('variant', true);
-        let varText = varEnter.append('h5').text(d=>d.dbSnps);
+        let varText = varEnter.append('h5').text(d=>d.name);
         let varDes = varEnter.append('div').classed('var-descript', true).classed('hidden', true);
         let blurbs = varDes.selectAll('.blurb').data(d=>d3.entries(d).filter(f=> f.key != 'allelicVariantList')).enter().append('div').classed('blurb', true);
         blurbs.append('text').text(d=> d.key + ": "+ d.value);
@@ -49,7 +49,7 @@ export async function renderSidebar(data: Object){
 }
 
 export async function renderGeneDetail(data: Object){
-    console.log(data);
+    console.log("data forr gene", data);
     let headers = d3.keys(data.properties).filter(d=> d != 'allelicVariantList' && d != 'referenceList');
     
     let sidebar = d3.select('#left-nav');

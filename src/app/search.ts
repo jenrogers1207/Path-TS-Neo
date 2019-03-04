@@ -26,9 +26,20 @@ export async function searchBySymbol(queryOb:object) {
               
     query.properties.ids = ids
 
-
     return query;
     
+}
+
+export async function loadSNP(value: string){
+
+    let digits = value.replace(/\D/g,'');
+    let proxy = 'https://cors-anywhere.herokuapp.com/';
+    //let url = 'https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esummary.fcgi?db=clinvar&id='+digits+'&retmode=json&apiKey=mUYjhLsCRVOuShEhrHLG_w'
+   // 'https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esummary.fcgi?db=clinvar&id=328931&retmode=json&apiKey=mUYjhLsCRVOuShEhrHLG_w'
+    let url = 'https://api.ncbi.nlm.nih.gov/variation/v0/beta/refsnp/' + digits;
+    let req = await ky.get(proxy + url).json();
+    console.log(req);
+    return req.primary_snapshot_data;
 }
 
 export async function searchOMIM(queryOb:any){
@@ -72,7 +83,8 @@ export async function geneIdtoMim(queryOb:any){
            
     return query;
 }
-
+//This is forr gettingpathway
+/*
 function get_format(id, geneId) {
     let url = 'http://rest.kegg.jp/get/' + id + '/kgml';
     let proxy = 'https://cors-anywhere.herokuapp.com/';
@@ -93,7 +105,7 @@ function get_format(id, geneId) {
                 return;
             }
         });
-}
+}*/
 
 export async function linkData(ob1, ob2){
     console.log(ob1);
@@ -119,11 +131,7 @@ export async function getPathways(queryOb) {
 
     let req =  await ky.get('https://cors-anywhere.herokuapp.com/http://rest.kegg.jp/conv/genes/ncbi-geneid:'+value).text();
 
-    console.log(req);
-    
     let idstring:Array<string> = await grabId('ncbi-geneid', req);
-
-    console.log(idstring[1]);
 
     let keggId = null;
 
@@ -133,10 +141,8 @@ export async function getPathways(queryOb) {
 
     let req2 =  await ky.get(proxy+ url2).text();
 
-    console.log(req2);
-
 }
-
+/*
 async function grabId(query, list) {
     let stringArray = new Array();
 
@@ -224,4 +230,4 @@ async function getPathway(queryOb, idArray) {
 
     return data;
 
-}
+}*/

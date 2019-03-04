@@ -52,7 +52,7 @@ export async function addNode(queryOb:object, type:string){
         }
 }
 
-//NEED TO CHANGE THIS NAME
+
 export async function addNodeArray(phenoObs:Array<object>){
     let names: Array<string> = phenoObs.map(v=> v.name);
     let type = phenoObs[0].type;

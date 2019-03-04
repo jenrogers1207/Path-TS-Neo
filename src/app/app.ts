@@ -48,57 +48,71 @@ dataLoad.loadFile().then(d=> {
         });
         return variant
     });
-  
-    dataOb.fileVariants = varArray;
+
+    async function initialSearch(queryOb: object){
+
+            let idSearch = await search.searchBySymbol(queryOb);
+            let mimId = await search.geneIdtoMim(idSearch);
+            let omim = await searchOMIM(mimId);
+            console.log("omim", omim)
+            return omim;
+           
+    }
+ 
+    async function isStored(graph: object, nameSearch:string, nodeType:string){
+        let foundGraphNodes = graph.nodes.filter(n=> n.data.symbol == nameSearch);
+        let nodeOb = await foundGraphNodes.length > 0 ? foundGraphNodes[0] : initialSearch(dataOb);
+        console.log(nodeOb);
+        neoAPI.addNode(nodeOb, nodeType);
+        return nodeOb
+    }
+
+    neoAPI.getGraph().then(g => {
+       
+        let nodeOb = isStored(g[0], 'GJB2', 'Gene');
+        console.log('nodeOb outside', nodeOb);
+        gCanvas.drawGraph(g);
     
-    search.searchBySymbol(dataOb).then(q=> {
-
-        search.geneIdtoMim(q).then(d=> {
-            searchOMIM(d).then(om=>{  
-                neoAPI.addNode(om, 'Gene');
-
-    let knownVariants = om.properties.allelicVariantList.map(v=> {
-        let variantOb = new qo.VariantObject(v.dbSnps);
-        variantOb.name = v.dbSnps;
-        variantOb.gene = om.value;
-        variantOb.mimNumber = v.mimNumber;
-        variantOb.mutations = v.mutations;
-        variantOb.description = v.name;
-        variantOb.clinvarAccessions = variantOb.clinvarAccessions;
-        variantOb.text = v.text;
+        dataOb.fileVariants = varArray;
         
-        return variantOb;
+        qo.structVariants(nodeOb).then(node=> {
+            console.log(node)
+            let knownPhenotypes = node.properties.geneMap.phenotypeMapList.map(p=> {
+                let pheno = p.phenotypeMap
+                let phenoOb = new qo.PhenotypeObject(pheno.phenotypeMimNumber.toString());
+                phenoOb.mimNumber = pheno.mimNumber;
+                phenoOb.description = pheno.phenotype;// "Bart-Pumphrey syndrome"
+                phenoOb.phenotypeInheritance = pheno.phenotypeInheritance;
+                phenoOb.phenotypeMappingKey = pheno.phenotypeMappingKey;
+                phenoOb.phenotypeMimNumber = pheno.phenotypeMimNumber;
+                return phenoOb;
+            })
+    
     });
+  
+      
 
-    let knownPhenotypes = om.properties.geneMap.phenotypeMapList.map(p=> {
-        let pheno = p.phenotypeMap
-        let phenoOb = new qo.PhenotypeObject(pheno.phenotypeMimNumber.toString());
-        phenoOb.mimNumber = pheno.mimNumber;
-        phenoOb.description = pheno.phenotype;// "Bart-Pumphrey syndrome"
-        phenoOb.phenotypeInheritance = pheno.phenotypeInheritance;
-        phenoOb.phenotypeMappingKey = pheno.phenotypeMappingKey;
-        phenoOb.phenotypeMimNumber = pheno.phenotypeMimNumber;
-        return phenoOb;
-    })
+   
+/*
+
 
     gCanvas.renderSidebar(om);
     gCanvas.renderGeneDetail(om);
   
-    neoAPI.addNodeArray(knownVariants).then(()=> {
-        knownVariants.forEach(v=>{
+    neoAPI.addNodeArray(om.properties.allelicVariantList).then(()=> {
+        om.properties.allelicVariantList.forEach(v=>{
             neoAPI.addRelation(v.name, 'Variant', om.value, 'Gene', 'Mutation');
         });
-        neoAPI.getGraph().then(g => gCanvas.drawGraph(g));
     });
 
     neoAPI.addNodeArray(knownPhenotypes).then(()=> {
-        let varNames = knownVariants.map(v=> v.description.toString())
+        let varNames = om.properties.allelicVariantList.map(v=> v.description.toString())
       
         let relatedPhenotypes = knownPhenotypes.map(p=>{
          
             let pindex = varNames.indexOf(p.description.toString().toUpperCase())
             if(pindex > -1 ){
-                p.varIds = knownVariants[pindex].name;
+                p.varIds = om.properties.allelicVariantList[pindex].name;
             }else{
                 p.varIds = null;
             }
@@ -110,22 +124,12 @@ dataLoad.loadFile().then(d=> {
         });
     });
 
-    search.getPathways(om);
- 
-    /*
-    om.fileVariants.forEach(variant => {
-       
-        let value = variant.properties.id;
+    });
 
-        let proxy = 'https://cors-anywhere.herokuapp.com/';
-        let url = 'https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esummary.fcgi?db=clinvar&id='+value+'&retmode=json&apiKey=mUYjhLsCRVOuShEhrHLG_w'
-       // 'https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esummary.fcgi?db=clinvar&id=328931&retmode=json&apiKey=mUYjhLsCRVOuShEhrHLG_w'
-        let req = ky.get(proxy + url).json().then(d=> {
-            
-        
-        });
-        
-    });*/
+
+  //  search.getPathways(om);
+ 
+
 /*
     let variantIds = om.fileVariants.map(v=> v.properties.id);
 
@@ -147,13 +151,13 @@ dataLoad.loadFile().then(d=> {
                     neoAPI.addNode(variant, 'Variant').then(()=>{ 
                         neoAPI.addRelation(om.value,'Gene', variant.name, 'Variant', 'Mutation');
                     });
-                 }).then(()=> neoAPI.getGraph().then(g => gCanvas.drawGraph(g)));*/
+                 }).then(()=> neoAPI.getGraph().then(g => gCanvas.drawGraph(g)));
               //  .then(()=> neoAPI.getGraph().then(g => gCanvas.drawGraph(g)));
             });
 
         });
         
-
+*/
 //neoAPI.getGraph().then(g => gCanvas.drawGraph(g));
-    });
+  //  });
 });
