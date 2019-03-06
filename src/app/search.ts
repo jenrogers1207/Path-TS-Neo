@@ -38,7 +38,7 @@ export async function loadSNP(value: string){
    // 'https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esummary.fcgi?db=clinvar&id=328931&retmode=json&apiKey=mUYjhLsCRVOuShEhrHLG_w'
     let url = 'https://api.ncbi.nlm.nih.gov/variation/v0/beta/refsnp/' + digits;
     let req = await ky.get(proxy + url).json();
-    console.log(req);
+ 
     return req.primary_snapshot_data;
 }
 

@@ -70,13 +70,13 @@ export class QueryKeeper{
 }
 
 export async function structVariants(nodeP: object){
-    console.log("in strructurer", nodeP)
+
     let nodeOb = await Promise.resolve(nodeP)
-
-    let variants = nodeOb.properties ? nodeOb.properties.allelicVariantList : JSON.parse(nodeOb.data.allelicVariantList);
+ 
+    let variants = typeof nodeOb.properties.allelicVariantList === 'string' ? JSON.parse(nodeOb.properties.allelicVariantList) : nodeOb.properties.allelicVariantList;
     if(!nodeOb.properties){ nodeOb.properties = nodeOb.data}
-
-    nodeOb.properties.allelicVariantList = await variants.map(v=> {
+    console.log(typeof variants)
+    nodeOb.properties.allelicVariantList = variants.map(v=> {
         let variantOb = new VariantObject(v.dbSnps);
         variantOb.name = v.dbSnps;
         variantOb.dbSnps = v.dbSnp;
@@ -86,11 +86,30 @@ export async function structVariants(nodeP: object){
         variantOb.description = v.name;
         variantOb.clinvarAccessions = v.clinvarAccessions;
         variantOb.text = v.text;
-        variantOb.props = search.loadSNP(variantOb.name).then(d=> console.log(d));
+        variantOb.snpProps = v.snpProps? v.snpProps : search.loadSNP(variantOb.name);
       //  console.log(variantOb.props)
         return variantOb;
     });
     return await nodeOb
+}
+
+export async function structPheno(nodeP: object){
+
+    let nodeOb = await Promise.resolve(nodeP);
+
+    nodeOb.properties.geneMap = typeof nodeOb.properties.geneMap == 'string'? JSON.parse(nodeOb.properties.geneMap) : nodeOb.properties.geneMap;
+
+    nodeOb.properties.geneMap.phenotypeMapList = nodeOb.properties.geneMap.phenotypeMapList.map(p=> {
+        let pheno = p.phenotypeMap
+        let phenoOb = new PhenotypeObject(pheno.phenotypeMimNumber.toString());
+        phenoOb.mimNumber = pheno.mimNumber;
+        phenoOb.description = pheno.phenotype;// "Bart-Pumphrey syndrome"
+        phenoOb.phenotypeInheritance = pheno.phenotypeInheritance;
+        phenoOb.phenotypeMappingKey = pheno.phenotypeMappingKey;
+        phenoOb.phenotypeMimNumber = pheno.phenotypeMimNumber;
+        return phenoOb;
+    });
+    return nodeOb;
 }
 
 export async function drawSelectedPanel(query) {
@@ -98,5 +117,4 @@ export async function drawSelectedPanel(query) {
     panel.selectAll('*').remove();
     panel.append('h2').text(query.name);
     query.description != undefined ? panel.append('text').text(query.description) : panel.append('text').text('pathway');
-
 }

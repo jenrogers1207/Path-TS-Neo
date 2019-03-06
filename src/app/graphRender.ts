@@ -19,7 +19,7 @@ export async function renderSidebar(data: Object){
 
         let geneEnterDiv = geneDiv.enter().append('div').attr('class', d=> d.value).classed('gene', true);
         let geneHeader = geneEnterDiv.append('div').classed('gene-header', true)
-        geneHeader.append('text').text(d=> d.value);
+        geneHeader.append('text').text(d=> d.title);
         geneDiv = geneEnterDiv.merge(geneDiv);
     
         let variantBox = geneDiv.append('div').classed('variant-wrapper', true);
@@ -49,23 +49,28 @@ export async function renderSidebar(data: Object){
 }
 
 export async function renderGeneDetail(data: Object){
-    console.log("data forr gene", data);
-    let headers = d3.keys(data.properties).filter(d=> d != 'allelicVariantList' && d != 'referenceList');
+    console.log("data for gene", data);
+    let headers = d3.keys(data.properties).filter(d=> d != 'allelicVariantList' && d != 'referenceList' && d != 'name');
     
     let sidebar = d3.select('#left-nav');
     let geneDet = sidebar.select('.gene-detail');
-    let geneHeader = geneDet.append('div').attr('class', 'detail-head').append('h3').text(data.value);
+    let geneHeader = geneDet.append('div').attr('class', 'detail-head').append('h2').text(data.title);
     let propertyDivs = geneDet.selectAll('.prop-headers').data(headers);
     let propEnter = propertyDivs.enter().append('div').classed('prop-headers', true);
-    propEnter.append('h4').text((d)=> d)
+    propEnter.append('h3').text((d)=> d);
+    let ids = propEnter.filter(d=> d == 'MIM' || d == 'entrezgene' || d == 'symbol' || d == 'description');
+    let idsSec = ids.append('text').text(d=> data.properties[d]);
+  
     let titles = propEnter.filter(d=> d == "titles");
-    let titleSec = titles.selectAll('.sections').data(d=> d3.entries(data.properties[d]));
+    let titleSec = titles.selectAll('.sections').data(d=> {
+        let titleData = typeof data.properties[d] == "string" ? d3.entries(JSON.parse(data.properties[d])) : d3.entries(data.properties[d]);
+        return titleData;
+    });
     let titleEnter = titleSec.enter().append('div').classed('title sections', true);
     titleEnter.append('text').text(d=> d.value);
 
     let geneMap = propEnter.filter(d=> d == 'geneMap');
     let geneSec = geneMap.selectAll('.sections').data(d=> {
-        console.log(d3.entries(data.properties[d]).filter(d=> d.key != "phenotypeMapList"));
         return d3.entries(data.properties[d]).filter(d=> d.key != "phenotypeMapList");
     });
     let geneEnter = geneSec.enter().append('div').classed('geneMap sections', true);
@@ -73,18 +78,25 @@ export async function renderGeneDetail(data: Object){
 
     let phenoHead = geneMap.append('h4').text('Phenotype');
     let phenoSec = geneMap.selectAll('.pheno').data(d => {
-        console.log(d3.entries(data.properties[d]).filter(d=> d.key == "phenotypeMapList")[0].value);
         return d3.entries(data.properties[d]).filter(d=> d.key == "phenotypeMapList")[0].value })
     let phenoEnter = phenoSec.enter().append('div').classed('pheno sections', true);
-    phenoEnter.append('text').text(d=> d.phenotypeMap.phenotype + ': ' + d.phenotypeMap.phenotypeInheritance " <br>");
+    phenoEnter.append('text').text(d=> {
+        d.phenotype + ': ' + d.phenotypeInheritance " <br>"});
 
     let textProp = propEnter.filter(d=> d == 'text');
     let textSec = textProp.selectAll('.sections').data(d=> {
-        return data.properties[d];
+        let textData = typeof data.properties[d] == 'string' ? JSON.parse(data.properties[d]) : data.properties[d];
+        return textData;
     });
     let textEnter = textSec.enter().append('div').classed('text sections', true);
-    let headText = textEnter.append('h5').text(d=> d.textSectionTitle + ': ');
-    let textText = textEnter.append('text').text(d=> d.textSectionContent);
+    let headText = textEnter.append('div').append('h4').text(d=> d.textSectionTitle + ': ');
+    let textDiv = textEnter.append('div').classed('textbody', true).classed('hidden', true);
+    let textText = textDiv.append('text').text(d=> d.textSectionContent);
+
+    headText.on('click', function(d) {
+        let text = this.parentNode.nextSibling
+        d3.select(text).classed('hidden')? d3.select(text).classed('hidden', false) : d3.select(text).classed('hidden', true);
+    })
 
     propertyDivs = propEnter.merge(propertyDivs);
 
@@ -151,7 +163,7 @@ export function drawGraph(dataArr: Object) {
     node = nodeEnter.merge(node);
 
     node.on('click', (d) => {
-        SelectedTest.queryOb = d.data;
+        SelectedTest.queryOb = d.properties;
         drawGraph(data);
     });
 

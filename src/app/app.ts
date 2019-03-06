@@ -60,7 +60,7 @@ dataLoad.loadFile().then(d=> {
     }
  
     async function isStored(graph: object, nameSearch:string, nodeType:string){
-        let foundGraphNodes = graph.nodes.filter(n=> n.data.symbol == nameSearch);
+        let foundGraphNodes = graph.nodes.filter(n=> n.properties.symbol == nameSearch);
         let nodeOb = await foundGraphNodes.length > 0 ? foundGraphNodes[0] : initialSearch(dataOb);
         console.log(nodeOb);
         neoAPI.addNode(nodeOb, nodeType);
@@ -70,34 +70,22 @@ dataLoad.loadFile().then(d=> {
     neoAPI.getGraph().then(g => {
        
         let nodeOb = isStored(g[0], 'GJB2', 'Gene');
-        console.log('nodeOb outside', nodeOb);
         gCanvas.drawGraph(g);
     
         dataOb.fileVariants = varArray;
         
         qo.structVariants(nodeOb).then(node=> {
-            console.log(node)
-            let knownPhenotypes = node.properties.geneMap.phenotypeMapList.map(p=> {
-                let pheno = p.phenotypeMap
-                let phenoOb = new qo.PhenotypeObject(pheno.phenotypeMimNumber.toString());
-                phenoOb.mimNumber = pheno.mimNumber;
-                phenoOb.description = pheno.phenotype;// "Bart-Pumphrey syndrome"
-                phenoOb.phenotypeInheritance = pheno.phenotypeInheritance;
-                phenoOb.phenotypeMappingKey = pheno.phenotypeMappingKey;
-                phenoOb.phenotypeMimNumber = pheno.phenotypeMimNumber;
-                return phenoOb;
-            })
-    
-    });
+            qo.structPheno(node).then(n=> {
+                gCanvas.renderSidebar(n);
+                gCanvas.renderGeneDetail(n);
+                   
+            });
+        });
   
-      
-
-   
 /*
 
 
-    gCanvas.renderSidebar(om);
-    gCanvas.renderGeneDetail(om);
+    
   
     neoAPI.addNodeArray(om.properties.allelicVariantList).then(()=> {
         om.properties.allelicVariantList.forEach(v=>{

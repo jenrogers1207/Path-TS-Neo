@@ -164,7 +164,7 @@ export async function getGraph() {
                     let gen = new Object();
                     gen.index = g.identity.low;
                     gen.title = g.properties.name;
-                    gen.data = g.properties;
+                    gen.properties = g.properties;
                     gen.label = g.labels[0];
                     return  gen;
                 });
@@ -172,7 +172,7 @@ export async function getGraph() {
                     let vari = new Object();
                     vari.index = v.identity.low;
                     vari.title = v.properties.name;
-                    vari.data = v.properties;
+                    vari.properties = v.properties;
                     vari.label = v.labels[0];
                     return vari;
                 });
@@ -180,7 +180,7 @@ export async function getGraph() {
                     let ph = new Object();
                     ph.index = p.identity.low;
                     ph.title = p.properties.name;
-                    ph.data = p.properties;
+                    ph.properties = p.properties;
                     ph.label = p.labels[0];
                     return ph;
                 });
