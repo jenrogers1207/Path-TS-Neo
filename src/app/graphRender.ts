@@ -77,11 +77,12 @@ export async function renderGeneDetail(data: Object){
     geneEnter.append('text').text(d=> d.key + ': ' + d.value " <br>");
 
     let phenoHead = geneMap.append('h4').text('Phenotype');
-    let phenoSec = geneMap.selectAll('.pheno').data(d => {
-        return d3.entries(data.properties[d]).filter(d=> d.key == "phenotypeMapList")[0].value })
+    let phenoSec = geneMap.selectAll('.pheno').data(d => data.properties[d].phenotypeMapList);
     let phenoEnter = phenoSec.enter().append('div').classed('pheno sections', true);
+
     phenoEnter.append('text').text(d=> {
-        d.phenotype + ': ' + d.phenotypeInheritance " <br>"});
+        console.log(d);
+        return d.description + ': ' + d.phenotypeInheritance " <br>"});
 
     let textProp = propEnter.filter(d=> d == 'text');
     let textSec = textProp.selectAll('.sections').data(d=> {

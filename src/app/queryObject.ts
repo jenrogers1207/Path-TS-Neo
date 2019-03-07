@@ -75,18 +75,19 @@ export async function structVariants(nodeP: object){
  
     let variants = typeof nodeOb.properties.allelicVariantList === 'string' ? JSON.parse(nodeOb.properties.allelicVariantList) : nodeOb.properties.allelicVariantList;
     if(!nodeOb.properties){ nodeOb.properties = nodeOb.data}
-    console.log(typeof variants)
+    console.log("variants?", variants)
     nodeOb.properties.allelicVariantList = variants.map(v=> {
-        let variantOb = new VariantObject(v.dbSnps);
-        variantOb.name = v.dbSnps;
-        variantOb.dbSnps = v.dbSnp;
+        console.log(v.properties)
+        let variantOb = new VariantObject(v.properties.dbSnps);
+        variantOb.name = v.properties.dbSnps;
+        variantOb.dbSnps = v.properties.dbSnp;
         variantOb.gene = nodeOb.value;
-        variantOb.mimNumber = v.mimNumber;
-        variantOb.mutations = v.mutations;
-        variantOb.description = v.name;
-        variantOb.clinvarAccessions = v.clinvarAccessions;
-        variantOb.text = v.text;
-        variantOb.snpProps = v.snpProps? v.snpProps : search.loadSNP(variantOb.name);
+        variantOb.mimNumber = v.properties.mimNumber;
+        variantOb.mutations = v.properties.mutations;
+        variantOb.description = v.properties.name;
+        variantOb.clinvarAccessions = v.properties.clinvarAccessions;
+        variantOb.text = v.properties.text;
+        variantOb.snpProps = v.properties.snpProps? v.snpProps : search.loadSNP(variantOb.name);
       //  console.log(variantOb.props)
         return variantOb;
     });

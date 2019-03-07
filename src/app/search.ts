@@ -31,14 +31,14 @@ export async function searchBySymbol(queryOb:object) {
 }
 
 export async function loadSNP(value: string){
-
+ 
     let digits = value.replace(/\D/g,'');
     let proxy = 'https://cors-anywhere.herokuapp.com/';
     //let url = 'https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esummary.fcgi?db=clinvar&id='+digits+'&retmode=json&apiKey=mUYjhLsCRVOuShEhrHLG_w'
    // 'https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esummary.fcgi?db=clinvar&id=328931&retmode=json&apiKey=mUYjhLsCRVOuShEhrHLG_w'
     let url = 'https://api.ncbi.nlm.nih.gov/variation/v0/beta/refsnp/' + digits;
     let req = await ky.get(proxy + url).json();
- 
+    neoAPI.setNodeProperty('Variant', value, 'snpProps', JSON.stringify(req.primary_snapshot_data))
     return req.primary_snapshot_data;
 }
 

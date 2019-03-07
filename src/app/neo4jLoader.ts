@@ -130,11 +130,12 @@ export async function checkForNodeArray(names:Array<string>, type:string) {
 
 export function setNodeProperty(type: string, name:string, prop:string, propValue:string) {
     //
-    let command = 'MATCH (n:"'+type+'"{name: "' + name + '" }) SET n.' + prop + '= "' + propValue + '"';
+    let command = 'MATCH (n:'+type+' {name: "' + name + '" }) UNWIND $props AS map SET n.' + prop + ' = map';
+     
     var session = driver.session();
 
     session
-        .run(command)
+        .run(command, {props: propValue})
         .then(function(result:any) {
             session.close();
         })

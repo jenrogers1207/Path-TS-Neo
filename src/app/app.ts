@@ -68,18 +68,21 @@ dataLoad.loadFile().then(d=> {
     }
 
     neoAPI.getGraph().then(g => {
-       
-        let nodeOb = isStored(g[0], 'GJB2', 'Gene');
-        gCanvas.drawGraph(g);
-    
-        dataOb.fileVariants = varArray;
+        console.log()
+        let nodeOb = isStored(g[0], 'GJB2', 'Gene').then(nodeO=> {
+            let variants = g[0].nodes.filter(d=> d.label == 'Variant');
+            gCanvas.drawGraph(g);
+
+            nodeO.properties.allelicVariantList = variants;
         
-        qo.structVariants(nodeOb).then(node=> {
-            qo.structPheno(node).then(n=> {
-                gCanvas.renderSidebar(n);
-                gCanvas.renderGeneDetail(n);
+            qo.structVariants(nodeO).then(node=> {
+                qo.structPheno(node).then(n=> {
+                    gCanvas.renderSidebar(n);
+                    gCanvas.renderGeneDetail(n);
                    
             });
+        });
+        
         });
   
 /*
