@@ -62,13 +62,13 @@ dataLoad.loadFile().then(d=> {
     async function isStored(graph: object, nameSearch:string, nodeType:string){
         let foundGraphNodes = graph.nodes.filter(n=> n.properties.symbol == nameSearch);
         let nodeOb = await foundGraphNodes.length > 0 ? foundGraphNodes[0] : initialSearch(dataOb);
-        console.log(nodeOb);
+       
         neoAPI.addNode(nodeOb, nodeType);
         return nodeOb
     }
 
     neoAPI.getGraph().then(g => {
-        console.log()
+      
         let nodeOb = isStored(g[0], 'GJB2', 'Gene').then(nodeO=> {
             let variants = g[0].nodes.filter(d=> d.label == 'Variant');
             gCanvas.drawGraph(g);
@@ -76,6 +76,7 @@ dataLoad.loadFile().then(d=> {
             nodeO.properties.allelicVariantList = variants;
         
             qo.structVariants(nodeO).then(node=> {
+                console.log(node);
                 qo.structPheno(node).then(n=> {
                     gCanvas.renderSidebar(n);
                     gCanvas.renderGeneDetail(n);
