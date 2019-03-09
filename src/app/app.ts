@@ -54,7 +54,7 @@ dataLoad.loadFile().then(d=> {
             let idSearch = await search.searchBySymbol(queryOb);
             let mimId = await search.geneIdtoMim(idSearch);
             let omim = await searchOMIM(mimId);
-            console.log("omim", omim)
+           // console.log("omim", omim)
             return omim;
            
     }
@@ -76,7 +76,6 @@ dataLoad.loadFile().then(d=> {
             nodeO.properties.allelicVariantList = variants;
         
             qo.structVariants(nodeO).then(node=> {
-                console.log(node);
                 qo.structPheno(node).then(n=> {
                     gCanvas.renderSidebar(n);
                     gCanvas.renderGeneDetail(n);

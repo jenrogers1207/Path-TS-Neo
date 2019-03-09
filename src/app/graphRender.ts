@@ -11,7 +11,7 @@ export function removeThings(){
 }
 
 export async function renderSidebar(data: Object){
-    console.log('data', data)
+   // console.log('data', data)
     let sidebar = d3.select('#left-nav');
     let callTable = sidebar.select('.call-table');
     let geneDiv = callTable.selectAll('.gene').data([data]);
@@ -28,24 +28,39 @@ export async function renderSidebar(data: Object){
         variants.exit().remove();
         let varEnter = variants.enter().append('div').classed('variant', true);
         let varText = varEnter.append('h5').text(d=>d.name);
+       
+        varText.on('click', function(d){
+            let text = this.nextSibling;
+            d3.select(text).classed('hidden')? d3.select(text).classed('hidden', false) : d3.select(text).classed('hidden', true);
+        });
+
         let varDes = varEnter.append('div').classed('var-descript', true).classed('hidden', true);
-        let blurbs = varDes.selectAll('.blurb').data(d=>d3.entries(d).filter(f=> f.key != 'allelicVariantList')).enter().append('div').classed('blurb', true);
-        blurbs.append('text').text(d=> d.key + ": "+ d.value);
+        let blurbs = varDes.selectAll('.blurb').data(d=>d3.entries(d)
+                .filter(f=> f.key != 'allelicVariantList' && f.key != 'text' && f.key != 'name'))
+                .enter().append('div').classed('blurb', true);
+
+        let idBlurbs = blurbs.filter(b=> b.key != 'snpProps').append('text').text(d=> d.key + ": "+ d.value);
+        let snps = blurbs.filter(b=> b.key == 'snpProps').selectAll('.snp').data(d=> d3.entries(d.value));
+        let snpEnter = snps.enter().append('div').classed('snp', true);
+        snpEnter.append('text').text(d=> d.key + ": ");
+        snps = snpEnter.merge(snps)
 
         variants = varEnter.merge(variants);
   
-        variants.on('click', function(d){
-            let blurb = d3.select(this).select('.var-descript');
-            blurb.classed('hidden')? blurb.classed('hidden', false) : blurb.classed('hidden', true);
-    
-        });
-
         variants.on('mouseover', function(d){
-            console.log(d);
+           // console.log(d);
         });
- //   }
-  
-   
+     
+        let test = data.properties.allelicVariantList.filter(d=>  d.snpProps.allele_annotations != undefined );
+        console.log(test.map(d=> d.snpProps.allele_annotations.map(t=> t.clinical)));
+        let pathArray = test.map(d=> d.name);
+
+        varEnter
+
+       // console.log(data.properties.allelicVariantList.filter(d=>  d.snpProps.allele_annotations ))
+
+
+    
 }
 
 export async function renderGeneDetail(data: Object){
@@ -81,7 +96,6 @@ export async function renderGeneDetail(data: Object){
     let phenoEnter = phenoSec.enter().append('div').classed('pheno sections', true);
 
     phenoEnter.append('text').text(d=> {
-        console.log(d);
         return d.description + ': ' + d.phenotypeInheritance " <br>"});
 
     let textProp = propEnter.filter(d=> d == 'text');

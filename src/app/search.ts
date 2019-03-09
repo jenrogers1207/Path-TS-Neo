@@ -108,8 +108,8 @@ function get_format(id, geneId) {
 }*/
 
 export async function linkData(ob1, ob2){
-    console.log(ob1);
-    console.log(ob2);
+  //  console.log(ob1);
+  //  console.log(ob2);
 
     let namesToMatch = ob1.map(p=> {
         p.phenotype.toUpperCase()
@@ -120,8 +120,8 @@ export async function linkData(ob1, ob2){
 
 //Formater for CONVERT. Passed as param to query
 export async function getPathways(queryOb) {
-    console.log(queryOb);
-    console.log(queryOb.properties.titles.preferredTitle.contains('PRROTEIN'))
+    //console.log(queryOb);
+   // console.log(queryOb.properties.titles.preferredTitle.contains('PRROTEIN'))
 
     let value = queryOb.properties.ids.ncbi;
 
