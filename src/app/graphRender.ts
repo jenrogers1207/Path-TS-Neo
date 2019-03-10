@@ -28,6 +28,7 @@ export async function renderSidebar(data: Object){
         variants.exit().remove();
         let varEnter = variants.enter().append('div').classed('variant', true);
         let varText = varEnter.append('h5').text(d=>d.name);
+      //  let varSpan = varEnter.append('span').classed('w3-tag w3-padding w3-round w3-red w3-center', true).text('path')
        
         varText.on('click', function(d){
             let text = this.nextSibling;
@@ -52,10 +53,12 @@ export async function renderSidebar(data: Object){
         });
      
         let test = data.properties.allelicVariantList.filter(d=>  d.snpProps.allele_annotations != undefined );
-        console.log(test.map(d=> d.snpProps.allele_annotations.map(t=> t.clinical)));
+       // console.log(test.map(d=> d.snpProps.allele_annotations.map(t=> t.clinical)));
         let pathArray = test.map(d=> d.name);
 
-        varEnter
+        console.log(varText.filter(d=> pathArray.contains(d.name)))
+
+   
 
        // console.log(data.properties.allelicVariantList.filter(d=>  d.snpProps.allele_annotations ))
 

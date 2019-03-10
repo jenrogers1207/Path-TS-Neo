@@ -88,6 +88,7 @@
             .variant h5 {
                 margin-block-start: .83em;
                 margin-block-end: .83em;
+                display: inline
             }
             
             .graph-canvas {
@@ -187,3 +188,5 @@
                 border-radius: 8px;
                 pointer-events: none;
             }
+            
+            ;
