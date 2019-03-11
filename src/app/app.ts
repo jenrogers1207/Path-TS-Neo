@@ -79,7 +79,7 @@ dataLoad.loadFile().then(d=> {
                 qo.structPheno(node).then(n=> {
                     gCanvas.renderSidebar(n);
                     gCanvas.renderGeneDetail(n);
-                   
+                   search.getOrthology(n);
             });
         });
         
@@ -151,4 +151,5 @@ dataLoad.loadFile().then(d=> {
 */
 //neoAPI.getGraph().then(g => gCanvas.drawGraph(g));
   //  });
+})
 });

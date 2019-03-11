@@ -76,7 +76,7 @@ export async function renderGeneDetail(data: Object){
     let geneHeader = geneDet.append('div').attr('class', 'detail-head').append('h4').text(data.title);
     let propertyDivs = geneDet.selectAll('.prop-headers').data(headers);
     let propEnter = propertyDivs.enter().append('div').classed('prop-headers', true);
-    propEnter.append('h5').text((d)=> d);
+    propEnter.append('div').attr('class', (d)=> d).classed('head-wrapper', true).append('h5').text((d)=> d.toUpperCase());
     let ids = propEnter.filter(d=> d == 'MIM' || d == 'entrezgene' || d == 'symbol' || d == 'description');
     let idsSec = ids.append('text').text(d=> ':  ' +data.properties[d]);
     let titles = propEnter.filter(d=> d == "titles");

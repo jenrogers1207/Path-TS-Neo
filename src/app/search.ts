@@ -82,30 +82,18 @@ export async function geneIdtoMim(queryOb:any){
     
            
     return query;
+
 }
-//This is forr gettingpathway
-/*
-function get_format(id, geneId) {
-    let url = 'http://rest.kegg.jp/get/' + id + '/kgml';
-    let proxy = 'https://cors-anywhere.herokuapp.com/';
+export async function getOrthology(queryOb){
+  
+    let ncbi = queryOb.properties.ncbi;
+    let req =  await ky.get('https://cors-anywhere.herokuapp.com/http://rest.kegg.jp/conv/genes/ncbi-geneid:'+ncbi).text();
+  
+    let parsed = req.split(/(\s+)/).filter(d=> d.includes('hsa'));
 
-    let data = xhr({
-            url: proxy + url,
-            method: 'GET',
-            encoding: undefined,
-            headers: {
-                "Content-Type": "application/json"
-
-            }
-        },
-        function done(err, resp, body) {
-
-            if (err) {
-                console.error(err);
-                return;
-            }
-        });
-}*/
+    let req2 =  await ky.get('https://cors-anywhere.herokuapp.com/http://rest.kegg.jp/get/'+parsed[0]).text();
+    console.log(req2)
+}
 
 export async function linkData(ob1, ob2){
   //  console.log(ob1);
@@ -142,6 +130,9 @@ export async function getPathways(queryOb) {
     let req2 =  await ky.get(proxy+ url2).text();
 
 }
+
+
+
 /*
 async function grabId(query, list) {
     let stringArray = new Array();
