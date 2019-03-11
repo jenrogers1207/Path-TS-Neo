@@ -1,192 +1,263 @@
-            html,
-            body {
-                height: 100%;
-                padding-bottom: 75px;
-                font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-                font-size: 12px;
-            }
-            
-            h4 {
-                font-size: 15px;
-                border-top: .5px solid rgb(43, 117, 255);
-            }
-            
-            .hidden {
-                opacity: 0;
-                height: 0px;
-                width: 0px;
-            }
-            
-            #wrapper {
-                margin: 0px;
-            }
-            
-            #query-panel {
-                float: right;
-                width: 245px;
-                height: 300px;
-                position: absolute;
-                right: 5px;
-                top: 100px;
-            }
-            
-            #left-nav {
-                width: 320px;
-                background-color: #f1f1f1;
-                height: 100%;
-                top: 50px;
-                left: 0px;
-                position: fixed;
-                overflow: auto;
-            }
-            
-            #topnav {
-                width: 100%;
-                height: 50px;
-                position: fixed;
-                top: 0px;
-                left: 0px;
-                background-color: #f1f1f1;
-            }
-            
-            .button {
-                border-radius: 12px;
-                background-color: white;
-                color: rgb(43, 117, 255);
-                border: 2px solid rgb(43, 117, 255);
-                padding: 10px 24px;
-                cursor: pointer;
-                display: inline-block;
-                /* Green */
-            }
-            
-            .gene-header {
-                font-size: 15px;
-                font-style: bold;
-                height: 25px;
-                width: 100%;
-                padding: 5px;
-                border-radius: 6px;
-                cursor: pointer;
-            }
-            
-            .variant-wrapper {
-                width: 300px;
-                height: 300px;
-                margin: auto;
-                overflow: auto;
-            }
-            
-            .variant-wrapper .variant {
-                font-size: 12px;
-                font-style: oblique;
-                min-height: 30px;
-                border-bottom: .5px solid rgb(43, 117, 255);
-                cursor: pointer;
-            }
-            
-            .variant h5 {
-                margin-block-start: .83em;
-                margin-block-end: .83em;
-                display: inline
-            }
-            
-            .graph-canvas {
-                width: 100%;
-                height: 600px;
-                margin: auto;
-                margin-left: 300px;
-            }
-            
-            .node text {
-                font-size: 8px;
-            }
-            
-            .node circle {
-                stroke: #fff;
-                stroke-width: 1.5px;
-            }
-            
-            .node.Gene circle {
-                fill: coral;
-                r: 20px;
-            }
-            
-            .node.Gene.selected circle {
-                fill: red;
-                r: 25px;
-            }
-            
-            .node.Variant circle {
-                fill: goldenrod;
-                r: 10px;
-            }
-            
-            .node.Phenotype circle {
-                fill: green;
-                r: 10px;
-            }
-            
-            .link {
-                stroke-opacity: 0.6;
-            }
-            
-            .search-container {
-                width: 490px;
-                display: inline-block;
-                margin: 0 auto;
-                margin-right: 50px;
-                float: right;
-            }
-            
-            input#search-bar {
-                margin: 0 auto;
-                width: 100%;
-                height: 45px;
-                padding: 0 20px;
-                font-size: 1rem;
-                border: 1px solid #D0CFCE;
-                outline: none;
-                &:focus {
-                    border: 1px solid #008ABF;
-                    transition: 0.35s ease;
-                    color: #008ABF;
-                    &::-webkit-input-placeholder {
-                        transition: opacity 0.45s ease;
-                        opacity: 0;
-                    }
-                    &::-moz-placeholder {
-                        transition: opacity 0.45s ease;
-                        opacity: 0;
-                    }
-                    &:-ms-placeholder {
-                        transition: opacity 0.45s ease;
-                        opacity: 0;
-                    }
-                }
-            }
-            
-            .search-icon {
-                position: relative;
-                float: right;
-                width: 75px;
-                height: 75px;
-                top: -62px;
-                right: -45px;
-            }
-            
-            div.tooltip {
-                position: absolute;
-                text-align: center;
-                width: 100px;
-                height: 20px;
-                padding: 3px;
-                font: 12px sans-serif;
-                color: #fff;
-                background: rgb(43, 47, 51);
-                border: 0px;
-                border-radius: 8px;
-                pointer-events: none;
-            }
-            
-            ;
+                            html,
+                            body {
+                                height: 100%;
+                                padding-bottom: 75px;
+                                font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+                                font-size: 12px;
+                            }
+                            
+                            .gene-detail h4 {
+                                font-size: 16px;
+                                display: inline;
+                                padding-right: 15px;
+                            }
+                            
+                            .hidden {
+                                opacity: 0;
+                                height: 0px;
+                                width: 0px;
+                            }
+                            
+                            #wrapper {
+                                margin: 0px;
+                            }
+                            
+                            #query-panel {
+                                float: right;
+                                width: 245px;
+                                height: 300px;
+                                position: absolute;
+                                right: 5px;
+                                top: 100px;
+                            }
+                            
+                            #left-nav {
+                                width: 350px;
+                                background-color: #f1f1f1;
+                                height: 100%;
+                                top: 0px;
+                                left: 0px;
+                                position: fixed;
+                                overflow: auto;
+                                padding-top: 10px;
+                            }
+                            
+                            #topnav {
+                                width: 100%;
+                                height: 50px;
+                                position: fixed;
+                                top: 0px;
+                                left: 0px;
+                                background-color: #f1f1f1;
+                            }
+                            
+                            .button {
+                                border-radius: 12px;
+                                background-color: white;
+                                color: rgb(43, 117, 255);
+                                border: 1px solid rgb(43, 117, 255);
+                                padding: 10px 24px;
+                                cursor: pointer;
+                                display: inline-block;
+                                /* Green */
+                            }
+                            
+                            .gene-header {
+                                font-size: 15px;
+                                font-style: bold;
+                                background-color: #C0C0C0;
+                                height: 30px;
+                                width: 100%;
+                                padding: 5px;
+                                // border-radius: 5px;
+                                border: .5px solid #808080;
+                                cursor: pointer;
+                            }
+                            
+                            .var-head {
+                                font-size: 12px;
+                                font-style: bold;
+                                background-color: #F5F5F5;
+                                height: 30px;
+                                width: 100%;
+                                padding: 5px;
+                                border-radius: 5px;
+                                cursor: pointer;
+                            }
+                            
+                            .var-head.selected {}
+                            
+                            .var-head span {
+                                padding: 5px;
+                                margin-left: 8px;
+                            }
+                            
+                            .variant-wrapper {
+                                width: 330px;
+                                height: 300px;
+                                margin: auto;
+                                overflow: auto;
+                            }
+                            
+                            .variant-wrapper .variant {
+                                font-size: 12px;
+                                font-style: oblique;
+                                min-height: 30px;
+                                border-bottom: .5px solid rgb(43, 117, 255);
+                                cursor: pointer;
+                            }
+                            
+                            .variant h5 {
+                                margin-block-start: .83em;
+                                margin-block-end: .83em;
+                                display: inline;
+                                font-size: 12px;
+                            }
+                            
+                            .graph-canvas {
+                                width: 100%;
+                                height: 600px;
+                                margin: auto;
+                                margin-left: 300px;
+                            }
+                            
+                            .node text {
+                                font-size: 8px;
+                            }
+                            
+                            .node circle {
+                                stroke: #fff;
+                                stroke-width: 1.5px;
+                            }
+                            
+                            .node.Gene circle {
+                                fill: coral;
+                                r: 20px;
+                            }
+                            
+                            .node.Gene.selected circle {
+                                fill: red;
+                                r: 25px;
+                            }
+                            
+                            .node.Variant circle {
+                                fill: goldenrod;
+                                r: 10px;
+                            }
+                            
+                            .node.Phenotype circle {
+                                fill: green;
+                                r: 10px;
+                            }
+                            
+                            .link {
+                                stroke-opacity: 0.6;
+                            }
+                            
+                            .search-container {
+                                width: 490px;
+                                display: inline-block;
+                                margin: 0 auto;
+                                margin-right: 50px;
+                                float: right;
+                            }
+                            
+                            input#search-bar {
+                                margin: 0 auto;
+                                width: 100%;
+                                height: 45px;
+                                padding: 0 20px;
+                                font-size: 1rem;
+                                border: 1px solid #D0CFCE;
+                                outline: none;
+                                &:focus {
+                                    border: 1px solid #008ABF;
+                                    transition: 0.35s ease;
+                                    color: #008ABF;
+                                    &::-webkit-input-placeholder {
+                                        transition: opacity 0.45s ease;
+                                        opacity: 0;
+                                    }
+                                    &::-moz-placeholder {
+                                        transition: opacity 0.45s ease;
+                                        opacity: 0;
+                                    }
+                                    &:-ms-placeholder {
+                                        transition: opacity 0.45s ease;
+                                        opacity: 0;
+                                    }
+                                }
+                            }
+                            
+                            .search-icon {
+                                position: relative;
+                                float: right;
+                                width: 75px;
+                                height: 75px;
+                                top: -62px;
+                                right: -45px;
+                            }
+                            
+                            div.tooltip {
+                                position: absolute;
+                                text-align: center;
+                                width: 100px;
+                                height: 20px;
+                                padding: 3px;
+                                font: 12px sans-serif;
+                                color: #fff;
+                                background: rgb(43, 47, 51);
+                                border: 0px;
+                                border-radius: 8px;
+                                pointer-events: none;
+                            }
+                            
+                            .file-header span {
+                                float: left;
+                                font-size: 14px;
+                            }
+                            
+                            .file-header button {
+                                float: right;
+                                font-size: 14px;
+                                padding: 2px;
+                            }
+                            
+                            .file-header {
+                                width: 95%;
+                                height: 50px;
+                                font-size: 14px;
+                                padding: 2.5%;
+                            }
+                            
+                            .prop-headers {
+                                border-top: .5px solid rgb(43, 117, 255);
+                                padding-top: 10px;
+                            }
+                            
+                            .text-sections div {
+                                cursor: pointer;
+                                border-top: .5px solid rgb(43, 117, 255);
+                            }
+                            
+                            .text-sec-head {
+                                cursor: pointer;
+                                border-top: .5px solid rgb(43, 117, 255);
+                                padding-top: 10px;
+                                padding-bottom: 5px;
+                            }
+                            
+                            .gene-detail h5 {
+                                font-size: 13px;
+                                display: inline;
+                                padding-right: 5px;
+                            }
+                            
+                            .detail-sec {
+                                height: 30px;
+                                background-color: #D3D3D3;
+                                padding: 5px;
+                                margin-top: 10px;
+                                margin-bottom: 10px;
+                                border: .5px solid #808080;
+                            }

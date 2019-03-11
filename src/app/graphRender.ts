@@ -17,6 +17,13 @@ export async function renderSidebar(data: Object){
     let geneDiv = callTable.selectAll('.gene').data([data]);
     geneDiv.exit().remove();
 
+    let variantData = data.properties.allelicVariantList.filter(d=>  d.snpProps.allele_annotations != undefined ).map(d=>{ 
+        d.tag = d.snpProps.allele_annotations.filter(t=> t.clinical.length > 0).map(m=> {
+        return m.clinical[0].clinical_significances[0];
+        });
+        return d;
+    });
+
         let geneEnterDiv = geneDiv.enter().append('div').attr('class', d=> d.value).classed('gene', true);
         let geneHeader = geneEnterDiv.append('div').classed('gene-header', true)
         geneHeader.append('text').text(d=> d.title);
@@ -24,13 +31,18 @@ export async function renderSidebar(data: Object){
     
         let variantBox = geneDiv.append('div').classed('variant-wrapper', true);
     
-        let variants = variantBox.selectAll('.variant').data(d=>d.properties.allelicVariantList);
+        let variants = variantBox.selectAll('.variant').data(variantData);
         variants.exit().remove();
         let varEnter = variants.enter().append('div').classed('variant', true);
-        let varText = varEnter.append('h5').text(d=>d.name);
+        let varHead = varEnter.append('div').classed('var-head', true)//.append('h5').text(d=>d.name);
+        let varText = varHead.append('h5').text(d=>d.name);
+        let spanType = varHead.append('span').text(d=> d.snpProps.variant_type);
+        spanType.classed('badge badge-info', true);
+        let spanTag = varHead.append('span').text(d=> d.tag[0]);
+        spanTag.classed('badge badge-warning', true);
       //  let varSpan = varEnter.append('span').classed('w3-tag w3-padding w3-round w3-red w3-center', true).text('path')
        
-        varText.on('click', function(d){
+        varHead.on('click', function(d){
             let text = this.nextSibling;
             d3.select(text).classed('hidden')? d3.select(text).classed('hidden', false) : d3.select(text).classed('hidden', true);
         });
@@ -52,33 +64,21 @@ export async function renderSidebar(data: Object){
            // console.log(d);
         });
      
-        let test = data.properties.allelicVariantList.filter(d=>  d.snpProps.allele_annotations != undefined );
-       // console.log(test.map(d=> d.snpProps.allele_annotations.map(t=> t.clinical)));
-        let pathArray = test.map(d=> d.name);
-
-        console.log(varText.filter(d=> pathArray.contains(d.name)))
-
-   
-
-       // console.log(data.properties.allelicVariantList.filter(d=>  d.snpProps.allele_annotations ))
-
-
-    
+      
 }
 
 export async function renderGeneDetail(data: Object){
-    console.log("data for gene", data);
+ 
     let headers = d3.keys(data.properties).filter(d=> d != 'allelicVariantList' && d != 'referenceList' && d != 'name');
     
     let sidebar = d3.select('#left-nav');
     let geneDet = sidebar.select('.gene-detail');
-    let geneHeader = geneDet.append('div').attr('class', 'detail-head').append('h2').text(data.title);
+    let geneHeader = geneDet.append('div').attr('class', 'detail-head').append('h4').text(data.title);
     let propertyDivs = geneDet.selectAll('.prop-headers').data(headers);
     let propEnter = propertyDivs.enter().append('div').classed('prop-headers', true);
-    propEnter.append('h3').text((d)=> d);
+    propEnter.append('h5').text((d)=> d);
     let ids = propEnter.filter(d=> d == 'MIM' || d == 'entrezgene' || d == 'symbol' || d == 'description');
-    let idsSec = ids.append('text').text(d=> data.properties[d]);
-  
+    let idsSec = ids.append('text').text(d=> ':  ' +data.properties[d]);
     let titles = propEnter.filter(d=> d == "titles");
     let titleSec = titles.selectAll('.sections').data(d=> {
         let titleData = typeof data.properties[d] == "string" ? d3.entries(JSON.parse(data.properties[d])) : d3.entries(data.properties[d]);
@@ -94,20 +94,21 @@ export async function renderGeneDetail(data: Object){
     let geneEnter = geneSec.enter().append('div').classed('geneMap sections', true);
     geneEnter.append('text').text(d=> d.key + ': ' + d.value " <br>");
 
-    let phenoHead = geneMap.append('h4').text('Phenotype');
+    let phenoHead = geneMap.append('h5').text('Phenotype');
     let phenoSec = geneMap.selectAll('.pheno').data(d => data.properties[d].phenotypeMapList);
     let phenoEnter = phenoSec.enter().append('div').classed('pheno sections', true);
 
     phenoEnter.append('text').text(d=> {
-        return d.description + ': ' + d.phenotypeInheritance " <br>"});
+        return d.description + ': ' + d.phenotypeInheritance + " <br>"});
 
     let textProp = propEnter.filter(d=> d == 'text');
     let textSec = textProp.selectAll('.sections').data(d=> {
         let textData = typeof data.properties[d] == 'string' ? JSON.parse(data.properties[d]) : data.properties[d];
         return textData;
     });
+
     let textEnter = textSec.enter().append('div').classed('text sections', true);
-    let headText = textEnter.append('div').append('h4').text(d=> d.textSectionTitle + ': ');
+    let headText = textEnter.append('div').classed('text-sec-head', true).append('h5').text(d=> d.textSectionTitle + ': ');
     let textDiv = textEnter.append('div').classed('textbody', true).classed('hidden', true);
     let textText = textDiv.append('text').text(d=> d.textSectionContent);
 
@@ -123,6 +124,7 @@ export async function renderGeneDetail(data: Object){
 export function drawGraph(dataArr: Object) {
   // console.log(dataArr)
     let data = dataArr[0];
+    console.log(data)
   // let data = dataArr;
     let canvas = d3.select('#graph-render').select('.graph-canvas'),
         width = +canvas.attr("width"),
