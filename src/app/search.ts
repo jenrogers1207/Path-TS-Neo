@@ -39,7 +39,8 @@ export async function loadSNP(value: string){
     let url = 'https://api.ncbi.nlm.nih.gov/variation/v0/beta/refsnp/' + digits;
     let req = await ky.get(proxy + url).json();
     neoAPI.setNodeProperty('Variant', value, 'snpProps', JSON.stringify(req.primary_snapshot_data))
-    return req.primary_snapshot_data;
+    
+    return await Promise.resolve(req.primary_snapshot_data);
 }
 
 export async function searchOMIM(queryOb:any){
@@ -51,7 +52,6 @@ export async function searchOMIM(queryOb:any){
 
     let props = json.omim.entryList[0].entry;
  
-    //queryOb.properties.allelicVariantList = 
     queryOb.properties.allelicVariantList = props.allelicVariantList.map(p=> p['allelicVariant']);
  
     queryOb.properties.titles = props.titles;
@@ -77,22 +77,49 @@ export async function geneIdtoMim(queryOb:any){
 
     let props = json;
 
-           
     query.properties.ids.MIM = props.MIM;
     
-           
     return query;
 
 }
-export async function getOrthology(queryOb){
+export async function getKegg(value: string, queryOb:object){
   
-    let ncbi = queryOb.properties.ncbi;
-    let req =  await ky.get('https://cors-anywhere.herokuapp.com/http://rest.kegg.jp/conv/genes/ncbi-geneid:'+ncbi).text();
+   // let ncbi = queryOb.properties.ncbi;
+    let req =  await ky.get('https://cors-anywhere.herokuapp.com/http://rest.kegg.jp/conv/genes/ncbi-geneid:'+value).text();
   
     let parsed = req.split(/(\s+)/).filter(d=> d.includes('hsa'));
 
     let req2 =  await ky.get('https://cors-anywhere.herokuapp.com/http://rest.kegg.jp/get/'+parsed[0]).text();
-    console.log(req2)
+
+    let data = req2.split(/\r?\n/)
+    data.map(d=> d.split(' '));
+  
+    function testRec(oldIndex, dataArray){
+        let key = [];
+        let keyIndex = oldIndex;
+        let test = []
+        
+        dataArray.forEach((ob, i)=> {
+            if(ob.startsWith(' ')){
+                key.push(ob)//.filter(o=> o != ""))
+            }else{
+                key = [ob]//.filter(o=> o != "")
+                keyIndex = i
+                test.push(key);
+            }
+        });
+
+        let newData = test.map(row=> {
+            let keyz = row[0].split(/\b/)[0];
+            let val = row.map(r=> r.split(/\s+/).filter(f=> f != "" && f != keyz))
+            return {key: keyz, values: val}
+        });
+
+      //  console.log(newData.filter(n=> n.key != "///" && n.key != ""));
+        return newData.filter(n=> n.key != "///" && n.key != "");
+    }
+    queryOb.properties.kegg = await testRec(0, data);
+    return queryOb;
 }
 
 export async function linkData(ob1, ob2){
@@ -112,7 +139,6 @@ export async function getPathways(queryOb) {
    // console.log(queryOb.properties.titles.preferredTitle.contains('PRROTEIN'))
 
     let value = queryOb.properties.ids.ncbi;
-
 
     let proxy = 'https://cors-anywhere.herokuapp.com/';
     let url = 'http://rest.kegg.jp/conv/genes/ncbi-geneid:'+value;

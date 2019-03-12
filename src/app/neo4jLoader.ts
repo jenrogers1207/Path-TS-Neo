@@ -7,11 +7,12 @@ var driver = neo4j.driver("bolt://localhost:11001", neo4j.auth.basic("neo4j", "1
 var _ = require('lodash');
 
 export async function addNode(queryOb:object, type:string){
+
+     console.log('is this working',queryOb)
     let value = queryOb.value? queryOb.value : queryOb.dbSnps;
     let node = await checkForNode(value, type);
     if(node.length > 0){
-        console.log('node exists');
-        console.log('existing node', node);
+        console.log('node exists', node);
 
     }else{
         console.log('add node');
@@ -63,7 +64,18 @@ export async function addNodeArray(phenoObs:Array<object>){
     if(newNames.length > 0){
         console.log('ADDING ARRAY')
         let newObs = phenoObs.filter(ob=> newNames.indexOf(ob.name) > -1)
-        console.log(newObs);
+        let newnew = newObs.map(o=> {
+            let keys = d3.keys(o);
+            keys.forEach(k=> {
+                console.log(o[k], typeof o[k])
+                if(typeof o[k] != 'string'){
+                    JSON.stringify(o[k])
+                }else{console.log('whaaa')}
+            })
+            return o;
+        })
+        
+        console.log('new', newnew);
         let command = 'UNWIND $props AS map CREATE (n:'+type+') SET n = map'
    
         var session = driver.session();
@@ -161,7 +173,9 @@ export async function getGraph() {
             session.close();
      
             return result.records.map(r=> {
+           
                 let gene = new Array(r.get('gene')).map(g=> {
+               
                     let gen = new Object();
                     gen.index = g.identity.low;
                     gen.title = g.properties.name;

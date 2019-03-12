@@ -1,6 +1,10 @@
 import * as d3 from 'D3';
 var search = require('./search');
 
+export class SelectedOb {
+
+}
+
 export class QueryObject {
 
     value:string;
@@ -75,18 +79,22 @@ export async function structVariants(nodeP: object){
  
     let variants = typeof nodeOb.properties.allelicVariantList === 'string' ? JSON.parse(nodeOb.properties.allelicVariantList) : nodeOb.properties.allelicVariantList;
     if(!nodeOb.properties){ nodeOb.properties = nodeOb.data}
+
+    console.log('nodeob name?', nodeOb);
     
     nodeOb.properties.allelicVariantList = variants.map(v=> {
-     
-        let variantOb = new VariantObject(v.properties.dbSnp);
-        variantOb.name = v.properties.dbSnp;
+        let snpName = v.properties? v.properties.dbsnp : v.dbSnps;
+        let variantOb = new VariantObject(snpName);
+        variantOb.name = snpName;
         variantOb.gene = nodeOb.title;
-        variantOb.mimNumber = v.properties.mimNumber;
-        variantOb.mutations = v.properties.mutations;
-        variantOb.description = v.properties.description;
-        variantOb.clinvarAccessions = v.properties.clinvarAccessions;
-        variantOb.text = v.properties.text;
-        variantOb.snpProps = v.properties.snpProps ? JSON.parse(v.properties.snpProps) : search.loadSNP(variantOb.name);
+        variantOb.mimNumber = v.properties? v.properties.mimNumber : v.mimNumber;
+        variantOb.mutations = v.properties? v.properties.mutations : v.mutations;
+        variantOb.description = v.properties? v.properties.description : v.name;
+        variantOb.clinvarAccessions = v.properties? v.properties.clinvarAccessions : v.clinvarAccessions;
+        variantOb.text = v.properties? v.properties.text : v.text;
+
+        let props = v.properties? v.properties : v;
+        variantOb.snpProps = props.snpProps ? JSON.parse(v.properties.snpProps) : search.loadSNP(variantOb.name);
         
         return variantOb;
     });

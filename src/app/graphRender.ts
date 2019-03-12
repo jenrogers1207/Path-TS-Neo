@@ -1,7 +1,7 @@
 import "./styles.scss";
 import * as d3 from 'D3';
 import * as search from './search';
-import { SelectedTest, drawSelectedPanel } from './queryObject';
+import { SelectedTest, SelectedOb, drawSelectedPanel } from './queryObject';
 
 export function removeThings(){
     d3.select('#linked-pathways').selectAll('*').remove();
@@ -78,7 +78,7 @@ export async function renderGeneDetail(data: Object){
     let propEnter = propertyDivs.enter().append('div').classed('prop-headers', true);
     propEnter.append('div').attr('class', (d)=> d).classed('head-wrapper', true).append('h5').text((d)=> d.toUpperCase());
     let ids = propEnter.filter(d=> d == 'MIM' || d == 'entrezgene' || d == 'symbol' || d == 'description');
-    let idsSec = ids.append('text').text(d=> ':  ' +data.properties[d]);
+    let idsSec = ids.append('text').text(d=> '  ' +data.properties[d]);
     let titles = propEnter.filter(d=> d == "titles");
     let titleSec = titles.selectAll('.sections').data(d=> {
         let titleData = typeof data.properties[d] == "string" ? d3.entries(JSON.parse(data.properties[d])) : d3.entries(data.properties[d]);
@@ -140,7 +140,7 @@ export function drawGraph(dataArr: Object) {
         .force("x", d3.forceX(width / 2).strength(.05))
         .force("y", d3.forceY(height / 2).strength(.05))
         .force("charge", d3.forceManyBody().strength(-80))
-        .force('center', d3.forceCenter(300, 250));
+        .force('center', d3.forceCenter(400, 250));
 
     var link = canvas.select('.links')
         .selectAll(".line")
@@ -168,14 +168,26 @@ export function drawGraph(dataArr: Object) {
         //.attr("r", radius - .75)
         .call(d3.drag()
             .on("start", dragstarted)
-            .on("drag", dragged)
-            .on("end", dragended));
+           .on("drag", dragged)
+            .on("end", dragended))
+         //   .on('dblclick', connectedNodes); 
 
-    let geneNode = nodeEnter.filter(d => d.label == 'gene');
+    let geneNode = nodeEnter.filter(d => d.label == 'Gene');
 
+    geneNode.classed("fixed", d=> d.fixed = true);
+
+
+    function dragstart(d) {
+        d3.select(this).classed("fixed", d.fixed = true);
+      }
+
+      dragstart(geneNode);
+
+      var toggle = 0;
+//Create an array logging what is connected to what
+   
     let labels = geneNode.append('text').text(d => d.title).style('color', '#ffffff').attr('x', 0)
         .attr('y', 3).attr('text-anchor', 'middle');
-
 
     node.append("title")
         .text(function(d) { return d.title; });
@@ -183,7 +195,7 @@ export function drawGraph(dataArr: Object) {
     node = nodeEnter.merge(node);
 
     node.on('click', (d) => {
-        SelectedTest.queryOb = d.properties;
+        SelectedOb = d.properties;
         drawGraph(data);
     });
 
@@ -207,13 +219,13 @@ export function drawGraph(dataArr: Object) {
     let selectedNode = node.filter(d => {
       
         node.classed('selected', false);
-        return SelectedTest.queryOb != null ? d.title == SelectedTest.queryOb.name : null;
+        return SelectedOb != null ? d.title == SelectedOb.name : null;
     });
 
 
     selectedNode != null ? selectedNode.classed('selected', true) : console.log('no node');
 
-    SelectedTest.queryOb != null ? drawSelectedPanel(SelectedTest.queryOb) : console.log('no code');
+    SelectedOb != null ? drawSelectedPanel(SelectedOb) : console.log('no code');
 */
     simulation
         .nodes(data.nodes)

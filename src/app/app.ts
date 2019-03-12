@@ -49,107 +49,94 @@ dataLoad.loadFile().then(d=> {
         return variant
     });
 
-    async function initialSearch(queryOb: object){
-
-            let idSearch = await search.searchBySymbol(queryOb);
-            let mimId = await search.geneIdtoMim(idSearch);
-            let omim = await searchOMIM(mimId);
-           // console.log("omim", omim)
-            return omim;
-           
-    }
- 
-    async function isStored(graph: object, nameSearch:string, nodeType:string){
-        let foundGraphNodes = graph.nodes.filter(n=> n.properties.symbol == nameSearch);
-        let nodeOb = await foundGraphNodes.length > 0 ? foundGraphNodes[0] : initialSearch(dataOb);
-       
-        neoAPI.addNode(nodeOb, nodeType);
-        return nodeOb
-    }
-
     neoAPI.getGraph().then(g => {
-      
-        let nodeOb = isStored(g[0], 'GJB2', 'Gene').then(nodeO=> {
-            let variants = g[0].nodes.filter(d=> d.label == 'Variant');
-            gCanvas.drawGraph(g);
+        console.log('graph', g);
+        if(g != undefined){
 
-            nodeO.properties.allelicVariantList = variants;
-        
-            qo.structVariants(nodeO).then(node=> {
-                qo.structPheno(node).then(n=> {
-                    gCanvas.renderSidebar(n);
-                    gCanvas.renderGeneDetail(n);
-                   search.getOrthology(n);
-            });
-        });
-        
-        });
-  
-/*
-
-
+            let nodeOb = isStored(g[0], 'GJB2', 'Gene', dataOb).then(nodeO=> {
+                console.log("nooode",nodeO)
+                let variants = g[0].nodes.filter(d=> d.label == 'Variant');
+                gCanvas.drawGraph(g);
     
-  
-    neoAPI.addNodeArray(om.properties.allelicVariantList).then(()=> {
-        om.properties.allelicVariantList.forEach(v=>{
-            neoAPI.addRelation(v.name, 'Variant', om.value, 'Gene', 'Mutation');
-        });
-    });
-
-    neoAPI.addNodeArray(knownPhenotypes).then(()=> {
-        let varNames = om.properties.allelicVariantList.map(v=> v.description.toString())
-      
-        let relatedPhenotypes = knownPhenotypes.map(p=>{
-         
-            let pindex = varNames.indexOf(p.description.toString().toUpperCase())
-            if(pindex > -1 ){
-                p.varIds = om.properties.allelicVariantList[pindex].name;
-            }else{
-                p.varIds = null;
-            }
-            return p;
-        }).filter(p=> p.varIds != null);
-
-        relatedPhenotypes.forEach(rel => {
-            neoAPI.addRelation(rel.name, 'Phenotype', rel.varIds, 'Variant', 'Pheno');
-        });
-    });
-
-    });
-
-
-  //  search.getPathways(om);
- 
-
-/*
-    let variantIds = om.fileVariants.map(v=> v.properties.id);
-
-    let varIdQuery = variantIds.join(',')
-
-    let proxy = 'https://cors-anywhere.herokuapp.com/';
-    let url = 'https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esummary.fcgi?db=clinvar&id='+varIdQuery+'&retmode=json&apiKey=mUYjhLsCRVOuShEhrHLG_w'
-   // 'https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esummary.fcgi?db=clinvar&id=328931&retmode=json&apiKey=mUYjhLsCRVOuShEhrHLG_w'
-    let req = ky.get(proxy + url).json().then(d=> console.log(d));
-
-  
-    /*
-                /*
-                search.getPathways(om);
-                gCanvas.renderGeneDetail(om);
-                neoAPI.addNode(om, 'Gene');
-                om.properties.allelicVariantList.forEach((variant) => {
-                    variant.gene = om.value
-                    neoAPI.addNode(variant, 'Variant').then(()=>{ 
-                        neoAPI.addRelation(om.value,'Gene', variant.name, 'Variant', 'Mutation');
+                nodeO.properties.allelicVariantList = variants;
+            
+                qo.structVariants(nodeO).then(node=> {
+                    qo.structPheno(node).then(n=> {
+                        gCanvas.renderSidebar(n);
+                        gCanvas.renderGeneDetail(n);
                     });
-                 }).then(()=> neoAPI.getGraph().then(g => gCanvas.drawGraph(g)));
-              //  .then(()=> neoAPI.getGraph().then(g => gCanvas.drawGraph(g)));
+                });
             });
 
-        });
-        
-*/
-//neoAPI.getGraph().then(g => gCanvas.drawGraph(g));
-  //  });
+        }else{
+            console.log('g is not there');
+            initialSearch(dataOb).then(n=> {
+                console.log(n);
+                neoAPI.addNode(n, n.type);
+               // neoAPI.getGraph().then(graph=> {
+               //     let variants = graph[0].nodes.filter(d=> d.label == 'Variant');
+              //  gCanvas.drawGraph(graph);
+    
+             //   n.properties.allelicVariantList = variants;
+            
+                qo.structVariants(n).then(node=> {
+                 
+                    neoAPI.addNodeArray(node.properties.allelicVariantList).then(()=> {
+                        node.properties.allelicVariantList.forEach(v=>{
+                            console.log('is this hitting?')
+                            console.log(node)
+                            neoAPI.addRelation(v.name, 'Variant', node.value, 'Gene', 'Mutation');
+                        });
+                    });
+                
+                    qo.structPheno(node).then(no=> {
+                        neoAPI.addNodeArray(no.properties.allelicVariantList).then(()=> {
+                            let varNames = no.properties.allelicVariantList.map(v=> v.description.toString())
+                            let relatedPhenotypes = no.properties.geneMap.phenotypeMapList.map(p=>{
+                                let pindex = varNames.indexOf(p.description.toString().toUpperCase())
+                                if(pindex > -1 ){
+                                    p.varIds = no.properties.allelicVariantList[pindex].name;
+                                }else{
+                                    p.varIds = null;
+                                }
+                                return p;
+                            }).filter(p=> p.varIds != null);
+                            relatedPhenotypes.forEach(rel => {
+                                neoAPI.addRelation(rel.name, 'Phenotype', rel.varIds, 'Variant', 'Pheno');
+                            });
+                        });
+
+                       // neoAPI.getGraph().then(graph=> gCanvas.drawGraph(graph));
+                      //  gCanvas.renderSidebar(no);
+                      //  gCanvas.renderGeneDetail(no);
+                    });
+                });
+            });
+       // })
+           // });
+
+    }
 })
+
+async function initialSearch(queryOb: object){
+    
+    let idSearch = await search.searchBySymbol(queryOb);
+    console.log('id search', idSearch);
+    let mimId = await search.geneIdtoMim(idSearch);
+    console.log('id mim', mimId);
+    let omim = await searchOMIM(mimId);
+    console.log('omim', omim);
+    let kegg = await search.getKegg(omim.properties.ids.ncbi, omim);
+    console.log("fin", kegg);
+    return kegg;
+}
+
+async function isStored(graph: object, nameSearch:string, nodeType:string, data:object){
+    let foundGraphNodes = graph.nodes.filter(n=> n.properties.symbol == nameSearch);
+    let nodeOb = foundGraphNodes.length > 0 ? foundGraphNodes[0] : initialSearch(data);
+    console.log('nodeOb', nodeOb)
+    neoAPI.addNode(nodeOb, nodeType);
+    return nodeOb
+}
+
 });
