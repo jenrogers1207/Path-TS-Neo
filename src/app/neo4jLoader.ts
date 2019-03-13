@@ -69,18 +69,20 @@ export async function addNodeArray(phenoObs:Array<object>){
             keys.forEach(k=> {
                 console.log(o[k], typeof o[k])
                 if(typeof o[k] != 'string'){
-                    JSON.stringify(o[k])
+                    o[k] = JSON.stringify(o[k])
+                }else if(typeof o[k] == 'object'){
+                    o[k] = JSON.stringify(Promise.resolve(o[k]))
                 }else{console.log('whaaa')}
             })
             return o;
-        })
+        });
         
         console.log('new', newnew);
         let command = 'UNWIND $props AS map CREATE (n:'+type+') SET n = map'
    
         var session = driver.session();
         session
-            .run(command, {props: newObs})
+            .run(command, {props: newnew})
             .then(function(result) {
                 session.close();
 

@@ -79,26 +79,35 @@ export async function structVariants(nodeP: object){
  
     let variants = typeof nodeOb.properties.allelicVariantList === 'string' ? JSON.parse(nodeOb.properties.allelicVariantList) : nodeOb.properties.allelicVariantList;
     if(!nodeOb.properties){ nodeOb.properties = nodeOb.data}
-
-    console.log('nodeob name?', nodeOb);
     
     nodeOb.properties.allelicVariantList = variants.map(v=> {
         let snpName = v.properties? v.properties.dbsnp : v.dbSnps;
         let variantOb = new VariantObject(snpName);
         variantOb.name = snpName;
-        variantOb.gene = nodeOb.title;
+        variantOb.gene = nodeOb.value;
         variantOb.mimNumber = v.properties? v.properties.mimNumber : v.mimNumber;
         variantOb.mutations = v.properties? v.properties.mutations : v.mutations;
         variantOb.description = v.properties? v.properties.description : v.name;
         variantOb.clinvarAccessions = v.properties? v.properties.clinvarAccessions : v.clinvarAccessions;
         variantOb.text = v.properties? v.properties.text : v.text;
-
-        let props = v.properties? v.properties : v;
-        variantOb.snpProps = props.snpProps ? JSON.parse(v.properties.snpProps) : search.loadSNP(variantOb.name);
+        variantOb.snpProps = getSNP(variantOb, v);
         
+        console.log(variantOb);
         return variantOb;
     });
     return nodeOb;
+}
+
+async function getSNP(dataob:object, variant:object){
+    console.log(dataob);
+    let props = variant.properties? variant.properties : variant;
+      
+    let snpProps = props.snpProps ? JSON.parse(variant.properties.snpProps) : search.loadSNP(dataob.name);
+
+   // dataob.snpProps = await Promise.resolve(snpProps);
+   // console.log(dataob);
+    return await Promise.resolve(snpProps);
+
 }
 
 export async function structPheno(nodeP: object){

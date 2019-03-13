@@ -61,7 +61,7 @@ export async function renderSidebar(data: Object){
         variants = varEnter.merge(variants);
   
         variants.on('mouseover', function(d){
-           // console.log(d);
+           
         });
      
       
@@ -124,7 +124,7 @@ export async function renderGeneDetail(data: Object){
 export function drawGraph(dataArr: Object) {
   // console.log(dataArr)
     let data = dataArr[0];
-    console.log(data)
+   // console.log(data)
   // let data = dataArr;
     let canvas = d3.select('#graph-render').select('.graph-canvas'),
         width = +canvas.attr("width"),
