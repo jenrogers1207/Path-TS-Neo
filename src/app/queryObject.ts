@@ -18,7 +18,15 @@ export class QueryObject {
         this.type = ''
         this.value = queryVal;
         this.properties = {
-            'ids': {}
+            'Ids': {},
+            'Location': {},
+            'Phenotypes': {},
+            'Models':{},
+            'Text':{},
+            'References':{},
+            'Symbols':{},
+            'Description':{},
+            'Variants':{}
         };
     }
 }

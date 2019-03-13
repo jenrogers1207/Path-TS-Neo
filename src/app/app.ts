@@ -71,14 +71,14 @@ dataLoad.loadFile().then(d=> {
         }else{
             console.log('g is not there');
             initialSearch(dataOb).then(n=> {
-                console.log(n);
-                neoAPI.addNode(n, n.type);
+                console.log('dataob to add', n);
+                //neoAPI.addNode(n, n.type);
                // neoAPI.getGraph().then(graph=> {
                //     let variants = graph[0].nodes.filter(d=> d.label == 'Variant');
               //  gCanvas.drawGraph(graph);
     
              //   n.properties.allelicVariantList = variants;
-            
+            /*
                 qo.structVariants(n).then(node=> {
                  
                     neoAPI.addNodeArray(node.properties.allelicVariantList).then(()=> {
@@ -110,23 +110,38 @@ dataLoad.loadFile().then(d=> {
                       //  gCanvas.renderSidebar(no);
                       //  gCanvas.renderGeneDetail(no);
                     });
-                });
+                });*/
             });
        // })
-           // });
+           // })
 
     }
 })
 
 async function initialSearch(queryOb: object){
-    
+    /*      'Ids': {},
+            'Location': {},
+            'Phenotypes': {},
+            'Models':{},
+            'Text':{},
+            'References':{},
+            'Symbols':{},
+            'Description':{},
+            'Variants':{}
+    */
+
     let idSearch = await search.searchBySymbol(queryOb);
-    console.log('id search', idSearch);
+   
+    console.log(idSearch);
+
     let mimId = await search.geneIdtoMim(idSearch);
-    console.log('id mim', mimId);
-    let omim = await searchOMIM(mimId);
-    console.log('omim', omim);
-    let kegg = await search.getKegg(omim.properties.ids.ncbi, omim);
+    console.log(mimId);
+
+    let omimOb = await searchOMIM(mimId);
+
+    console.log('updated', omimOb);
+
+    let kegg = await search.getKegg(omimOb.properties.Ids.ncbi, omimOb);
     console.log("fin", kegg);
     return kegg;
 }
