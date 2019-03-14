@@ -16,7 +16,7 @@ export async function searchBySymbol(query:object) {
     const proxy = 'https://cors-anywhere.herokuapp.com/';
     let url = 'http://mygene.info/v3/query?q=';
 
-    let req =  await got(proxy+'http://mygene.info/v3/query?q='+query.value);
+    let req =  await got(proxy+'http://mygene.info/v3/query?q='+query.name);
   
     let json = JSON.parse(req.body);
 
@@ -107,8 +107,9 @@ export async function searchOMIM(queryOb:any){
 export async function geneIdtoMim(query:any){
  
    // console.log(query.properties.ids.entrezgene);
+ 
     let value = query.properties.Ids.entrezgene;
-
+    console.log(value);
     const proxy = 'https://cors-anywhere.herokuapp.com/';
     let url = 'http://mygene.info/v2/gene/'+value+'?fields=MIM';
           

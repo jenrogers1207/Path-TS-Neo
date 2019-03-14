@@ -40,21 +40,21 @@ export class VariantObject {
 
     type:string;
     name:string;
-    gene:string;
+   // associatedGene:string;
     dbSnp:string;
     properties:object;
 
     constructor(snpId:string) {
         this.type = 'Variant';
         this.name = snpId;  
-        this.dbSnp = snpId; 
         this.properties = {
             'Ids': {},
             'Location': {},
             'Phenotypes': {},
             'Structure': {},
             'Text': {},
-            'Name': {}
+            'Name': {},
+            'associatedGene': ''
         };
     }
 }
@@ -96,21 +96,25 @@ export class QueryKeeper{
     }
 }
 
-export async function structVariants(nodeOb: object, variantObs){
+export async function structVariants(varArray: object){
  //  console.log('structuring variant', nodeOb);
-    let varArray = nodeOb.properties.Variants;
+    
     let variants = typeof varArray === 'string' ? JSON.parse(varArray) : varArray;
    // if(!nodeOb.properties){ nodeOb.properties = nodeOb.data}
  
     let obs = variants.map(async (v)=> {
-        let snpName = v.properties? v.properties.dbsnp : v.dbSnps;
-        let variantOb = new VariantObject(snpName);
-        variantOb.name = snpName;
-        variantOb.associatedGene = nodeOb.value;
-        variantOb.OMIM = v.properties? v.properties.mimNumber : v.mimNumber;
-        variantOb.mutations = v.properties? v.properties.mutations : v.mutations;
-        variantOb.description = v.properties? v.properties.description : v.name;
-        variantOb.clinvarAccessions = v.properties? v.properties.clinvarAccessions : v.clinvarAccessions;
+        
+        let snpName = v.name? v.name : v.properties.Ids.dbsnp;
+       // let variantOb = new VariantObject(snpName);
+        let variantOb = v;
+        console.log('v', v);
+        
+      //  variantOb.name = snpName;
+      //  variantOb.associatedGene = v.associatedGene;
+        variantOb.OMIM = v.properties.mimNumber? v.properties.mimNumber : v.mimNumber;
+       // variantOb.mutations = v.properties.mutations? v.properties.mutations : v.mutations;
+      //  variantOb.description = v.properties.description? v.properties.description : v.name;
+       // variantOb.clinvarAccessions = v.properties? v.properties.clinvarAccessions : v.clinvarAccessions;
         variantOb.text = v.properties? v.properties.text : v.text;
 
         //variantOb.snpProps = getSNP(variantOb, v);
@@ -122,7 +126,7 @@ export async function structVariants(nodeOb: object, variantObs){
         support: (5) [{…}, {…}, {…}, {…}, {…}]
         variant_type: "snv"
 */
-        
+        console.log(variantOb);
         let snp = await search.loadSNP(variantOb.name);
 
             variantOb.properties.Type = snp.variant_type;
@@ -151,9 +155,9 @@ export async function structPheno(nodeP: object){
     phenotypeMimNumber: 149200*/
 
     nodeOb.properties = typeof nodeOb.properties == 'string'? JSON.parse(nodeOb.properties) : nodeOb.properties;
-    let phenoob = Promise.resolve(nodeOb.properties.Phenotypes);
+    let phenoOb = await Promise.resolve(nodeOb.properties.Phenotypes);
     let pheno = typeof nodeOb.properties.Phenotypes == 'string'? JSON.parse(nodeOb.properties.Phenotypes) : nodeOb.properties.Phenotypes;
-    console.log('phenohere',phenoOb);
+   
     let inner = phenoOb.nodes? phenoOb.nodes:phenoOb;
 
     console.log('inner', inner);
