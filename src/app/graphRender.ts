@@ -11,18 +11,19 @@ export function removeThings(){
 }
 
 export async function renderSidebar(data: Object){
-   // console.log('data', data)
+ 
+    let varOb = await Promise.resolve(data.properties.Variants);
     let sidebar = d3.select('#left-nav');
     let callTable = sidebar.select('.call-table');
     let geneDiv = callTable.selectAll('.gene').data([data]);
     geneDiv.exit().remove();
 
-    let variantData = data.properties.allelicVariantList.filter(d=>  d.snpProps.allele_annotations != undefined ).map(d=>{ 
-        d.tag = d.snpProps.allele_annotations.filter(t=> t.clinical.length > 0).map(m=> {
-        return m.clinical[0].clinical_significances[0];
-        });
+    let variantData = varOb.map(d=>{ 
+        d.tag = d.properties.Phenotypes[0][0].clinical_significances;
         return d;
     });
+
+    console.log(variantData);
 
         let geneEnterDiv = geneDiv.enter().append('div').attr('class', d=> d.value).classed('gene', true);
         let geneHeader = geneEnterDiv.append('div').classed('gene-header', true)
@@ -36,7 +37,7 @@ export async function renderSidebar(data: Object){
         let varEnter = variants.enter().append('div').classed('variant', true);
         let varHead = varEnter.append('div').classed('var-head', true)//.append('h5').text(d=>d.name);
         let varText = varHead.append('h5').text(d=>d.name);
-        let spanType = varHead.append('span').text(d=> d.snpProps.variant_type);
+        let spanType = varHead.append('span').text(d=> d.properties.Type);
         spanType.classed('badge badge-info', true);
         let spanTag = varHead.append('span').text(d=> d.tag[0]);
         spanTag.classed('badge badge-warning', true);
@@ -203,9 +204,17 @@ export function drawGraph(dataArr: Object) {
             toolDiv.transition()
                 .duration(200)
                 .style("opacity", .8);
-            toolDiv.html(d.title + "<br/>")
+            if(d.label == 'Phenotype'){
+                toolDiv.html(d.properties.description + "<br/>")
                 .style("left", (d3.event.pageX) + "px")
                 .style("top", (d3.event.pageY - 28) + "px");
+
+            }else{
+                toolDiv.html(d.title + "<br/>")
+                .style("left", (d3.event.pageX) + "px")
+                .style("top", (d3.event.pageY - 28) + "px");
+            }
+            
         })
         .on("mouseout", function(d) {
             toolDiv.transition()

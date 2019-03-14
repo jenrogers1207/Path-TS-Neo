@@ -50,97 +50,88 @@ dataLoad.loadFile().then(d=> {
     });
 
     neoAPI.getGraph().then(g => {
-        console.log('graph', g);
+    
         if(g != undefined){
 
-            let nodeOb = isStored(g[0], 'GJB2', 'Gene', dataOb).then(nodeO=> {
-                console.log("nooode",nodeO)
-                let variants = g[0].nodes.filter(d=> d.label == 'Variant');
+            isStored(g[0], 'GJB2', 'Gene', dataOb).then(async (nodeO)=> {
+         
                 gCanvas.drawGraph(g);
-    
-                nodeO.properties.allelicVariantList = variants;
+
+                let variants = g[0].nodes.filter(d=> d.label == 'Variant');
+                if(variants.length == 0){
+                    let vars = await qo.structVariants(nodeO);
+                    neoAPI.addNodeArray(vars);
+                }
+
+                let phenotypes = g[0].nodes.filter(d=> d.label == 'Phenotype');
+                if(phenotypes.length == 0){
+                    let pheno = await qo.structPheno(nodeO);
+                    neoAPI.addNodeArray(pheno);
+                    neoAPI.structureRelation(pheno, variants, "Pheno");
+
+                }else{
+                    neoAPI.structureRelation(phenotypes, variants, "Pheno");
+                }
+                nodeO.properties.Variants = qo.structVariants(nodeO);
+                //nodeO.properties.Phenotypes = qo.structPheno(nodeO);
             
-                qo.structVariants(nodeO).then(node=> {
-                    qo.structPheno(node).then(n=> {
-                        gCanvas.renderSidebar(n);
-                        gCanvas.renderGeneDetail(n);
-                    });
-                });
+                gCanvas.renderSidebar(nodeO);
+                gCanvas.renderGeneDetail(nodeO);
             });
 
         }else{
-            console.log('g is not there');
+         
             initialSearch(dataOb).then(n=> {
-                console.log('dataob to add', n);
-                //neoAPI.addNode(n, n.type);
-               // neoAPI.getGraph().then(graph=> {
-               //     let variants = graph[0].nodes.filter(d=> d.label == 'Variant');
-              //  gCanvas.drawGraph(graph);
-    
-             //   n.properties.allelicVariantList = variants;
-            /*
-                qo.structVariants(n).then(node=> {
-                 
-                    neoAPI.addNodeArray(node.properties.allelicVariantList).then(()=> {
-                        node.properties.allelicVariantList.forEach(v=>{
-                            console.log('is this hitting?')
-                            console.log(node)
-                            neoAPI.addRelation(v.name, 'Variant', node.value, 'Gene', 'Mutation');
-                        });
-                    });
+            
+                neoAPI.addNode(n, n.type);
                 
-                    qo.structPheno(node).then(no=> {
-                        neoAPI.addNodeArray(no.properties.allelicVariantList).then(()=> {
-                            let varNames = no.properties.allelicVariantList.map(v=> v.description.toString())
-                            let relatedPhenotypes = no.properties.geneMap.phenotypeMapList.map(p=>{
-                                let pindex = varNames.indexOf(p.description.toString().toUpperCase())
-                                if(pindex > -1 ){
-                                    p.varIds = no.properties.allelicVariantList[pindex].name;
-                                }else{
-                                    p.varIds = null;
-                                }
-                                return p;
-                            }).filter(p=> p.varIds != null);
-                            relatedPhenotypes.forEach(rel => {
-                                neoAPI.addRelation(rel.name, 'Phenotype', rel.varIds, 'Variant', 'Pheno');
-                            });
+                qo.structVariants(n).then(async (vars)=> {
+                    n.properties.Variants = vars;
+    
+                    neoAPI.addNodeArray(n.properties.Variants).then(async ()=> {
+                        n.properties.Variants.forEach(v=>{
+                            neoAPI.addRelation(v.name, v.type, n.value, n.type, 'Mutation');
                         });
 
-                       // neoAPI.getGraph().then(graph=> gCanvas.drawGraph(graph));
-                      //  gCanvas.renderSidebar(no);
-                      //  gCanvas.renderGeneDetail(no);
+                    n.properties.Phenotypes.nodes = await qo.structPheno(n);//.then(async (no) => {
+
+                    neoAPI.addNodeArray(n.properties.Phenotypes.nodes);
+                      
+                    let varNames = n.properties.Variants.map(v=> {
+                       // console.log('var array', v)
+                        let des = typeof v.properties == 'string'? JSON.parse(v.properties) : v.properties;
+                        return des.description.toString()
                     });
-                });*/
+                   // console.log('var names',varNames);
+                    let relatedPhenotypes = n.properties.Phenotypes.nodes.map(p=>{
+                            let pindex = varNames.indexOf(p.properties.description.toString().toUpperCase())
+                            if(pindex > -1 ){
+                                p.varIds = n.properties.Variants[pindex].name;
+                            }else{
+                                p.varIds = null;
+                            }
+                            return p;
+                        }).filter(p=> p.varIds != null);
+
+                        console.log('pheno', relatedPhenotypes);
+                        relatedPhenotypes.forEach(rel => {
+                            neoAPI.addRelation(rel.name, 'Phenotype', rel.varIds, 'Variant', 'Pheno');
+                    });
+
+                });
+
             });
-       // })
-           // })
+    
+    })
 
     }
 })
 
 async function initialSearch(queryOb: object){
-    /*      'Ids': {},
-            'Location': {},
-            'Phenotypes': {},
-            'Models':{},
-            'Text':{},
-            'References':{},
-            'Symbols':{},
-            'Description':{},
-            'Variants':{}
-    */
 
     let idSearch = await search.searchBySymbol(queryOb);
-   
-    console.log(idSearch);
-
     let mimId = await search.geneIdtoMim(idSearch);
-    console.log(mimId);
-
     let omimOb = await searchOMIM(mimId);
-
-    console.log('updated', omimOb);
-
     let kegg = await search.getKegg(omimOb.properties.Ids.ncbi, omimOb);
     console.log("fin", kegg);
     return kegg;

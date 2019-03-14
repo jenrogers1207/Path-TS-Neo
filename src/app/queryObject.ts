@@ -1,4 +1,5 @@
 import * as d3 from 'D3';
+import { promises } from 'fs';
 var search = require('./search');
 
 export class SelectedOb {
@@ -26,7 +27,10 @@ export class QueryObject {
             'References':{},
             'Symbols':{},
             'Description':{},
-            'Variants':{}
+            'Variants':{},
+            'Orthology':{},
+            'Brite':{},
+            'Structure': {}
         };
     }
 }
@@ -43,6 +47,13 @@ export class VariantObject {
         this.type = 'Variant';
         this.name = snpId;  
         this.dbSnp = snpId; 
+        this.properties = {
+            'Ids': {},
+            'Location': {},
+            'Phenotypes': {},
+            'Structure': {},
+            'Text': {}
+        };
     }
 }
 
@@ -54,18 +65,20 @@ export class PathwayObject {
 
     constructor(pathId:string) {
         this.type = 'Pathway';
-}
+    }
 }
 
 export class PhenotypeObject {
 
     type: string;
     name: string;
+    properties:object;
 
     constructor(phenoId:string) {
         this.type = 'Phenotype';
         this.name = phenoId;
-}
+        this.properties = {}
+    }
 }
 
 
@@ -81,60 +94,80 @@ export class QueryKeeper{
     }
 }
 
-export async function structVariants(nodeP: object){
-
-    let nodeOb = await Promise.resolve(nodeP)
+export async function structVariants(nodeOb: object, variantObs){
+ //  console.log('structuring variant', nodeOb);
+    let varArray = nodeOb.properties.Variants;
+    let variants = typeof varArray === 'string' ? JSON.parse(varArray) : varArray;
+   // if(!nodeOb.properties){ nodeOb.properties = nodeOb.data}
  
-    let variants = typeof nodeOb.properties.allelicVariantList === 'string' ? JSON.parse(nodeOb.properties.allelicVariantList) : nodeOb.properties.allelicVariantList;
-    if(!nodeOb.properties){ nodeOb.properties = nodeOb.data}
-    
-    nodeOb.properties.allelicVariantList = variants.map(v=> {
+    let obs = variants.map(async (v)=> {
         let snpName = v.properties? v.properties.dbsnp : v.dbSnps;
         let variantOb = new VariantObject(snpName);
         variantOb.name = snpName;
-        variantOb.gene = nodeOb.value;
-        variantOb.mimNumber = v.properties? v.properties.mimNumber : v.mimNumber;
+        variantOb.associatedGene = nodeOb.value;
+        variantOb.OMIM = v.properties? v.properties.mimNumber : v.mimNumber;
         variantOb.mutations = v.properties? v.properties.mutations : v.mutations;
         variantOb.description = v.properties? v.properties.description : v.name;
         variantOb.clinvarAccessions = v.properties? v.properties.clinvarAccessions : v.clinvarAccessions;
         variantOb.text = v.properties? v.properties.text : v.text;
-        variantOb.snpProps = getSNP(variantOb, v);
+
+        //variantOb.snpProps = getSNP(variantOb, v);
+
+        /*
+        allele_annotations: (3) [{…}, {…}, {…}]
+        anchor: "NC_000013.11:0020189531:1:snv"
+        placements_with_allele: (7) [{…}, {…}, {…}, {…}, {…}, {…}, {…}]
+        support: (5) [{…}, {…}, {…}, {…}, {…}]
+        variant_type: "snv"
+*/
         
-        console.log(variantOb);
+        let snp = await search.loadSNP(variantOb.name);
+
+            variantOb.properties.Type = snp.variant_type;
+            variantOb.properties.Location.anchor = snp.anchor;
+            variantOb.properties.Location.placements_with_allele = snp.placements_with_allele;
+            variantOb.properties.allelleAnnotations = snp.allele_annotations;
+            let clinicalSNP = snp.allele_annotations.filter(a=> a.clinical.length > 0);
+        
+            variantOb.properties.Phenotypes = clinicalSNP.map(f=> f.clinical);
+
         return variantOb;
     });
-    return nodeOb;
-}
 
-async function getSNP(dataob:object, variant:object){
-    console.log(dataob);
-    let props = variant.properties? variant.properties : variant;
-      
-    let snpProps = props.snpProps ? JSON.parse(variant.properties.snpProps) : search.loadSNP(dataob.name);
 
-   // dataob.snpProps = await Promise.resolve(snpProps);
-   // console.log(dataob);
-    return await Promise.resolve(snpProps);
-
+  return await Promise.all(obs);
 }
 
 export async function structPheno(nodeP: object){
 
     let nodeOb = await Promise.resolve(nodeP);
+    console.log('node in pheno', nodeOb)
+    /*mimNumber: 121011
+    phenotype: "Bart-Pumphrey syndrome"
+    phenotypeInheritance: "Autosomal dominant"
+    phenotypeMappingKey: 3
+    phenotypeMimNumber: 149200*/
 
-    nodeOb.properties.geneMap = typeof nodeOb.properties.geneMap == 'string'? JSON.parse(nodeOb.properties.geneMap) : nodeOb.properties.geneMap;
+    nodeOb.properties = typeof nodeOb.properties == 'string'? JSON.parse(nodeOb.properties) : nodeOb.properties;
+    let phenoob = Promise.resolve(nodeOb.properties.Phenotypes);
+    let pheno = typeof nodeOb.properties.Phenotypes == 'string'? JSON.parse(nodeOb.properties.Phenotypes) : nodeOb.properties.Phenotypes;
+    console.log('phenohere',phenoOb);
+    let inner = phenoOb.nodes? phenoOb.nodes:phenoOb;
 
-    nodeOb.properties.geneMap.phenotypeMapList = nodeOb.properties.geneMap.phenotypeMapList.map(p=> {
+    console.log('inner', inner);
+
+    let nodes = inner.map(p=> {
         let pheno = p.phenotypeMap
         let phenoOb = new PhenotypeObject(pheno.phenotypeMimNumber.toString());
-        phenoOb.mimNumber = pheno.mimNumber;
-        phenoOb.description = pheno.phenotype;// "Bart-Pumphrey syndrome"
-        phenoOb.phenotypeInheritance = pheno.phenotypeInheritance;
-        phenoOb.phenotypeMappingKey = pheno.phenotypeMappingKey;
-        phenoOb.phenotypeMimNumber = pheno.phenotypeMimNumber;
+        phenoOb.properties.OMIM = pheno.mimNumber;
+        phenoOb.properties.description = pheno.phenotype;// "Bart-Pumphrey syndrome"
+        phenoOb.properties.phenotypeInheritance = pheno.phenotypeInheritance;
+        phenoOb.properties.phenotypeMappingKey = pheno.phenotypeMappingKey;
+        phenoOb.properties.phenotypeMimNumber = pheno.phenotypeMimNumber;
         return phenoOb;
     });
-    return nodeOb;
+   // return nodeOb;
+   return await Promise.resolve(nodes);
 }
 
 export async function drawSelectedPanel(query) {

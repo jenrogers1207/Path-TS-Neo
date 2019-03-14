@@ -6,25 +6,29 @@ var neo4j = require('neo4j-driver').v1;
 var driver = neo4j.driver("bolt://localhost:11001", neo4j.auth.basic("neo4j", "1234"));
 var _ = require('lodash');
 
-export async function addNode(queryOb:object, type:string){
+export async function addNode(promOb:object, type:string){
 
-     console.log('is this working',queryOb)
+    // console.log('is this working',queryOb)
+    let queryOb = await Promise.resolve(promOb);
+    //console.log(queryOb)
+
     let value = queryOb.value? queryOb.value : queryOb.dbSnps;
     let node = await checkForNode(value, type);
     if(node.length > 0){
-        console.log('node exists', node);
+       // console.log('node exists', node);
 
     }else{
-        console.log('add node');
+       // console.log('add node');
+       // console.log(queryOb);
      
         let name = queryOb.value ? queryOb.value : queryOb.name;
         let prop = {};
 
         let properties = queryOb.properties ? queryOb.properties : queryOb;
 
-        let idKeys = d3.keys(queryOb.properties.ids);
+        let idKeys = d3.keys(queryOb.properties.Ids);
        
-        let propKeys = d3.keys(properties).filter(f=> f != 'ids');
+        let propKeys = d3.keys(properties).filter(f=> f != 'Ids');
 
         propKeys.forEach(el => {
             prop[el] = typeof properties[el] === 'string' ? properties[el] : JSON.stringify(properties[el]);
@@ -32,7 +36,7 @@ export async function addNode(queryOb:object, type:string){
 
         idKeys.forEach((id, i)=> {
            // console.log(id, properties.ids[id])
-            prop[id] = properties.ids[id];
+            prop[id] = properties.Ids[id];
         })
 
         prop.name = name;
@@ -56,18 +60,19 @@ export async function addNode(queryOb:object, type:string){
 
 export async function addNodeArray(phenoObs:Array<object>){
     let names: Array<string> = phenoObs.map(v=> v.name);
+    console.log('phenObs', phenoObs);
     let type = phenoObs[0].type;
     let originalNames : Array<string> = await checkForNodeArray(names, type);
 
     let newNames = names.filter(n=> originalNames.indexOf(n) == -1);
    
     if(newNames.length > 0){
-        console.log('ADDING ARRAY')
+       // console.log('ADDING ARRAY')
         let newObs = phenoObs.filter(ob=> newNames.indexOf(ob.name) > -1)
         let newnew = newObs.map(o=> {
             let keys = d3.keys(o);
             keys.forEach(k=> {
-                console.log(o[k], typeof o[k])
+              //  console.log(o[k], typeof o[k])
                 if(typeof o[k] != 'string'){
                     o[k] = JSON.stringify(o[k])
                 }else if(typeof o[k] == 'object'){
@@ -77,7 +82,7 @@ export async function addNodeArray(phenoObs:Array<object>){
             return o;
         });
         
-        console.log('new', newnew);
+       // console.log('new', newnew);
         let command = 'UNWIND $props AS map CREATE (n:'+type+') SET n = map'
    
         var session = driver.session();
@@ -92,6 +97,42 @@ export async function addNodeArray(phenoObs:Array<object>){
                 console.log(error);
             });
         }else{ console.log('ALREADY THERE')}
+}
+
+export async function structureRelation(node1: Array<object>, node2: Array<object>, relation:string){
+    
+    let node1Label = node1.type ? node1.type : node1.label;
+    let node2Label = node2.type ? node2.type : node2.label;
+
+    console.log(node2Label);
+    console.log(node1Label);
+
+    let varNames = node2.map(v=> {
+        let des = typeof v.properties == 'string'? JSON.parse(v.properties) : v.properties;
+        let inner = des.properties ? JSON.parse(des.properties) : des;
+        return inner.description.toString()
+    });
+
+    let relatedPhenotypes = node1.map(p=>{
+           
+            let phenoProps = typeof p.properties == 'string'? JSON.parse(p.properties) : p.properties;
+            let inner = phenoProps.properties ? JSON.parse(phenoProps.properties) : phenoProps;
+        
+            let pindex = varNames.indexOf(inner.description.toString().toUpperCase());
+           
+            if(pindex > -1 ){
+                let name = node2[pindex].name ? node2[pindex].name : node2[pindex].properties.name; 
+              
+                p.varIds = name;
+            }else{
+                p.varIds = null;
+            }
+            return p;
+        }).filter(p=> p.varIds != null);
+
+        relatedPhenotypes.forEach(rel => {
+           addRelation(rel.name, 'Phenotype', rel.varIds, 'Variant', relation);
+    });
 }
 
 export async function addToGraph(query:string, type:string) {
