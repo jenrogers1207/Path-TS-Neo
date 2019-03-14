@@ -8,7 +8,7 @@ export class SelectedOb {
 
 export class QueryObject {
 
-    value:string;
+    name:string;
     ncbi:string;
     keggId:string;
     properties: object;
@@ -17,7 +17,7 @@ export class QueryObject {
 
     constructor(queryVal:string) {
         this.type = ''
-        this.value = queryVal;
+        this.name = queryVal;
         this.properties = {
             'Ids': {},
             'Location': {},
@@ -30,7 +30,8 @@ export class QueryObject {
             'Variants':{},
             'Orthology':{},
             'Brite':{},
-            'Structure': {}
+            'Structure': {},
+            'Name': {}
         };
     }
 }
@@ -52,7 +53,8 @@ export class VariantObject {
             'Location': {},
             'Phenotypes': {},
             'Structure': {},
-            'Text': {}
+            'Text': {},
+            'Name': {}
         };
     }
 }

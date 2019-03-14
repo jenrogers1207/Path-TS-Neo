@@ -8,20 +8,17 @@ var _ = require('lodash');
 
 export async function addNode(promOb:object, type:string){
 
-    // console.log('is this working',queryOb)
+     console.log('add node firing', promOb)
     let queryOb = await Promise.resolve(promOb);
     //console.log(queryOb)
 
-    let value = queryOb.value? queryOb.value : queryOb.dbSnps;
+    let value = queryOb.name? queryOb.name : queryOb.properties.name;
     let node = await checkForNode(value, type);
     if(node.length > 0){
-       // console.log('node exists', node);
-
+        console.log('node already here');
     }else{
-       // console.log('add node');
-       // console.log(queryOb);
-     
-        let name = queryOb.value ? queryOb.value : queryOb.name;
+        
+        let name = queryOb.value ? queryOb.value : queryOb.properties.name;
         let prop = {};
 
         let properties = queryOb.properties ? queryOb.properties : queryOb;
@@ -35,15 +32,11 @@ export async function addNode(promOb:object, type:string){
         });
 
         idKeys.forEach((id, i)=> {
-           // console.log(id, properties.ids[id])
             prop[id] = properties.Ids[id];
         })
 
         prop.name = name;
- 
-       // let command = 'CREATE (n:' + queryOb.type + ' {name:"' + queryOb.value + '"})';
         let command = `CREATE (n:`+type+` $props)`;
-      //  console.log(command, {props: properties});
         var session = driver.session();
         session
             .run(command, {props: prop})
@@ -221,7 +214,7 @@ export async function getGraph() {
                
                     let gen = new Object();
                     gen.index = g.identity.low;
-                    gen.title = g.properties.name;
+                    gen.name = g.properties.name;
                     gen.properties = g.properties;
                     gen.label = g.labels[0];
                     return  gen;
@@ -229,7 +222,7 @@ export async function getGraph() {
                 let vars = r.get('variant').map(v=> {
                     let vari = new Object();
                     vari.index = v.identity.low;
-                    vari.title = v.properties.name;
+                    vari.name = v.properties.name;
                     vari.properties = v.properties;
                     vari.label = v.labels[0];
                     return vari;
@@ -237,7 +230,7 @@ export async function getGraph() {
                 let pheno = r.get('phenotype').map(p=> {
                     let ph = new Object();
                     ph.index = p.identity.low;
-                    ph.title = p.properties.name;
+                    ph.name = p.properties.name;
                     ph.properties = p.properties;
                     ph.label = p.labels[0];
                     return ph;

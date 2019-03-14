@@ -9,8 +9,6 @@ var dataLoad = require('./fileDataLoad');
 const qo = require('./queryObject');
 import ky from 'ky';
 
-
-
 d3.select('.search-icon').on('click', () => {
     const value = (document.getElementById('search-bar')).value;
     let dataOb = new qo.QueryObject(value);
@@ -34,9 +32,9 @@ let toolDiv = d3.select('body').append("div")
 let queryPanel = d3.select('#wrapper').append('div').attr('id', 'query-panel');
 
 dataLoad.loadFile().then(d=> {
-  //  dataLoad.renderSidebar(d);
     let dataOb = new qo.QueryObject(d[0].key);
     dataOb.type = "Gene";
+    console.log(dataOb);
     let varArray = d[0].values.map(v=> {
         let variant = new qo.QueryObject(v.id);
         variant.type = "Variant";
@@ -73,9 +71,8 @@ dataLoad.loadFile().then(d=> {
                     neoAPI.structureRelation(phenotypes, variants, "Pheno");
                 }
                 nodeO.properties.Variants = qo.structVariants(nodeO);
-                //nodeO.properties.Phenotypes = qo.structPheno(nodeO);
-            
-                gCanvas.renderSidebar(nodeO);
+   
+                gCanvas.renderCalls(nodeO);
                 gCanvas.renderGeneDetail(nodeO);
             });
 
@@ -93,16 +90,15 @@ dataLoad.loadFile().then(d=> {
                             neoAPI.addRelation(v.name, v.type, n.value, n.type, 'Mutation');
                         });
 
-                    n.properties.Phenotypes.nodes = await qo.structPheno(n);//.then(async (no) => {
+                    n.properties.Phenotypes.nodes = await qo.structPheno(n);
 
                     neoAPI.addNodeArray(n.properties.Phenotypes.nodes);
                       
                     let varNames = n.properties.Variants.map(v=> {
-                       // console.log('var array', v)
                         let des = typeof v.properties == 'string'? JSON.parse(v.properties) : v.properties;
                         return des.description.toString()
                     });
-                   // console.log('var names',varNames);
+                 
                     let relatedPhenotypes = n.properties.Phenotypes.nodes.map(p=>{
                             let pindex = varNames.indexOf(p.properties.description.toString().toUpperCase())
                             if(pindex > -1 ){
@@ -113,7 +109,6 @@ dataLoad.loadFile().then(d=> {
                             return p;
                         }).filter(p=> p.varIds != null);
 
-                        console.log('pheno', relatedPhenotypes);
                         relatedPhenotypes.forEach(rel => {
                             neoAPI.addRelation(rel.name, 'Phenotype', rel.varIds, 'Variant', 'Pheno');
                     });
@@ -140,7 +135,7 @@ async function initialSearch(queryOb: object){
 async function isStored(graph: object, nameSearch:string, nodeType:string, data:object){
     let foundGraphNodes = graph.nodes.filter(n=> n.properties.symbol == nameSearch);
     let nodeOb = foundGraphNodes.length > 0 ? foundGraphNodes[0] : initialSearch(data);
-    console.log('nodeOb', nodeOb)
+    console.log('nodeOb in is stored', nodeOb)
     neoAPI.addNode(nodeOb, nodeType);
     return nodeOb
 }

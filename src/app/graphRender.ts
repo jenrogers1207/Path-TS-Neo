@@ -10,7 +10,7 @@ export function removeThings(){
     d3.select('#gene-id').selectAll('*').remove();
 }
 
-export async function renderSidebar(data: Object){
+export async function renderCalls(data: Object){
  
     let varOb = await Promise.resolve(data.properties.Variants);
     let sidebar = d3.select('#left-nav');
@@ -23,11 +23,9 @@ export async function renderSidebar(data: Object){
         return d;
     });
 
-    console.log(variantData);
-
         let geneEnterDiv = geneDiv.enter().append('div').attr('class', d=> d.value).classed('gene', true);
         let geneHeader = geneEnterDiv.append('div').classed('gene-header', true)
-        geneHeader.append('text').text(d=> d.title);
+        geneHeader.append('text').text(d=> d.name);
         geneDiv = geneEnterDiv.merge(geneDiv);
     
         let variantBox = geneDiv.append('div').classed('variant-wrapper', true);
@@ -71,10 +69,12 @@ export async function renderSidebar(data: Object){
 export async function renderGeneDetail(data: Object){
  
     let headers = d3.keys(data.properties).filter(d=> d != 'allelicVariantList' && d != 'referenceList' && d != 'name');
+    console.log(data);
     
     let sidebar = d3.select('#left-nav');
     let geneDet = sidebar.select('.gene-detail');
     let geneHeader = geneDet.append('div').attr('class', 'detail-head').append('h4').text(data.title);
+   // let symbolBand = geneDet.append('div').classed('symbols', true).data(JSON.parse(data.Symbols));
     let propertyDivs = geneDet.selectAll('.prop-headers').data(headers);
     let propEnter = propertyDivs.enter().append('div').classed('prop-headers', true);
     propEnter.append('div').attr('class', (d)=> d).classed('head-wrapper', true).append('h5').text((d)=> d.toUpperCase());
@@ -177,7 +177,6 @@ export function drawGraph(dataArr: Object) {
 
     geneNode.classed("fixed", d=> d.fixed = true);
 
-
     function dragstart(d) {
         d3.select(this).classed("fixed", d.fixed = true);
       }
@@ -187,11 +186,11 @@ export function drawGraph(dataArr: Object) {
       var toggle = 0;
 //Create an array logging what is connected to what
    
-    let labels = geneNode.append('text').text(d => d.title).style('color', '#ffffff').attr('x', 0)
+    let labels = geneNode.append('text').text(d => d.name).style('color', '#ffffff').attr('x', 0)
         .attr('y', 3).attr('text-anchor', 'middle');
 
     node.append("title")
-        .text(function(d) { return d.title; });
+        .text(function(d) { return d.name; });
 
     node = nodeEnter.merge(node);
 
@@ -204,6 +203,7 @@ export function drawGraph(dataArr: Object) {
             toolDiv.transition()
                 .duration(200)
                 .style("opacity", .8);
+            console.log(d)
             if(d.label == 'Phenotype'){
                 toolDiv.html(d.properties.description + "<br/>")
                 .style("left", (d3.event.pageX) + "px")
