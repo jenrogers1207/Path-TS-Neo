@@ -31,7 +31,7 @@ export class QueryObject {
             'Orthology':{},
             'Brite':{},
             'Structure': {},
-            'Name': {}
+            'name': queryVal
         };
     }
 }
@@ -97,46 +97,38 @@ export class QueryKeeper{
 }
 
 export async function structVariants(varArray: object){
- //  console.log('structuring variant', nodeOb);
-    
+ 
+
     let variants = typeof varArray === 'string' ? JSON.parse(varArray) : varArray;
    // if(!nodeOb.properties){ nodeOb.properties = nodeOb.data}
  
     let obs = variants.map(async (v)=> {
-        
+    
         let snpName = v.name? v.name : v.properties.Ids.dbsnp;
        // let variantOb = new VariantObject(snpName);
         let variantOb = v;
-        console.log('v', v);
-        
+        //determine if properties exist -  has this already been loaded?
       //  variantOb.name = snpName;
       //  variantOb.associatedGene = v.associatedGene;
         variantOb.OMIM = v.properties.mimNumber? v.properties.mimNumber : v.mimNumber;
        // variantOb.mutations = v.properties.mutations? v.properties.mutations : v.mutations;
       //  variantOb.description = v.properties.description? v.properties.description : v.name;
        // variantOb.clinvarAccessions = v.properties? v.properties.clinvarAccessions : v.clinvarAccessions;
-        variantOb.text = v.properties? v.properties.text : v.text;
+        variantOb.Text = v.properties.text? v.properties.text : v.text;
 
-        //variantOb.snpProps = getSNP(variantOb, v);
+        if(variantOb.properties.allelleAnnotations == undefined){
 
-        /*
-        allele_annotations: (3) [{…}, {…}, {…}]
-        anchor: "NC_000013.11:0020189531:1:snv"
-        placements_with_allele: (7) [{…}, {…}, {…}, {…}, {…}, {…}, {…}]
-        support: (5) [{…}, {…}, {…}, {…}, {…}]
-        variant_type: "snv"
-*/
-        console.log(variantOb);
-        let snp = await search.loadSNP(variantOb.name);
-
+            let snp = await search.loadSNP(variantOb.name);
+           // console.log('snpppp',snp);
             variantOb.properties.Type = snp.variant_type;
             variantOb.properties.Location.anchor = snp.anchor;
             variantOb.properties.Location.placements_with_allele = snp.placements_with_allele;
             variantOb.properties.allelleAnnotations = snp.allele_annotations;
             let clinicalSNP = snp.allele_annotations.filter(a=> a.clinical.length > 0);
-        
+            
             variantOb.properties.Phenotypes = clinicalSNP.map(f=> f.clinical);
-
+        }
+       
         return variantOb;
     });
 
@@ -144,10 +136,10 @@ export async function structVariants(varArray: object){
   return await Promise.all(obs);
 }
 
-export async function structPheno(nodeP: object){
+export async function structPheno(phenob: object, assocGene:string){
 
-    let nodeOb = await Promise.resolve(nodeP);
-    console.log('node in pheno', nodeOb)
+    let nodeOb = await Promise.resolve(phenob);
+    console.log(JSON.parse(phenob.properties.Phenotypes));
     /*mimNumber: 121011
     phenotype: "Bart-Pumphrey syndrome"
     phenotypeInheritance: "Autosomal dominant"
@@ -159,9 +151,6 @@ export async function structPheno(nodeP: object){
     let pheno = typeof nodeOb.properties.Phenotypes == 'string'? JSON.parse(nodeOb.properties.Phenotypes) : nodeOb.properties.Phenotypes;
    
     let inner = phenoOb.nodes? phenoOb.nodes:phenoOb;
-
-    console.log('inner', inner);
-
     let nodes = inner.map(p=> {
         let pheno = p.phenotypeMap
         let phenoOb = new PhenotypeObject(pheno.phenotypeMimNumber.toString());

@@ -8,14 +8,16 @@ var _ = require('lodash');
 
 export async function addNode(promOb:object, type:string){
 
-     console.log('add node firing', promOb)
+  console.log('add node firing', promOb, type)
     let queryOb = await Promise.resolve(promOb);
     //console.log(queryOb)
 
     let value = queryOb.name? queryOb.name : queryOb.properties.name;
+
     let node = await checkForNode(value, type);
+
     if(node.length > 0){
-        console.log('node already here');
+       console.log(value +' already exists');
     }else{
         
         let name = queryOb.value ? queryOb.value : queryOb.properties.name;
@@ -53,19 +55,19 @@ export async function addNode(promOb:object, type:string){
 
 export async function addNodeArray(phenoObs:Array<object>){
     let names: Array<string> = phenoObs.map(v=> v.name);
-    console.log('phenObs', phenoObs);
+  
     let type = phenoObs[0].type;
     let originalNames : Array<string> = await checkForNodeArray(names, type);
 
     let newNames = names.filter(n=> originalNames.indexOf(n) == -1);
    
     if(newNames.length > 0){
-       // console.log('ADDING ARRAY')
+     
         let newObs = phenoObs.filter(ob=> newNames.indexOf(ob.name) > -1)
         let newnew = newObs.map(o=> {
             let keys = d3.keys(o);
             keys.forEach(k=> {
-              //  console.log(o[k], typeof o[k])
+             
                 if(typeof o[k] != 'string'){
                     o[k] = JSON.stringify(o[k])
                 }else if(typeof o[k] == 'object'){
@@ -130,7 +132,7 @@ export async function structureRelation(node1: Array<object>, node2: Array<objec
 
 export async function addToGraph(query:string, type:string) {
     let command = 'CREATE (n:' + type + ' {name:"' + query + '"})';
-   // console.log(command);
+ 
     var session = driver.session();
     session
         .run(command)
@@ -145,12 +147,13 @@ export async function addToGraph(query:string, type:string) {
 
 export async function checkForNode(name:string, type:string) {
     var session = driver.session();
-    let command = 'MATCH (n:'+type+' { name: "' + name + '" }) RETURN n';
-    
+    let command = 'MATCH (n:'+type+' { symbol: "' + name + '" }) RETURN n';
+
     return session
         .run(command)
         .then(function(result:any) {
             session.close();
+     
             return result.records;
         })
         .catch(function(error:any) {
@@ -274,7 +277,7 @@ export async function getGraph() {
 export async function addRelation(sourceName:string, sourceType:string, targetName:string, targetType:string, linkType:string) {
     
     let command = 'MATCH (a:'+sourceType+'),(b:'+targetType+') \
-    WHERE a.name = "' + sourceName + '" AND b.name = "' + targetName + '"MERGE (a)-[r:'+linkType+']->(b) ON CREATE SET r.alreadyExisted=false ON MATCH SET r.alreadyExisted=true RETURN r.alreadyExisted';
+    WHERE a.name = "' + sourceName + '" AND b.name = "' + targetName + '" MERGE (a)-[r:'+linkType+']->(b) ON CREATE SET r.alreadyExisted=false ON MATCH SET r.alreadyExisted=true RETURN r.alreadyExisted';
 
     var session = driver.session();
     return session
