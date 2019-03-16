@@ -6,39 +6,39 @@ var neo4j = require('neo4j-driver').v1;
 var driver = neo4j.driver("bolt://localhost:11001", neo4j.auth.basic("neo4j", "1234"));
 var _ = require('lodash');
 
-export async function addNode(queryOb:object, type:string){
-    let value = queryOb.value? queryOb.value : queryOb.dbSnps;
-    let node = await checkForNode(value, type);
-    if(node.length > 0){
-        console.log('node exists');
-        console.log('existing node', node);
+export async function addNode(promOb:object, type:string){
 
+  console.log('add node firing', promOb, type)
+    let queryOb = await Promise.resolve(promOb);
+    //console.log(queryOb)
+
+    let value = queryOb.name? queryOb.name : queryOb.properties.name;
+
+    let node = await checkForNode(value, type);
+
+    if(node.length > 0){
+       console.log(value +' already exists');
     }else{
-        console.log('add node');
-     
-        let name = queryOb.value ? queryOb.value : queryOb.name;
+        
+        let name = queryOb.value ? queryOb.value : queryOb.properties.name;
         let prop = {};
 
         let properties = queryOb.properties ? queryOb.properties : queryOb;
 
-        let idKeys = d3.keys(queryOb.properties.ids);
+        let idKeys = d3.keys(queryOb.properties.Ids);
        
-        let propKeys = d3.keys(properties).filter(f=> f != 'ids');
+        let propKeys = d3.keys(properties).filter(f=> f != 'Ids');
 
         propKeys.forEach(el => {
             prop[el] = typeof properties[el] === 'string' ? properties[el] : JSON.stringify(properties[el]);
         });
 
         idKeys.forEach((id, i)=> {
-           // console.log(id, properties.ids[id])
-            prop[id] = properties.ids[id];
+            prop[id] = properties.Ids[id];
         })
 
         prop.name = name;
- 
-       // let command = 'CREATE (n:' + queryOb.type + ' {name:"' + queryOb.value + '"})';
         let command = `CREATE (n:`+type+` $props)`;
-      //  console.log(command, {props: properties});
         var session = driver.session();
         session
             .run(command, {props: prop})
@@ -55,20 +55,34 @@ export async function addNode(queryOb:object, type:string){
 
 export async function addNodeArray(phenoObs:Array<object>){
     let names: Array<string> = phenoObs.map(v=> v.name);
+  
     let type = phenoObs[0].type;
     let originalNames : Array<string> = await checkForNodeArray(names, type);
 
     let newNames = names.filter(n=> originalNames.indexOf(n) == -1);
    
     if(newNames.length > 0){
-        console.log('ADDING ARRAY')
+     
         let newObs = phenoObs.filter(ob=> newNames.indexOf(ob.name) > -1)
-        console.log(newObs);
+        let newnew = newObs.map(o=> {
+            let keys = d3.keys(o);
+            keys.forEach(k=> {
+             
+                if(typeof o[k] != 'string'){
+                    o[k] = JSON.stringify(o[k])
+                }else if(typeof o[k] == 'object'){
+                    o[k] = JSON.stringify(Promise.resolve(o[k]))
+                }else{console.log('whaaa')}
+            })
+            return o;
+        });
+        
+       // console.log('new', newnew);
         let command = 'UNWIND $props AS map CREATE (n:'+type+') SET n = map'
    
         var session = driver.session();
         session
-            .run(command, {props: newObs})
+            .run(command, {props: newnew})
             .then(function(result) {
                 session.close();
 
@@ -80,9 +94,54 @@ export async function addNodeArray(phenoObs:Array<object>){
         }else{ console.log('ALREADY THERE')}
 }
 
+export async function structureRelation(node1: Array<object>, node2: Array<object>, relation:string){
+   
+    let node1Label = node1[0].type ? node1[0].type : node1[0].label;
+    let node2Label = node2[0].type ? node2[0].type : node2[0].label;
+
+    let phenoNames = node1.map(p=> p.name.toString());
+
+    let relatedPhenotypes = node2.map(p=>{
+        
+            let varProps = typeof p.properties == 'string'? JSON.parse(p.properties) : p.properties;
+            varProps = varProps.properties? varProps.properties : varProps;
+            varProps = typeof varProps == 'string'? JSON.parse(varProps) : varProps;
+       
+            let phenoFromVars = varProps.Phenotypes.map(p=> {
+               // let omimCheck = p.map(dis=> dis.disease_ids.map(d=> d.organization).filter(g=> g.includes('OMIM')));
+                let omimCheck = p.map(dis=> dis.disease_ids.filter(d=> d.organization == "OMIM"));
+                return omimCheck;
+            });
+
+           
+            let filtered = phenoFromVars.flatMap(fil=>{ 
+                return fil.filter(test=> test.length > 0);
+            });
+
+            console.log(filtered);
+        
+            let pindex = phenoNames.indexOf(varProps.description.toString().toUpperCase());
+           
+            if(pindex > -1 ){
+                let name = node2[pindex].name ? node2[pindex].name : node2[pindex].properties.name; 
+                
+                p.varIds = name;
+            }else{
+                p.varIds = null;
+            }
+            return p;
+        })//.filter(p=> p.varIds != null);
+
+        console.log(relatedPhenotypes);
+
+        relatedPhenotypes.forEach(rel => {
+           addRelation(rel.name, 'Phenotype', rel.varIds, 'Variant', relation);
+    });
+}
+
 export async function addToGraph(query:string, type:string) {
     let command = 'CREATE (n:' + type + ' {name:"' + query + '"})';
-   // console.log(command);
+ 
     var session = driver.session();
     session
         .run(command)
@@ -97,12 +156,13 @@ export async function addToGraph(query:string, type:string) {
 
 export async function checkForNode(name:string, type:string) {
     var session = driver.session();
-    let command = 'MATCH (n:'+type+' { name: "' + name + '" }) RETURN n';
-    
+    let command = 'MATCH (n:'+type+' { symbol: "' + name + '" }) RETURN n';
+
     return session
         .run(command)
         .then(function(result:any) {
             session.close();
+     
             return result.records;
         })
         .catch(function(error:any) {
@@ -161,10 +221,12 @@ export async function getGraph() {
             session.close();
      
             return result.records.map(r=> {
+           
                 let gene = new Array(r.get('gene')).map(g=> {
+               
                     let gen = new Object();
                     gen.index = g.identity.low;
-                    gen.title = g.properties.name;
+                    gen.name = g.properties.name;
                     gen.properties = g.properties;
                     gen.label = g.labels[0];
                     return  gen;
@@ -172,7 +234,7 @@ export async function getGraph() {
                 let vars = r.get('variant').map(v=> {
                     let vari = new Object();
                     vari.index = v.identity.low;
-                    vari.title = v.properties.name;
+                    vari.name = v.properties.name;
                     vari.properties = v.properties;
                     vari.label = v.labels[0];
                     return vari;
@@ -180,7 +242,7 @@ export async function getGraph() {
                 let pheno = r.get('phenotype').map(p=> {
                     let ph = new Object();
                     ph.index = p.identity.low;
-                    ph.title = p.properties.name;
+                    ph.name = p.properties.name;
                     ph.properties = p.properties;
                     ph.label = p.labels[0];
                     return ph;
@@ -224,7 +286,7 @@ export async function getGraph() {
 export async function addRelation(sourceName:string, sourceType:string, targetName:string, targetType:string, linkType:string) {
     
     let command = 'MATCH (a:'+sourceType+'),(b:'+targetType+') \
-    WHERE a.name = "' + sourceName + '" AND b.name = "' + targetName + '"MERGE (a)-[r:'+linkType+']->(b) ON CREATE SET r.alreadyExisted=false ON MATCH SET r.alreadyExisted=true RETURN r.alreadyExisted';
+    WHERE a.name = "' + sourceName + '" AND b.name = "' + targetName + '" MERGE (a)-[r:'+linkType+']->(b) ON CREATE SET r.alreadyExisted=false ON MATCH SET r.alreadyExisted=true RETURN r.alreadyExisted';
 
     var session = driver.session();
     return session
