@@ -30,16 +30,19 @@ dataLoad.loadFile().then(async (d)=> {
     if(graph != undefined){
 
         let graphVariants = graph[0].nodes.filter(d=> d.label == 'Variant');
-
-        if(graphVariants.length > 0){
-
-            console.log('graph variants', graphVariants);
-            let variants = updateVariants(fileVariants, graphVariants);
-        }
+      
         
         let geneNode = await isStored(graph[0], 'GJB2', 'Gene', geneOb)//.then(async (nodeO)=> {
-        
-        graphVariants.forEach(v=>{
+
+        console.log('isthishitting?', JSON.parse(geneNode.properties.Variants))
+   // let variants = graphVariants.length > 0 ? updateVariants(fileVariants, graphVariants): variantObjectMaker(JSON.parse(geneNode.properties.Variants));
+    
+        let variants = updateVariants(fileVariants, graphVariants)
+
+        console.log(variants);
+        let variantOb = await Promise.resolve(variants);
+
+        variantOb.forEach(v=>{
                 neoAPI.addRelation(v.name, v.type, geneOb.name, geneOb.type, 'Mutation');
             });
         
@@ -51,8 +54,12 @@ dataLoad.loadFile().then(async (d)=> {
         console.log('pheno?', phenotypes);
         console.log('graphvar?', graphVariants);
 
-        neoAPI.structureRelation(phenotypes, graphVariants, "Pheno");
-        
+      //  let structuredPheno = await qo.structPheno(geneNode.properties.Phenotypes, gene.name);
+      //  n.properties.Phenotypes.nodes = structuredPheno;
+       // console.log('structured pheno!', structuredPheno);
+        neoAPI.addNodeArray(phenotypes).then(()=> neoAPI.structureRelation(phenotypes, graphVariants, "Pheno"));
+
+    
         gCanvas.renderCalls(geneOb);
         gCanvas.renderGeneDetail(geneOb);
   
@@ -78,7 +85,7 @@ dataLoad.loadFile().then(async (d)=> {
                 
                 let structuredPheno = await qo.structPheno(n.properties.Phenotypes, n.name);
                 n.properties.Phenotypes.nodes = structuredPheno;
-                console.log(structuredPheno);
+                console.log('structured pheno!', structuredPheno);
 
                 neoAPI.addNodeArray(structuredPheno);
                   
@@ -158,8 +165,9 @@ type: "Variant"*/
     }
 
 async function variantObjectMaker(varArray: Array<object>){
-   
-    return varArray.map(v=> {
+  
+   let varObs = typeof varArray == 'string'? JSON.parse(varArray): varArray;
+    return varObs.map(v=> {
         let name = v.id? v.id : v.dbSnps;
         let variant = new qo.VariantObject(name);
         variant.type = "Variant";
@@ -192,17 +200,18 @@ async function isStored(graph: object, nameSearch:string, nodeType:string, data:
     return nodeOb
 }
 
-async function updateVariants(fileVarArr:Array<Object>, graphVarArr: Array<Object>){
-
+async function updateVariants(fileVarArr:Array<Object>, graphVarArr: Array<any>){
+   
     let graphVars = typeof graphVarArr == 'string'? JSON.parse(graphVarArr) : graphVarArr;
     let variantNames = graphVars.map(v=> v.name);
-    let newVars = fileVariants.filter(v=> variantNames.indexOf(v.name) == -1);
-    return await addIn(newVars, graphVars);
+    let newVars = fileVarArr.filter(v=> variantNames.indexOf(v.name) == -1);
+    return addIn(newVars, graphVars);
         
         
     async function addIn(newArray:Array<Object>, oldArray:Array<Object>){
         if(newArray.length > 0){ newArray.forEach(v=> oldArray.push(v)) }
-        return await qo.structVariants(oldArray);
+        console.log(oldArray);
+        return qo.structVariants(oldArray);
     }
 
 }

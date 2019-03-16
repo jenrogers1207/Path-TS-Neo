@@ -3,7 +3,7 @@ import * as d3 from 'D3';
 import { readdirSync } from "fs";
 
 var neo4j = require('neo4j-driver').v1;
-var driver = neo4j.driver("bolt://localhost:11001", neo4j.auth.basic("neo4j", "1234"));
+var driver = neo4j.driver("bolt://localhost:7687", neo4j.auth.basic("neo4j", "123"));
 var _ = require('lodash');
 
 export async function addNode(promOb:object, type:string){
@@ -108,7 +108,6 @@ export async function structureRelation(node1: Array<object>, node2: Array<objec
             varProps = typeof varProps == 'string'? JSON.parse(varProps) : varProps;
        
             let phenoFromVars = varProps.Phenotypes.map(p=> {
-               // let omimCheck = p.map(dis=> dis.disease_ids.map(d=> d.organization).filter(g=> g.includes('OMIM')));
                 let omimCheck = p.map(dis=> dis.disease_ids.filter(d=> d.organization == "OMIM"));
                 return omimCheck;
             });
@@ -127,16 +126,17 @@ export async function structureRelation(node1: Array<object>, node2: Array<objec
                 if(index > -1){ relationArr.push({'pheno': fil.accession, 'variant': p.name}) }
             })
 
-            console.log(relationArr);
+          //  console.log(relationArr);
         
-            let pindex = phenoNames.indexOf(varProps.description.toString().toUpperCase());
-           
+          //  let pindex = phenoNames.indexOf(varProps.description.toString().toUpperCase());
+            
+});
 
-
-        relationArr.forEach(rel => {
-           addRelation(rel.pheno, 'Phenotype', rel.variant, 'Variant', relation);
+    console.log('set!',new Set(relationArr))
+    relationArr.forEach(rel => {
+        console.log(rel);
+    addRelation(rel.pheno, 'Phenotype', rel.variant, 'Variant', relation);
     });
-})
 }
 
 export async function addToGraph(query:string, type:string) {

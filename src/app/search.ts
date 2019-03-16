@@ -39,10 +39,13 @@ export async function loadSNP(value: string){
     //let url = 'https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esummary.fcgi?db=clinvar&id='+digits+'&retmode=json&apiKey=mUYjhLsCRVOuShEhrHLG_w'
    // 'https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esummary.fcgi?db=clinvar&id=328931&retmode=json&apiKey=mUYjhLsCRVOuShEhrHLG_w'
     let url = 'https://api.ncbi.nlm.nih.gov/variation/v0/beta/refsnp/' + digits;
-    let req = await ky.get(proxy + url).json();
+    console.log(url);
+    let req = await ky.get(url).json();
+
+    //Maybe add a try catch here
     //neoAPI.setNodeProperty('Variant', value, 'snpProps', JSON.stringify(req.primary_snapshot_data))
-    
-    return await Promise.resolve(req.primary_snapshot_data);
+   // console.log('req', req)
+    return req.primary_snapshot_data;
 }
 
 export async function searchOMIM(queryOb:any){
