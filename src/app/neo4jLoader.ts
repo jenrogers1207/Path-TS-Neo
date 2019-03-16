@@ -100,7 +100,7 @@ export async function structureRelation(node1: Array<object>, node2: Array<objec
     let node2Label = node2[0].type ? node2[0].type : node2[0].label;
 
     let phenoNames = node1.map(p=> p.name.toString());
-
+    let relationArr = []
     let relatedPhenotypes = node2.map(p=>{
         
             let varProps = typeof p.properties == 'string'? JSON.parse(p.properties) : p.properties;
@@ -116,27 +116,27 @@ export async function structureRelation(node1: Array<object>, node2: Array<objec
            
             let filtered = phenoFromVars.flatMap(fil=>{ 
                 return fil.filter(test=> test.length > 0);
-            });
+            }).flatMap(d=> d);
 
-            console.log(filtered);
+       
+
+            filtered.forEach(fil=> {
+             
+                let index = phenoNames.indexOf(fil.accession)
+                console.log(index);
+                if(index > -1){ relationArr.push({'pheno': fil.accession, 'variant': p.name}) }
+            })
+
+            console.log(relationArr);
         
             let pindex = phenoNames.indexOf(varProps.description.toString().toUpperCase());
            
-            if(pindex > -1 ){
-                let name = node2[pindex].name ? node2[pindex].name : node2[pindex].properties.name; 
-                
-                p.varIds = name;
-            }else{
-                p.varIds = null;
-            }
-            return p;
-        })//.filter(p=> p.varIds != null);
 
-        console.log(relatedPhenotypes);
 
-        relatedPhenotypes.forEach(rel => {
-           addRelation(rel.name, 'Phenotype', rel.varIds, 'Variant', relation);
+        relationArr.forEach(rel => {
+           addRelation(rel.pheno, 'Phenotype', rel.variant, 'Variant', relation);
     });
+})
 }
 
 export async function addToGraph(query:string, type:string) {
