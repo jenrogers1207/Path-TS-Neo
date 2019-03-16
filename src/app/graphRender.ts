@@ -1,7 +1,7 @@
 import "./styles.scss";
 import * as d3 from 'D3';
 import * as search from './search';
-import { SelectedTest, drawSelectedPanel } from './queryObject';
+import { SelectedTest, SelectedOb, drawSelectedPanel } from './queryObject';
 
 export function removeThings(){
     d3.select('#linked-pathways').selectAll('*').remove();
@@ -10,26 +10,38 @@ export function removeThings(){
     d3.select('#gene-id').selectAll('*').remove();
 }
 
-export async function renderSidebar(data: Object){
-   // console.log('data', data)
+export async function renderCalls(data: Object){
+ 
+    let varOb = await Promise.resolve(data.properties.Variants);
     let sidebar = d3.select('#left-nav');
     let callTable = sidebar.select('.call-table');
     let geneDiv = callTable.selectAll('.gene').data([data]);
     geneDiv.exit().remove();
 
+    let variantData = varOb.map(d=>{ 
+        d.tag = d.properties.Phenotypes[0][0].clinical_significances;
+        return d;
+    });
+
         let geneEnterDiv = geneDiv.enter().append('div').attr('class', d=> d.value).classed('gene', true);
         let geneHeader = geneEnterDiv.append('div').classed('gene-header', true)
-        geneHeader.append('text').text(d=> d.title);
+        geneHeader.append('text').text(d=> d.name);
         geneDiv = geneEnterDiv.merge(geneDiv);
     
         let variantBox = geneDiv.append('div').classed('variant-wrapper', true);
     
-        let variants = variantBox.selectAll('.variant').data(d=>d.properties.allelicVariantList);
+        let variants = variantBox.selectAll('.variant').data(variantData);
         variants.exit().remove();
         let varEnter = variants.enter().append('div').classed('variant', true);
-        let varText = varEnter.append('h5').text(d=>d.name);
+        let varHead = varEnter.append('div').classed('var-head', true)//.append('h5').text(d=>d.name);
+        let varText = varHead.append('h5').text(d=>d.name);
+        let spanType = varHead.append('span').text(d=> d.properties.Type);
+        spanType.classed('badge badge-info', true);
+        let spanTag = varHead.append('span').text(d=> d.tag[0]);
+        spanTag.classed('badge badge-warning', true);
+      //  let varSpan = varEnter.append('span').classed('w3-tag w3-padding w3-round w3-red w3-center', true).text('path')
        
-        varText.on('click', function(d){
+        varHead.on('click', function(d){
             let text = this.nextSibling;
             d3.select(text).classed('hidden')? d3.select(text).classed('hidden', false) : d3.select(text).classed('hidden', true);
         });
@@ -48,34 +60,26 @@ export async function renderSidebar(data: Object){
         variants = varEnter.merge(variants);
   
         variants.on('mouseover', function(d){
-           // console.log(d);
+           
         });
      
-        let test = data.properties.allelicVariantList.filter(d=>  d.snpProps.allele_annotations != undefined );
-        console.log(test.map(d=> d.snpProps.allele_annotations.map(t=> t.clinical)));
-        let pathArray = test.map(d=> d.name);
-
-        varEnter
-
-       // console.log(data.properties.allelicVariantList.filter(d=>  d.snpProps.allele_annotations ))
-
-
-    
+      
 }
 
 export async function renderGeneDetail(data: Object){
-    console.log("data for gene", data);
+ 
     let headers = d3.keys(data.properties).filter(d=> d != 'allelicVariantList' && d != 'referenceList' && d != 'name');
+    console.log(data);
     
     let sidebar = d3.select('#left-nav');
     let geneDet = sidebar.select('.gene-detail');
-    let geneHeader = geneDet.append('div').attr('class', 'detail-head').append('h2').text(data.title);
+    let geneHeader = geneDet.append('div').attr('class', 'detail-head').append('h4').text(data.title);
+   // let symbolBand = geneDet.append('div').classed('symbols', true).data(JSON.parse(data.Symbols));
     let propertyDivs = geneDet.selectAll('.prop-headers').data(headers);
     let propEnter = propertyDivs.enter().append('div').classed('prop-headers', true);
-    propEnter.append('h3').text((d)=> d);
+    propEnter.append('div').attr('class', (d)=> d).classed('head-wrapper', true).append('h5').text((d)=> d.toUpperCase());
     let ids = propEnter.filter(d=> d == 'MIM' || d == 'entrezgene' || d == 'symbol' || d == 'description');
-    let idsSec = ids.append('text').text(d=> data.properties[d]);
-  
+    let idsSec = ids.append('text').text(d=> '  ' +data.properties[d]);
     let titles = propEnter.filter(d=> d == "titles");
     let titleSec = titles.selectAll('.sections').data(d=> {
         let titleData = typeof data.properties[d] == "string" ? d3.entries(JSON.parse(data.properties[d])) : d3.entries(data.properties[d]);
@@ -91,20 +95,21 @@ export async function renderGeneDetail(data: Object){
     let geneEnter = geneSec.enter().append('div').classed('geneMap sections', true);
     geneEnter.append('text').text(d=> d.key + ': ' + d.value " <br>");
 
-    let phenoHead = geneMap.append('h4').text('Phenotype');
+    let phenoHead = geneMap.append('h5').text('Phenotype');
     let phenoSec = geneMap.selectAll('.pheno').data(d => data.properties[d].phenotypeMapList);
     let phenoEnter = phenoSec.enter().append('div').classed('pheno sections', true);
 
     phenoEnter.append('text').text(d=> {
-        return d.description + ': ' + d.phenotypeInheritance " <br>"});
+        return d.description + ': ' + d.phenotypeInheritance + " <br>"});
 
     let textProp = propEnter.filter(d=> d == 'text');
     let textSec = textProp.selectAll('.sections').data(d=> {
         let textData = typeof data.properties[d] == 'string' ? JSON.parse(data.properties[d]) : data.properties[d];
         return textData;
     });
+
     let textEnter = textSec.enter().append('div').classed('text sections', true);
-    let headText = textEnter.append('div').append('h4').text(d=> d.textSectionTitle + ': ');
+    let headText = textEnter.append('div').classed('text-sec-head', true).append('h5').text(d=> d.textSectionTitle + ': ');
     let textDiv = textEnter.append('div').classed('textbody', true).classed('hidden', true);
     let textText = textDiv.append('text').text(d=> d.textSectionContent);
 
@@ -120,6 +125,7 @@ export async function renderGeneDetail(data: Object){
 export function drawGraph(dataArr: Object) {
   // console.log(dataArr)
     let data = dataArr[0];
+   // console.log(data)
   // let data = dataArr;
     let canvas = d3.select('#graph-render').select('.graph-canvas'),
         width = +canvas.attr("width"),
@@ -135,7 +141,7 @@ export function drawGraph(dataArr: Object) {
         .force("x", d3.forceX(width / 2).strength(.05))
         .force("y", d3.forceY(height / 2).strength(.05))
         .force("charge", d3.forceManyBody().strength(-80))
-        .force('center', d3.forceCenter(300, 250));
+        .force('center', d3.forceCenter(400, 250));
 
     var link = canvas.select('.links')
         .selectAll(".line")
@@ -163,22 +169,33 @@ export function drawGraph(dataArr: Object) {
         //.attr("r", radius - .75)
         .call(d3.drag()
             .on("start", dragstarted)
-            .on("drag", dragged)
-            .on("end", dragended));
+           .on("drag", dragged)
+            .on("end", dragended))
+         //   .on('dblclick', connectedNodes); 
 
-    let geneNode = nodeEnter.filter(d => d.label == 'gene');
+    let geneNode = nodeEnter.filter(d => d.label == 'Gene');
 
-    let labels = geneNode.append('text').text(d => d.title).style('color', '#ffffff').attr('x', 0)
+    geneNode.classed("fixed", d=> d.fixed = true);
+
+    function dragstart(d) {
+        d3.select(this).classed("fixed", d.fixed = true);
+      }
+
+      dragstart(geneNode);
+
+      var toggle = 0;
+//Create an array logging what is connected to what
+   
+    let labels = geneNode.append('text').text(d => d.name).style('color', '#ffffff').attr('x', 0)
         .attr('y', 3).attr('text-anchor', 'middle');
 
-
     node.append("title")
-        .text(function(d) { return d.title; });
+        .text(function(d) { return d.name; });
 
     node = nodeEnter.merge(node);
 
     node.on('click', (d) => {
-        SelectedTest.queryOb = d.properties;
+        SelectedOb = d.properties;
         drawGraph(data);
     });
 
@@ -186,9 +203,18 @@ export function drawGraph(dataArr: Object) {
             toolDiv.transition()
                 .duration(200)
                 .style("opacity", .8);
-            toolDiv.html(d.title + "<br/>")
+            console.log(d)
+            if(d.label == 'Phenotype'){
+                toolDiv.html(d.properties.description + "<br/>")
                 .style("left", (d3.event.pageX) + "px")
                 .style("top", (d3.event.pageY - 28) + "px");
+
+            }else{
+                toolDiv.html(d.title + "<br/>")
+                .style("left", (d3.event.pageX) + "px")
+                .style("top", (d3.event.pageY - 28) + "px");
+            }
+            
         })
         .on("mouseout", function(d) {
             toolDiv.transition()
@@ -202,13 +228,13 @@ export function drawGraph(dataArr: Object) {
     let selectedNode = node.filter(d => {
       
         node.classed('selected', false);
-        return SelectedTest.queryOb != null ? d.title == SelectedTest.queryOb.name : null;
+        return SelectedOb != null ? d.title == SelectedOb.name : null;
     });
 
 
     selectedNode != null ? selectedNode.classed('selected', true) : console.log('no node');
 
-    SelectedTest.queryOb != null ? drawSelectedPanel(SelectedTest.queryOb) : console.log('no code');
+    SelectedOb != null ? drawSelectedPanel(SelectedOb) : console.log('no code');
 */
     simulation
         .nodes(data.nodes)
