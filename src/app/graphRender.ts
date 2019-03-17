@@ -11,23 +11,33 @@ export function removeThings(){
 }
 
 export async function renderCalls(data: Object){
+
+    console.log(data);
  
-    let varOb = await Promise.resolve(data.properties.Variants);
+    let varProps = data.properties.Variants.map(d=> {
+        let props = d.properties;
+        return props
+    });
+
+    console.log(varProps);
+
     let sidebar = d3.select('#left-nav');
     let callTable = sidebar.select('.call-table');
     let geneDiv = callTable.selectAll('.gene').data([data]);
     geneDiv.exit().remove();
 
-    let variantData = varOb.map(d=>{ 
+    let variantData = data.properties.Variants.map(d=>{ 
         d.tag = d.properties.Phenotypes[0][0].clinical_significances;
         return d;
     });
+
+    
 
         let geneEnterDiv = geneDiv.enter().append('div').attr('class', d=> d.value).classed('gene', true);
         let geneHeader = geneEnterDiv.append('div').classed('gene-header', true)
         geneHeader.append('text').text(d=> d.name);
         geneDiv = geneEnterDiv.merge(geneDiv);
-    
+
         let variantBox = geneDiv.append('div').classed('variant-wrapper', true);
     
         let variants = variantBox.selectAll('.variant').data(variantData);
@@ -48,8 +58,12 @@ export async function renderCalls(data: Object){
 
         let varDes = varEnter.append('div').classed('var-descript', true).classed('hidden', true);
         let blurbs = varDes.selectAll('.blurb').data(d=>d3.entries(d)
-                .filter(f=> f.key != 'allelicVariantList' && f.key != 'text' && f.key != 'name'))
+                .filter(f=> f.key != 'allelicVariantList' && f.key != 'text' && f.key != 'name' && f.key != 'properties'))
                 .enter().append('div').classed('blurb', true);
+
+        let properties = varDes.selectAll('.props').data(d=> d3.entries(d.properties));
+        let propEnter = properties.enter().append('div').classed('props', true);
+        let propText = propEnter.append('text').text(d=> d.key + ": "+ d.value);
 
         let idBlurbs = blurbs.filter(b=> b.key != 'snpProps').append('text').text(d=> d.key + ": "+ d.value);
         let snps = blurbs.filter(b=> b.key == 'snpProps').selectAll('.snp').data(d=> d3.entries(d.value));
