@@ -12,15 +12,6 @@ export function removeThings(){
 
 export async function renderCalls(data: Object){
 
-    console.log(data);
- 
-    let varProps = data.properties.Variants.map(d=> {
-        let props = d.properties;
-        return props
-    });
-
-    console.log(varProps);
-
     let sidebar = d3.select('#left-nav');
     let callTable = sidebar.select('.call-table');
     let geneDiv = callTable.selectAll('.gene').data([data]);
@@ -30,8 +21,6 @@ export async function renderCalls(data: Object){
         d.tag = d.properties.Phenotypes[0][0].clinical_significances;
         return d;
     });
-
-    
 
         let geneEnterDiv = geneDiv.enter().append('div').attr('class', d=> d.value).classed('gene', true);
         let geneHeader = geneEnterDiv.append('div').classed('gene-header', true)
@@ -76,7 +65,6 @@ export async function renderCalls(data: Object){
         variants.on('mouseover', function(d){
            
         });
-     
       
 }
 

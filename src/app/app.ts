@@ -23,20 +23,17 @@ dataLoad.loadFile().then(async (d)=> {
     let geneOb = new qo.QueryObject(d[0].key);
     geneOb.type = "Gene";
 
-
     let fileVariants = await variantObjectMaker(d[0].values);
     let graph = await neoAPI.getGraph();//.then(g => {
 
     if(graph != undefined){
-        console.log(graph[0].links.map(r=> r))
+    
         let relationships = graph[0].links.map(rel=> { 
             return{'source': rel.source.name, 'target':rel.target.name} })
-        console.log(relationships);
-
+            
+        let geneNode = await isStored(graph[0], 'GJB2', 'Gene', geneOb)//.then(async (nodeO)=> {
         let graphVariants = graph[0].nodes.filter(d=> d.label == 'Variant');
       
-        let geneNode = await isStored(graph[0], 'GJB2', 'Gene', geneOb)//.then(async (nodeO)=> {
-    
         let variants = updateVariants(fileVariants, graphVariants)
 
        // console.log(variants);
@@ -44,16 +41,17 @@ dataLoad.loadFile().then(async (d)=> {
 
         variantOb.forEach(v=>{
                 if(relationships.includes({'source': v.name, 'target': geneOb.name})){
-                    console.log('already there');
+                    console.log("already there");
                 }else{
                     neoAPI.addRelation(v.name, v.type, geneOb.name, geneOb.type, 'Mutation');
                 }
-                
             });
-            /*
-        
+    
         let graphPhenotypes = graph[0].nodes.filter(d=> d.label == 'Phenotype');
         let phenotypes = graphPhenotypes.length > 0? graphPhenotypes :await qo.structPheno(geneNode.properties.Phenotypes, geneNode.name);
+        
+        console.log('pheno',phenotypes)
+        
         let uniqueNameArray = []
         let uniquePheno = []
         phenotypes.forEach(pheno => {
@@ -61,12 +59,13 @@ dataLoad.loadFile().then(async (d)=> {
                 uniqueNameArray.push(pheno.name);
                 uniquePheno.push(pheno);
             }
-        });*/
-       // console.log('set', uniquePheno);
+        });
+        console.log('set', uniquePheno);
        // console.log('graphvar?', graphVariants);
 
-      //  neoAPI.addNodeArray(uniquePheno).then(()=> neoAPI.structureRelation(phenotypes, graphVariants, "Pheno"));
+        neoAPI.addNodeArray(uniquePheno).then(()=> neoAPI.structureRelation(uniquePheno, variantOb, "Pheno"));
         geneNode.properties.Variants = variantOb;
+        geneNode.properties.uniquePheno = uniquePheno;
 
         gCanvas.drawGraph(graph);
         gCanvas.renderCalls(geneNode);
@@ -79,9 +78,6 @@ dataLoad.loadFile().then(async (d)=> {
                 let varAlleles = await variantObjectMaker(n.properties.Variants);
               
                 let variants = await updateVariants(fileVariants, varAlleles);
-               // console.log('var alleles from graph not loading', variants);
-       
-                //let structuredVars = await qo.structVariants(variants);
          
                 n.properties.Variants = variants;
             
@@ -175,7 +171,7 @@ async function updateVariants(fileVarArr:Array<Object>, graphVarArr: Array<any>)
         
     async function addIn(newArray:Array<Object>, oldArray:Array<Object>){
         if(newArray.length > 0){ newArray.forEach(v=> oldArray.push(v)) }
-        console.log(oldArray);
+       // console.log(oldArray);
         return qo.structVariants(oldArray);
     }
 

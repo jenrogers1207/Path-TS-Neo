@@ -19,14 +19,10 @@ export async function addNode(promOb:object, type:string){
     if(node.length > 0){
        console.log(value +' already exists');
     }else{
-        
         let name = queryOb.value ? queryOb.value : queryOb.properties.name;
         let prop = {};
-
         let properties = queryOb.properties ? queryOb.properties : queryOb;
-
         let idKeys = d3.keys(queryOb.properties.Ids);
-       
         let propKeys = d3.keys(properties).filter(f=> f != 'Ids');
 
         propKeys.forEach(el => {
@@ -54,13 +50,11 @@ export async function addNode(promOb:object, type:string){
 
 
 export async function addNodeArray(phenoObs:Array<object>){
+
     let names: Array<string> = phenoObs.map(v=> v.name);
-  
     let type = phenoObs[0].type;
     let originalNames : Array<string> = await checkForNodeArray(names, type);
-
     let newNames = names.filter(n=> originalNames.indexOf(n) == -1);
-   
     if(newNames.length > 0){
      
         let newObs = phenoObs.filter(ob=> newNames.indexOf(ob.name) > -1)
@@ -112,21 +106,18 @@ export async function structureRelation(node1: Array<object>, node2: Array<objec
                 return omimCheck;
             });
 
-           
             let filtered = phenoFromVars.flatMap(fil=>{ 
                 return fil.filter(test=> test.length > 0);
             }).flatMap(d=> d);
 
-       
-
+        
             filtered.forEach(fil=> {
-             
                 let index = phenoNames.indexOf(fil.accession)
                 console.log(index);
                 if(index > -1){ relationArr.push({'pheno': fil.accession, 'variant': p.name}) }
             })
 
-          //  console.log(relationArr);
+            console.log(relationArr);
         
           //  let pindex = phenoNames.indexOf(varProps.description.toString().toUpperCase());
             
