@@ -71,7 +71,7 @@ export async function renderCalls(data: Object){
 export async function renderGeneDetail(data: Object){
  
     let headers = d3.keys(data.properties).filter(d=> d != 'allelicVariantList' && d != 'referenceList' && d != 'name');
-    console.log(data);
+    console.log('data',data);
     
     let sidebar = d3.select('#left-nav');
     let geneDet = sidebar.select('.gene-detail');
@@ -232,7 +232,6 @@ export function drawGraph(dataArr: Object) {
         node.classed('selected', false);
         return SelectedOb != null ? d.title == SelectedOb.name : null;
     });
-
 
     selectedNode != null ? selectedNode.classed('selected', true) : console.log('no node');
 
