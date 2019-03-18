@@ -34,9 +34,11 @@ dataLoad.loadFile().then(async (d)=> {
         let geneNode = await isStored(graph[0], 'GJB2', 'Gene', geneOb)//.then(async (nodeO)=> {
       //  let node = qo.structGene(geneNode);  
         let graphVariants = graph[0].nodes.filter(d=> d.label == 'Variant');
-      
-        let variants = updateVariants(fileVariants, graphVariants)
+        console.log('graphvar', graphVariants.length);
 
+
+        let variants = await updateVariants(fileVariants, graphVariants)
+        console.log('variant', variants.length);
        // console.log(variants);
         let variantOb = await Promise.resolve(variants);
 
@@ -111,16 +113,13 @@ dataLoad.loadFile().then(async (d)=> {
                 });
 
             });
-    
-   // })
-
         }
 
 });
 
 async function variantObjectMaker(varArray: Array<object>){
   
-     let varObs = typeof varArray == 'string'? JSON.parse(varArray): varArray;
+    let varObs = typeof varArray == 'string'? JSON.parse(varArray): varArray;
     
       return varObs.map(v=> {
        
@@ -162,8 +161,21 @@ async function updateVariants(fileVarArr:Array<Object>, graphVarArr: Array<any>)
     let graphVars = typeof graphVarArr == 'string'? JSON.parse(graphVarArr) : graphVarArr;
     let variantNames = graphVars.map(v=> v.name);
     let newVars = fileVarArr.filter(v=> variantNames.indexOf(v.name) == -1);
-    return addIn(newVars, graphVars);
-        
+
+    return addIn(newVars, await findCopies(graphVars));
+
+    async function findCopies(nodeArray){
+        let uniqueNameArray = []
+        let uniqueVar = []
+
+        await nodeArray.forEach(v => {
+            if(uniqueNameArray.indexOf(v.name) == -1){
+                uniqueNameArray.push(v.name);
+                uniqueVar.push(v);
+            }
+        });
+        return uniqueVar;
+    }
         
     async function addIn(newArray:Array<Object>, oldArray:Array<Object>){
         if(newArray.length > 0){ newArray.forEach(v=> oldArray.push(v)) }
