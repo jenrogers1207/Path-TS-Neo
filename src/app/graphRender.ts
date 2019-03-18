@@ -71,17 +71,17 @@ export async function renderCalls(data: Object){
 export async function renderGeneDetail(data: Object){
  
     let headers = d3.keys(data.properties).filter(d=> d != 'allelicVariantList' && d != 'referenceList' && d != 'name');
-    console.log('data',data);
+    console.log('data?', data);
     
     let sidebar = d3.select('#left-nav');
     let geneDet = sidebar.select('.gene-detail');
-    let geneHeader = geneDet.append('div').attr('class', 'detail-head').append('h4').text(data.title);
+    let geneHeader = geneDet.append('div').attr('class', 'detail-head').append('h4').text(data.name);
    // let symbolBand = geneDet.append('div').classed('symbols', true).data(JSON.parse(data.Symbols));
     let propertyDivs = geneDet.selectAll('.prop-headers').data(headers);
     let propEnter = propertyDivs.enter().append('div').classed('prop-headers', true);
     propEnter.append('div').attr('class', (d)=> d).classed('head-wrapper', true).append('h5').text((d)=> d.toUpperCase());
-    let ids = propEnter.filter(d=> d == 'MIM' || d == 'entrezgene' || d == 'symbol' || d == 'description');
-    let idsSec = ids.append('text').text(d=> '  ' +data.properties[d]);
+    let ids = propEnter.filter(d=> d == 'Ids');
+    let idsSec = ids.append('text').text(d=> '  ' +d3.entries(d));
     let titles = propEnter.filter(d=> d == "titles");
     let titleSec = titles.selectAll('.sections').data(d=> {
         let titleData = typeof data.properties[d] == "string" ? d3.entries(JSON.parse(data.properties[d])) : d3.entries(data.properties[d]);

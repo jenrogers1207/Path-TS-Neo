@@ -121,39 +121,37 @@ symbol: "GJB2"
 transcript: "ENST00000645189.1"*/
 
 export async function structGene(g: object){
-console.log('geneOb',geneOb);
-let geneOb = g.properties;
-let node = new QueryObject(g.name);
-node.properties.Ids.ncbi = geneOb.ncbi;
-node.properties.Ids.sequenceID =  geneOb.sequenceID;
-node.properties.Ids.taxid = geneOb.taxid;
-node.properties.Ids.Vega = geneOb.Vega;
-node.properties.Ids.OMIM = geneOb.OMIM;
-node.properties.Ids.Pharos = geneOb.Pharos;
-node.properties.Ids.HGNC = geneOb.HGNC;
-node.properties.Ids.Ensemble = geneOb.Ensemble;
-node.properties.Ids.UniProt = geneOb.UniProt;
-node.properties.Description = geneOb.description;
-node.properties.Brite = geneOb.Brite;//: "{"kegg":[["KEGG","Orthology","(KO)","[BR:hsa00001]"],["09180","Brite","Hierarchies"],["09183","Protein","families:","signaling","and","cellular","processes"],["02000","Transporters","[BR:hsa02000]"],["2706","(GJB2)"],["Transporters","[BR:hsa02000]"],["Other","Transporters"],["Pores","ion","channels","[TC:1]"],["2706","(GJB2)"]]}"
- //: "gap junction protein beta 2"
-node.properties.Location = geneOb.Location;//: "{"chromosome":13,"chromosomeStart":20187462,"chromosomeEnd":20192974,"chromosomeSort":15,"computedCytoLocation":"13q12.11","cytoLocation":"13q11-q12"}"
-node.properties.Models = geneOb.Models; //"{"mouse":{"MgiID":"MGI:95720","symbol":"Gjb2"}}"
-node.properties.NCBI-GeneID = geneOb.NCBI-GeneID; //"2706"
-node.properties.NCBI-ProteinID = geneOb.NCBI-ProteinID;//"NP_003995"
 
-/*
-node.properties.Orthology = //"{"keggID":"K07621"}"
-node.properties.Phenotypes: //"{"nodes":[{"phenotypeMap":{"mimNumber":121011,"phenotype":"Bart-Pumphrey syndrome","phenotypeMimNumber":149200,"phenotypeMappingKey":3,"phenotypeInheritance":"Autosomal dominant"}},{"phenotypeMap":{"mimNumber":121011,"phenotype":"Deafness, autosomal dominant 3A","phenotypeMimNumber":601544,"phenotypicSeriesNumber":"PS124900","phenotypeMappingKey":3,"phenotypeInheritance":"Autosomal dominant"}},{"phenotypeMap":{"mimNumber":121011,"phenotype":"Deafness, autosomal recessive 1A","phenotypeMimNumber":220290,"phenotypicSeriesNumber":"PS220290","phenotypeMappingKey":3,"phenotypeInheritance":"Autosomal recessive"}},{"phenotypeMap":{"mimNumber":121011,"phenotype":"Hystrix-like ichthyosis with deafness","phenotypeMimNumber":602540,"phenotypeMappingKey":3,"phenotypeInheritance":"Autosomal dominant"}},{"phenotypeMap":{"mimNumber":121011,"phenotype":"Keratitis-ichthyosis-deafness syndrome","phenotypeMimNumber":148210,"phenotypeMappingKey":3,"phenotypeInheritance":"Autosomal dominant"}},{"phenotypeMap":{"mimNumber":121011,"phenotype":"Keratoderma, palmoplantar, with deafness","phenotypeMimNumber":148350,"phenotypeMappingKey":3,"phenotypeInheritance":"Autosomal dominant"}},{"phenotypeMap":{"mimNumber":121011,"phenotype":"Vohwinkel syndrome","phenotypeMimNumber":124500,"phenotypeMappingKey":3,"phenotypeInheritance":"Autosomal dominant"}}],"keggIDs":[{"keggId":"H00604","stringId":["Deafness,","autosomal","dominant"]},{"keggId":"H00605","stringId":["Deafness,","autosomal","recessive"]},{"keggId":"H00706","stringId":["Bart-Pumphrey","syndrome"]},{"keggId":"H00712","stringId":["KID/HID","syndrome"]},{"keggId":"H00714","stringId":["Vohwinkel","syndrome"]},{"keggId":"H00716","stringId":["Palmoplantar","keratoderma","with","deafness"]}]}"
-node.properties.References: //"[{"mimNumber":121011,"referenceNumber":1,"authors""
-node.properties.Structure: //"{"AASEQ":[["226"],["MDWGTLQTILGGVNKHSTSIGKIWLTVLFIFRIMILVVAAKEVWGDEQADFVCNTLQPGC"],["KNVCYDHYFPISHIRLWALQLIFVSTPALLVAMHVAYRRHEKKRKFIKGEIKSEFKDIEE"],["IKTQKVRIEGSLWWTYTSSIFFRVIFEAAFMYVFYVMYDGFSMQRLVKCNAWPCPNTVDC"],["FVSRPTEKTVFTVFMIAVSGICILLNVTELCYLLIRYCSGKSKKPV"]],"NTSEQ":[["681"],["atggattggggcacgctgcagacgatcctggggggtgtgaacaaacactccaccagcatt"],["ggaaagatctggctcaccgtcctcttcatttttcgcattatgatcctcgttgtggctgca"],["aaggaggtgtggggagatgagcaggccgactttgtctgcaacaccctgcagccaggctgc"],["aagaacgtgtgctacgatcactacttccccatctcccacatccggctatgggccctgcag"],["ctgatcttcgtgtccacgccagcgctcctagtggccatgcacgtggcctaccggagacat"],["gagaagaagaggaagttcatcaagggggagataaagagtgaatttaaggacatcgaggag"],["atcaaaacccagaaggtccgcatcgaaggctccctgtggtggacctacacaagcagcatc"],["ttcttccgggtcatcttcgaagccgccttcatgtacgtcttctatgtcatgtacgacggc"],["ttctccatgcagcggctggtgaagtgcaacgcctggccttgtcccaacactgtggactgc"],["tttgtgtcccggcccacggagaagactgtcttcacagtgttcatgattgcagtgtctgga"],["atttgcatcctgctgaatgtcactgaattgtgttatttgctaattagatattgttctggg"],["aagtcaaaaaagccagtttaa"]],"ids":[["PDB:","5ER7","2ZW3","5ERA","3IZ1","3IZ2","5KJG","5KJ3"]],"MOTIF":[["Pfam:","Connexin"]]}"
-node.properties.Symbols: //"GJB2, CX26, DFNB1A, PPK, DFNA3A, KID, HID"
-node.properties.Text:// "[{"textSectionName":"description","textSectionTitl"
-node.properties.Titles: //"{"preferredTitle":"GAP JUNCTION PROTEIN, BETA-2; GJB2","alternativeTitles":"GAP JUNCTION PROTEIN, 26-KD;;\nCONNEXIN 26; CX26"}"
-node.properties.Transcript: //"ENST00000645189.1"
-node.properties.Variants: //(120) [VariantObject,
-*/
+    let geneOb = g.properties;
 
+    let node = new QueryObject(g.name);
+    node.properties.Ids.ncbi = geneOb.ncbi;
+    node.properties.Ids.sequenceID =  geneOb.sequenceID;
+    node.properties.Ids.taxid = geneOb.taxid;
+    node.properties.Ids.Vega = geneOb.Vega;
+    node.properties.Ids.OMIM = geneOb.OMIM;
+    node.properties.Ids.Pharos = geneOb.Pharos;
+    node.properties.Ids.HGNC = geneOb.HGNC;
+    node.properties.Ids.Ensemble = geneOb.Ensemble;
+    node.properties.Ids.UniProt = geneOb.UniProt;
+    node.properties.Ids['NCBI-GeneID'] = geneOb['NCBI-GeneID']; //"2706"
+    node.properties.Ids['NCBI-ProteinID'] = geneOb['NCBI-ProteinID'];
+    node.properties.Description = geneOb.description;
+    node.properties.Brite = typeof geneOb.Brite == 'string'? JSON.parse(geneOb.Brite) : geneOb.Brite;//: "{"kegg":[["KEGG","Orthology","(KO)","[BR:hsa00001]"],["09180","Brite","Hierarchies"],["09183","Protein","families:","signaling","and","cellular","processes"],["02000","Transporters","[BR:hsa02000]"],["2706","(GJB2)"],["Transporters","[BR:hsa02000]"],["Other","Transporters"],["Pores","ion","channels","[TC:1]"],["2706","(GJB2)"]]}"
+    //: "gap junction protein beta 2"
+    node.properties.Location = typeof geneOb.Location == 'string' ? JSON.parse(geneOb.Location) : geneOb.Location;//: "{"chromosome":13,"chromosomeStart":20187462,"chromosomeEnd":20192974,"chromosomeSort":15,"computedCytoLocation":"13q12.11","cytoLocation":"13q11-q12"}"
+    node.properties.Models = typeof geneOb.Models == 'string' ? JSON.parse(geneOb.Models) : geneOb.Models; //"{"mouse":{"MgiID":"MGI:95720","symbol":"Gjb2"}}"
+    node.properties.Orthology = typeof geneOb.Orthology == 'string'? JSON.parse(geneOb.Orthology) : geneOb.Orthology;//"{"keggID":"K07621"}"
+    node.properties.Phenotypes = typeof geneOb.Phenotypes == 'string' ? JSON.parse(geneOb.Phenotypes) : geneOb.Phenotypes;//"{"nodes":[{"phenotypeMap":{"mimNumber":121011,"phenotype":"Bart-Pumphrey syndrome","phenotypeMimNumber":149200,"phenotypeMappingKey":3,"phenotypeInheritance":"Autosomal dominant"}},{"phenotypeMap":{"mimNumber":121011,"phenotype":"Deafness, autosomal dominant 3A","phenotypeMimNumber":601544,"phenotypicSeriesNumber":"PS124900","phenotypeMappingKey":3,"phenotypeInheritance":"Autosomal dominant"}},{"phenotypeMap":{"mimNumber":121011,"phenotype":"Deafness, autosomal recessive 1A","phenotypeMimNumber":220290,"phenotypicSeriesNumber":"PS220290","phenotypeMappingKey":3,"phenotypeInheritance":"Autosomal recessive"}},{"phenotypeMap":{"mimNumber":121011,"phenotype":"Hystrix-like ichthyosis with deafness","phenotypeMimNumber":602540,"phenotypeMappingKey":3,"phenotypeInheritance":"Autosomal dominant"}},{"phenotypeMap":{"mimNumber":121011,"phenotype":"Keratitis-ichthyosis-deafness syndrome","phenotypeMimNumber":148210,"phenotypeMappingKey":3,"phenotypeInheritance":"Autosomal dominant"}},{"phenotypeMap":{"mimNumber":121011,"phenotype":"Keratoderma, palmoplantar, with deafness","phenotypeMimNumber":148350,"phenotypeMappingKey":3,"phenotypeInheritance":"Autosomal dominant"}},{"phenotypeMap":{"mimNumber":121011,"phenotype":"Vohwinkel syndrome","phenotypeMimNumber":124500,"phenotypeMappingKey":3,"phenotypeInheritance":"Autosomal dominant"}}],"keggIDs":[{"keggId":"H00604","stringId":["Deafness,","autosomal","dominant"]},{"keggId":"H00605","stringId":["Deafness,","autosomal","recessive"]},{"keggId":"H00706","stringId":["Bart-Pumphrey","syndrome"]},{"keggId":"H00712","stringId":["KID/HID","syndrome"]},{"keggId":"H00714","stringId":["Vohwinkel","syndrome"]},{"keggId":"H00716","stringId":["Palmoplantar","keratoderma","with","deafness"]}]}"
+    node.properties.References = typeof geneOb.References == 'string' ? JSON.parse(geneOb.References) : geneOb.References; //"[{"mimNumber":121011,"referenceNumber":1,"authors""
+    node.properties.Structure = typeof geneOb.Structure == 'string'? JSON.parse(geneOb.Structure) : geneOb.Structure;//"{"AASEQ":[["226"],["MDWGTLQTILGGVNKHSTSIGKIWLTVLFIFRIMILVVAAKEVWGDEQADFVCNTLQPGC"],["KNVCYDHYFPISHIRLWALQLIFVSTPALLVAMHVAYRRHEKKRKFIKGEIKSEFKDIEE"],["IKTQKVRIEGSLWWTYTSSIFFRVIFEAAFMYVFYVMYDGFSMQRLVKCNAWPCPNTVDC"],["FVSRPTEKTVFTVFMIAVSGICILLNVTELCYLLIRYCSGKSKKPV"]],"NTSEQ":[["681"],["atggattggggcacgctgcagacgatcctggggggtgtgaacaaacactccaccagcatt"],["ggaaagatctggctcaccgtcctcttcatttttcgcattatgatcctcgttgtggctgca"],["aaggaggtgtggggagatgagcaggccgactttgtctgcaacaccctgcagccaggctgc"],["aagaacgtgtgctacgatcactacttccccatctcccacatccggctatgggccctgcag"],["ctgatcttcgtgtccacgccagcgctcctagtggccatgcacgtggcctaccggagacat"],["gagaagaagaggaagttcatcaagggggagataaagagtgaatttaaggacatcgaggag"],["atcaaaacccagaaggtccgcatcgaaggctccctgtggtggacctacacaagcagcatc"],["ttcttccgggtcatcttcgaagccgccttcatgtacgtcttctatgtcatgtacgacggc"],["ttctccatgcagcggctggtgaagtgcaacgcctggccttgtcccaacactgtggactgc"],["tttgtgtcccggcccacggagaagactgtcttcacagtgttcatgattgcagtgtctgga"],["atttgcatcctgctgaatgtcactgaattgtgttatttgctaattagatattgttctggg"],["aagtcaaaaaagccagtttaa"]],"ids":[["PDB:","5ER7","2ZW3","5ERA","3IZ1","3IZ2","5KJG","5KJ3"]],"MOTIF":[["Pfam:","Connexin"]]}"
+    node.properties.Symbols =  geneOb.Symbols;//"GJB2, CX26, DFNB1A, PPK, DFNA3A, KID, HID"
+    node.properties.Text = typeof geneOb.Text == 'string'? JSON.parse(geneOb.Text) : geneOb.Text;// "[{"textSectionName":"description","textSectionTitl"
+    node.properties.Titles = typeof geneOb.Titles == 'string'? JSON.parse(geneOb.Titles): geneOb.Titles; //"{"preferredTitle":"GAP JUNCTION PROTEIN, BETA-2; GJB2","alternativeTitles":"GAP JUNCTION PROTEIN, 26-KD;;\nCONNEXIN 26; CX26"}"
+    node.properties.Transcript = geneOb.Transcript; //"ENST00000645189.1"
+    node.properties.Variants = geneOb.Variants; //(120) [VariantObject,
 
+    return node;
 }
 
 export async function structVariants(varArray: object){
@@ -229,7 +227,8 @@ text: "In a study in Italy of 179 unrelated subjects with sporadic or familial h
 }
 
 export async function structPheno(phenob: object, assocGene:string){
-    console.log('is thisworking?')
+    console.log('is thisworking?', console.log(phenob))
+
     let inner = JSON.parse(phenob).nodes? JSON.parse(phenob).nodes:phenob;
     
     let nodes = inner.map(p=> {

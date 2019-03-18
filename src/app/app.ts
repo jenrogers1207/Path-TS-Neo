@@ -32,7 +32,7 @@ dataLoad.loadFile().then(async (d)=> {
             return{'source': rel.source.name, 'target':rel.target.name} })
         
         let geneNode = await isStored(graph[0], 'GJB2', 'Gene', geneOb)//.then(async (nodeO)=> {
-            qo.structGene(geneNode);  
+      //  let node = qo.structGene(geneNode);  
         let graphVariants = graph[0].nodes.filter(d=> d.label == 'Variant');
       
         let variants = updateVariants(fileVariants, graphVariants)
@@ -64,7 +64,7 @@ dataLoad.loadFile().then(async (d)=> {
        // commented tis out to test
       //  neoAPI.addNodeArray(uniquePheno).then(()=> neoAPI.structureRelation(uniquePheno, variantOb, "Pheno"));
         geneNode.properties.Variants = variantOb;
-        geneNode.properties.uniquePheno = uniquePheno;
+        geneNode.properties.Phenotypes = uniquePheno;
 
         gCanvas.drawGraph(graph);
         gCanvas.renderCalls(geneNode);
@@ -75,11 +75,8 @@ dataLoad.loadFile().then(async (d)=> {
             initialSearch(geneOb).then(async n=> {
                
                 let varAlleles = await variantObjectMaker(n.properties.Variants);
-              
                 let variants = await updateVariants(fileVariants, varAlleles);
-         
                 n.properties.Variants = variants;
-            
                 neoAPI.addNode(n, n.type);
 /*
                 neoAPI.addNodeArray(variants).then(async ()=> {
@@ -156,8 +153,8 @@ async function variantObjectMaker(varArray: Array<object>){
 async function isStored(graph: object, nameSearch:string, nodeType:string, data:object){
     let foundGraphNodes = graph.nodes.filter(n=> n.properties.symbol == nameSearch);
     let nodeOb = foundGraphNodes.length > 0 ? foundGraphNodes[0] : initialSearch(data);
- 
-    return nodeOb
+    
+    return await qo.structGene(nodeOb);
 }
 
 async function updateVariants(fileVarArr:Array<Object>, graphVarArr: Array<any>){
