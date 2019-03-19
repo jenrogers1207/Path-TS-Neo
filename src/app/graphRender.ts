@@ -96,12 +96,6 @@ export async function renderGeneDetail(data: Object){
     let phenoEnter = phenotype.enter().append('div').classed('pheno-wrap', true);
     let phenoSec = phenoEnter.append('text').text(d=> JSON.parse(d.properties).description);
 
-  //  let variant = propEnter.filter(d=> d == "Variants").selectAll('.pheno-wrap').data(d=> {
-  //      return data.properties[d];
-  //  });
-  //  let varEnter = variant.enter().append('div').classed('var-wrap', true);
-   // let varSec = varEnter.append('text').text(d=> JSON.parse(d.properties).description);
-
     let titles = propEnter.filter(d=> d == "Titles").selectAll('.title').data(d=> {return d3.entries(data.properties[d])});
     let titleEnter = titles.enter().append('div').classed('title sections', true);
     titleEnter.append('text').text(d=> d.value);
@@ -154,7 +148,7 @@ export function drawGraph(dataArr: Object) {
 
     let simulation = d3.forceSimulation()
         .velocityDecay(0.1)
-        .force("link", d3.forceLink().distance(80).strength(.5))
+        .force("link", d3.forceLink().distance(120).strength(.5))
         .force("x", d3.forceX(width / 2).strength(.05))
         .force("y", d3.forceY(height / 2).strength(.05))
         .force("charge", d3.forceManyBody().strength(-80))
@@ -183,7 +177,6 @@ export function drawGraph(dataArr: Object) {
         });
 
     let circles = nodeEnter.append('circle')
-        //.attr("r", radius - .75)
         .call(d3.drag()
             .on("start", dragstarted)
            .on("drag", dragged)
@@ -222,12 +215,12 @@ export function drawGraph(dataArr: Object) {
                 .style("opacity", .8);
             console.log(d)
             if(d.label == 'Phenotype'){
-                toolDiv.html(d.properties.description + "<br/>")
+                toolDiv.html(JSON.parse(d.properties.properties).description + "<br/>")
                 .style("left", (d3.event.pageX) + "px")
                 .style("top", (d3.event.pageY - 28) + "px");
 
             }else{
-                toolDiv.html(d.title + "<br/>")
+                toolDiv.html(d.name + "<br/>")
                 .style("left", (d3.event.pageX) + "px")
                 .style("top", (d3.event.pageY - 28) + "px");
             }

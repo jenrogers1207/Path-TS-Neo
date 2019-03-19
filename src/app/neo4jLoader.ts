@@ -275,11 +275,8 @@ export async function getGraph() {
                 let relations = phenopaths.concat(mutationpaths);
                 let indexArray = nodes.map(n=> n.index);
                 let rels = relations.map(r=> {
-                   
                     var source = indexArray.indexOf(r.start);
                     var target = indexArray.indexOf(r.end);
-                  //  return {'source': source, 'target': target}
-                    console.log({'source': nodes[source].name, 'target': nodes[target].name})
                     return {'source': nodes[source].name, 'target': nodes[target].name}
                 })
 
