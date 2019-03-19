@@ -70,7 +70,7 @@ export async function renderCalls(data: Object){
 
 export async function renderGeneDetail(data: Object){
  
-    let headers = d3.keys(data.properties).filter(d=> d != 'References' && d != 'name');
+    let headers = d3.keys(data.properties).filter(d=> d != 'References' && d !='Variants'  && d != 'name');
     console.log('data?', data);
     
     let sidebar = d3.select('#left-nav');
@@ -96,11 +96,11 @@ export async function renderGeneDetail(data: Object){
     let phenoEnter = phenotype.enter().append('div').classed('pheno-wrap', true);
     let phenoSec = phenoEnter.append('text').text(d=> JSON.parse(d.properties).description);
 
-    let variant = propEnter.filter(d=> d == "Variants").selectAll('.pheno-wrap').data(d=> {
-        return data.properties[d];
-    });
-    let varEnter = variant.enter().append('div').classed('pheno-wrap', true);
-    let varSec = varEnter.append('text').text(d=> JSON.parse(d.properties).description);
+  //  let variant = propEnter.filter(d=> d == "Variants").selectAll('.pheno-wrap').data(d=> {
+  //      return data.properties[d];
+  //  });
+  //  let varEnter = variant.enter().append('div').classed('var-wrap', true);
+   // let varSec = varEnter.append('text').text(d=> JSON.parse(d.properties).description);
 
     let titles = propEnter.filter(d=> d == "Titles").selectAll('.title').data(d=> {return d3.entries(data.properties[d])});
     let titleEnter = titles.enter().append('div').classed('title sections', true);

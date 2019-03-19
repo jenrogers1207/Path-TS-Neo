@@ -196,14 +196,18 @@ export function setNodeProperty(type: string, name:string, prop:string, propValu
 }
 
 export async function getGraph() {
-/*
-    let command = 'MATCH (v, p)-[p:Mutation]->(g) \
-    RETURN g AS gene, collect(v.name) AS variant, collect(p.name) AS phenotype';
-*/
-    let command = 'OPTIONAL MATCH (v)-[m:Mutation]->(g) \
+
+  //  let command = 'MATCH (v, p)-[p:Mutation]->(g) \
+  //  RETURN g AS gene, collect(v.name) AS variant, collect(p.name) AS phenotype';
+
+   let command = 'OPTIONAL MATCH (v)-[m:Mutation]->(g) \
     OPTIONAL MATCH (p)-[r:Pheno]->(v) \
     RETURN collect(v) AS variant, collect(p) AS phenotype, g AS gene, collect(r) AS phenoRel, collect(m) AS mutationRel'
-                   
+        
+  //  let command = 'MATCH (n) \
+  //  OPTIONAL MATCH (n)-[r]-()\
+  //  RETURN collect(n) AS nodes, collect(r) AS relation'
+
     var session = driver.session();
 
     return session
@@ -212,7 +216,9 @@ export async function getGraph() {
             session.close();
      
             return result.records.map(r=> {
-           
+
+                console.log('results',r);
+            
                 let gene = new Array(r.get('gene')).map(g=> {
                
                     let gen = new Object();
@@ -222,6 +228,8 @@ export async function getGraph() {
                     gen.label = g.labels[0];
                     return  gen;
                 });
+
+                console.log('gene', gene);
                 let vars = r.get('variant').map(v=> {
                     let vari = new Object();
                     vari.index = v.identity.low;
@@ -230,6 +238,21 @@ export async function getGraph() {
                     vari.label = v.labels[0];
                     return vari;
                 });
+
+                console.log('vars', vars);
+
+                let varNames = [];
+                let uniVars = [];
+
+                vars.forEach(v=>{
+                    if(varNames.indexOf(v.name) == -1){
+                        varNames.push(v.name);
+                        uniVars.push(v);
+                    }
+                });
+
+                console.log(uniVars);
+
                 let pheno = r.get('phenotype').map(p=> {
                     let ph = new Object();
                     ph.index = p.identity.low;
@@ -238,7 +261,7 @@ export async function getGraph() {
                     ph.label = p.labels[0];
                     return ph;
                 });
-
+                console.log('pheno', pheno)
                 let phenopaths = r.get('phenoRel').map(p=>{
                     let ph = new Object();
                     ph.start = p.start.low;
@@ -256,7 +279,7 @@ export async function getGraph() {
                     return meh;
                 });
         
-                let nodes = gene.concat(vars, pheno);
+                let nodes = gene.concat(Vars, pheno);
                 let relations = phenopaths.concat(mutationpaths);
                 let indexArray = nodes.map(n=> n.index);
                 let rels = relations.map(r=> {

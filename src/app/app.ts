@@ -75,7 +75,11 @@ dataLoad.loadFile().then(async (d)=> {
         }else{
            // console.groupCollapsed('graph did not load');
             initialSearch(geneOb).then(async n=> {
-               
+               console.log('n', n);
+
+                console.log('geneOb',geneOb)
+
+                /*
                 let varAlleles = await variantObjectMaker(n.properties.Variants);
                 let variants = await updateVariants(fileVariants, varAlleles);
                 n.properties.Variants = variants;
@@ -85,7 +89,7 @@ dataLoad.loadFile().then(async (d)=> {
                     variants.forEach(v=>{
                         neoAPI.addRelation(v.name, v.type, n.name, n.type, 'Mutation');
                     });
-                */
+               
                 let structuredPheno = await qo.structPheno(n.properties.Phenotypes, n.name);
                 n.properties.Phenotypes.nodes = structuredPheno;
                // console.log('structured pheno!', structuredPheno);
@@ -111,8 +115,9 @@ dataLoad.loadFile().then(async (d)=> {
                     relatedPhenotypes.forEach(rel => {
                         neoAPI.addRelation(rel.name, 'Phenotype', rel.varIds, 'Variant', 'Pheno');
                 });
-
-            });
+ */
+            }); 
+             
         }
 
 });
