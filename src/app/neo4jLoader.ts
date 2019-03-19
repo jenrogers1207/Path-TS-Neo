@@ -46,6 +46,8 @@ export async function addNode(promOb:object, type:string){
                 console.log(error);
             });
         }
+
+        driver.close();
 }
 
 
@@ -193,6 +195,8 @@ export function setNodeProperty(type: string, name:string, prop:string, propValu
         .catch(function(error:any) {
             console.log(error);
         });
+
+      
 }
 
 export async function getGraph() {
@@ -202,7 +206,7 @@ export async function getGraph() {
 
    let command = 'OPTIONAL MATCH (v)-[m:Mutation]->(g) \
     OPTIONAL MATCH (p)-[r:Pheno]->(v) \
-    RETURN collect(v) AS variant, collect(p) AS phenotype, g AS gene, collect(r) AS phenoRel, collect(m) AS mutationRel'
+    RETURN DISTINCT collect(v) AS variant, collect(p) AS phenotype, g AS gene, collect(r) AS phenoRel, collect(m) AS mutationRel'
         
   //  let command = 'MATCH (n) \
   //  OPTIONAL MATCH (n)-[r]-()\
@@ -213,7 +217,7 @@ export async function getGraph() {
     return session
         .run(command)
         .then(function(result) {
-            session.close();
+         
      
             return result.records.map(r=> {
 
@@ -241,18 +245,6 @@ export async function getGraph() {
 
                 console.log('vars', vars);
 
-                let varNames = [];
-                let uniVars = [];
-
-                vars.forEach(v=>{
-                    if(varNames.indexOf(v.name) == -1){
-                        varNames.push(v.name);
-                        uniVars.push(v);
-                    }
-                });
-
-                console.log(uniVars);
-
                 let pheno = r.get('phenotype').map(p=> {
                     let ph = new Object();
                     ph.index = p.identity.low;
@@ -279,21 +271,46 @@ export async function getGraph() {
                     return meh;
                 });
         
-                let nodes = gene.concat(Vars, pheno);
+                let nodes = gene.concat(vars, pheno);
                 let relations = phenopaths.concat(mutationpaths);
                 let indexArray = nodes.map(n=> n.index);
                 let rels = relations.map(r=> {
+                   
                     var source = indexArray.indexOf(r.start);
                     var target = indexArray.indexOf(r.end);
-                    return {'source': source, 'target': target}
+                  //  return {'source': source, 'target': target}
+                    console.log({'source': nodes[source].name, 'target': nodes[target].name})
+                    return {'source': nodes[source].name, 'target': nodes[target].name}
                 })
-                return { nodes, links: rels };  
+
+                let varNames = [];
+                let uniVars = [];
+
+                nodes.forEach(v=>{
+                    if(varNames.indexOf(v.name) == -1){
+                        varNames.push(v.name);
+                        uniVars.push(v);
+                    }
+                });
+
+                console.log(uniVars);
+                let nameArr = uniVars.map(d=> d.name)
+          
+                let relInd = rels.map(v=>{
+                    console.log(nameArr.indexOf(v.source));
+                    console.log(nameArr.indexOf(v.target));
+                    return {'source': nameArr.indexOf(v.source), 'target': nameArr.indexOf(v.target) }
+                });
+
+                console.log(relInd);
+
+                session.close();
+                return {nodes: uniVars, links: relInd };  
         });
-    })
+    })   
         .catch(function(error) {
             console.log(error);
         });
-
 
 }
 
