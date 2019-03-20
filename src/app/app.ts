@@ -18,7 +18,6 @@ let toolDiv = d3.select('body').append("div")
 let queryPanel = d3.select('#wrapper').append('div').attr('id', 'query-panel');
 
 dataLoad.loadFile().then(async (d)=> {
-  //  console.log('init data file', d);
 
     let geneOb = new qo.QueryObject(d[0].key);
     geneOb.type = "Gene";
@@ -27,19 +26,14 @@ dataLoad.loadFile().then(async (d)=> {
     let graph = await neoAPI.getGraph();//.then(g => {
 
     if(graph != undefined){
-        console.log(graph);
+      
         let relationships = graph[0].links.map(rel=> { 
             return{'source': rel.source.name, 'target':rel.target.name} })
         
         let geneNode = await isStored(graph[0], 'GJB2', 'Gene', geneOb)//.then(async (nodeO)=> {
-      //  let node = qo.structGene(geneNode);  
         let graphVariants = graph[0].nodes.filter(d=> d.label == 'Variant');
-        console.log('graphvar', graphVariants.length);
-
 
         let variants = await updateVariants(fileVariants, graphVariants)
-        console.log('variant', variants.length);
-       // console.log(variants);
         let variantOb = await Promise.resolve(variants);
 
         variantOb.forEach(v=>{
@@ -51,7 +45,7 @@ dataLoad.loadFile().then(async (d)=> {
             });
     
         let graphPhenotypes = graph[0].nodes.filter(d=> d.label == 'Phenotype');
-        let phenotypes = graphPhenotypes.length > 0? graphPhenotypes :await qo.structPheno(geneNode.properties.Phenotypes, geneNode.name);
+        let phenotypes = graphPhenotypes.length > 0? graphPhenotypes : await qo.structPheno(geneNode.properties.Phenotypes, geneNode.name);
         
         let uniqueNameArray = []
         let uniquePheno = []
@@ -61,12 +55,29 @@ dataLoad.loadFile().then(async (d)=> {
                 uniquePheno.push(pheno);
             }
         });
-        console.log('set', uniquePheno);
-
-       // commented tis out to test
-      //  neoAPI.addNodeArray(uniquePheno).then(()=> neoAPI.structureRelation(uniquePheno, variantOb, "Pheno"));
+ 
         geneNode.properties.Variants = variantOb;
         geneNode.properties.Phenotypes = uniquePheno;
+
+        let interactP = await search.searchString(geneNode.name);
+        geneNode.properties.Ids.stringID = interactP[0].stringId_A;
+        geneNode.properties.InteractionPartners = interactP;
+
+        let interactionNodes = interactP.map(m => {
+            let ob = {'name' : m.preferredName_B, 'type': 'Interaction', 'properties': { 'Ids': {}, 'Metrics': {} } };
+            ob.properties.Ids.stringID = m.stringId_B;
+            ob.properties.Source = m.preferredName_A;
+            ob.properties.Metrics = d3.entries(m).filter(f=> f.key.includes('score'))
+            return ob;
+        });
+
+        console.log('interactionNodes', interactionNodes);
+
+       await neoAPI.addNodeArray(interactionNodes);
+
+        interactionNodes.forEach(rel => {
+            neoAPI.addRelation(rel.name, 'Interaction', rel.properties.Source, 'Gene', 'Interacts');
+    });
 
         gCanvas.drawGraph(graph);
         gCanvas.renderCalls(geneNode);
@@ -75,10 +86,7 @@ dataLoad.loadFile().then(async (d)=> {
         }else{
            // console.groupCollapsed('graph did not load');
             initialSearch(geneOb).then(async n=> {
-               console.log('n', n);
-
-                console.log('geneOb',geneOb)
-
+         
                 /*
                 let varAlleles = await variantObjectMaker(n.properties.Variants);
                 let variants = await updateVariants(fileVariants, varAlleles);
@@ -92,13 +100,13 @@ dataLoad.loadFile().then(async (d)=> {
                
                 let structuredPheno = await qo.structPheno(n.properties.Phenotypes, n.name);
                 n.properties.Phenotypes.nodes = structuredPheno;
-               // console.log('structured pheno!', structuredPheno);
+          
 
                 neoAPI.addNodeArray(structuredPheno);
                   
                 let varNames = variants.map(v=> {
                     let des = typeof v.properties == 'string'? JSON.parse(v.properties) : v.properties;
-                  //  console.log(des.description)
+        
                     return des.description.toString()
                 });
              
@@ -184,7 +192,7 @@ async function updateVariants(fileVarArr:Array<Object>, graphVarArr: Array<any>)
         
     async function addIn(newArray:Array<Object>, oldArray:Array<Object>){
         if(newArray.length > 0){ newArray.forEach(v=> oldArray.push(v)) }
-       // console.log(oldArray);
+  
         return qo.structVariants(oldArray);
     }
 

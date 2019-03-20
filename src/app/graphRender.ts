@@ -44,7 +44,7 @@ export async function renderCalls(data: Object){
             let text = this.nextSibling;
             d3.select(text).classed('hidden')? d3.select(text).classed('hidden', false) : d3.select(text).classed('hidden', true);
         });
-
+        console.log('variantData', variantData);
         let varDes = varEnter.append('div').classed('var-descript', true).classed('hidden', true);
         let blurbs = varDes.selectAll('.blurb').data(d=>d3.entries(d)
                 .filter(f=> f.key != 'allelicVariantList' && f.key != 'text' && f.key != 'name' && f.key != 'properties'))

@@ -199,19 +199,91 @@ export function setNodeProperty(type: string, name:string, prop:string, propValu
       
 }
 
+async function getGraphRelations(type1:string, type2:string, relation: string){
+    let command = 'OPTIONAL MATCH (a)-[r:'+relation+']->(b) \
+    RETURN DISTINCT collect(a) AS '+type1+', collect(b) AS '+type2+', collect(r) AS rel';
+    console.log(command)
+    var session = driver.session();
+
+    return session
+        .run(command)
+        .then(function(result) {
+         
+            return result.records.map(r=> {
+
+                console.log('results updated',r);
+            
+                let node1 = new Array(r.get(type1)).map(g=> {
+                    let gen = new Object();
+                    gen.index = g.identity.low;
+                    gen.name = g.properties.name;
+                    gen.properties = g.properties;
+                    gen.label = g.labels[0];
+                    return  gen;
+                });
+
+              
+                let node2 = r.get(type2).map(v=> {
+                    let vari = new Object();
+                    vari.index = v.identity.low;
+                    vari.name = v.properties.name;
+                    vari.properties = v.properties;
+                    vari.label = v.labels[0];
+                    return vari;
+                });
+
+                let relations = r.get('rel').map(m=> {
+                    let meh = new Object();
+                    meh.start = m.start.low;
+                    meh.end = m.end.low;
+                    meh.index = m.identity.low;
+                    meh.type = m.type;
+                    return meh;
+                });
+
+                let nodes = node1.concat(node2);
+
+                let indexArray = nodes.map(n=> n.index);
+                let rels = relations.map(r=> {
+                    var source = indexArray.indexOf(r.start);
+                    var target = indexArray.indexOf(r.end);
+                    return {'source': nodes[source].name, 'target': nodes[target].name}
+                })
+            console.log('nodesss',nodes)
+            session.close();
+            return {'n':nodes, 'r':rels };
+    })   
+})
+        .catch(function(error) {
+            console.log(error);
+        });
+
+}
+
 export async function getGraph() {
 
   //  let command = 'MATCH (v, p)-[p:Mutation]->(g) \
   //  RETURN g AS gene, collect(v.name) AS variant, collect(p.name) AS phenotype';
-
+/*
    let command = 'OPTIONAL MATCH (v)-[m:Mutation]->(g) \
     OPTIONAL MATCH (p)-[r:Pheno]->(v) \
-    RETURN DISTINCT collect(v) AS variant, collect(p) AS phenotype, g AS gene, collect(r) AS phenoRel, collect(m) AS mutationRel'
-        
+    OPTIONAL MATCH (n)-[i:Interacts]->(g) \
+    RETURN DISTINCT collect(v) AS variant, collect(p) AS phenotype, \
+    g AS gene, collect(n) as interaction, collect(r) AS phenoRel, collect(m) AS mutationRel, collect(i) AS interactRel'
+     */  
   //  let command = 'MATCH (n) \
   //  OPTIONAL MATCH (n)-[r]-()\
   //  RETURN collect(n) AS nodes, collect(r) AS relation'
+console.log('loading graph?')
+  let rel1 = await getGraphRelations('Variant', 'Gene', 'Mutation');
+  console.log('relation1!',rel1);
 
+  console.log('loading graph?')
+  let rel2 = await getGraphRelations('Phenotype', 'Variant', 'Pheno');
+  console.log('relation2!',rel2);
+
+
+  /*
     var session = driver.session();
 
     return session
@@ -221,7 +293,7 @@ export async function getGraph() {
      
             return result.records.map(r=> {
 
-                console.log('results',r);
+                console.log('results updated',r);
             
                 let gene = new Array(r.get('gene')).map(g=> {
                
@@ -290,16 +362,11 @@ export async function getGraph() {
                     }
                 });
 
-                console.log(uniVars);
                 let nameArr = uniVars.map(d=> d.name)
           
                 let relInd = rels.map(v=>{
-                    console.log(nameArr.indexOf(v.source));
-                    console.log(nameArr.indexOf(v.target));
                     return {'source': nameArr.indexOf(v.source), 'target': nameArr.indexOf(v.target) }
                 });
-
-                console.log(relInd);
 
                 session.close();
                 return {nodes: uniVars, links: relInd };  
@@ -308,6 +375,8 @@ export async function getGraph() {
         .catch(function(error) {
             console.log(error);
         });
+
+        */
 
 }
 
@@ -321,7 +390,6 @@ export async function addRelation(sourceName:string, sourceType:string, targetNa
         .run(command)
         .then(function(result) {
             session.close();
-          //  console.log('pathway exists '+linkType+'?', result)
             return result;
         })
         .catch(function(error) {
