@@ -187,6 +187,8 @@ text: "In a study in Italy of 179 unrelated subjects with sporadic or familial h
        // console.log('props', props);
         let snpName = v.name? v.name : props.Ids.dbsnp;
         let variantOb = new VariantObject(snpName);
+
+        console.log('vars', variantOb);
        // let variantOb = v;
         //determine if properties exist -  has this already been loaded?
       //  variantOb.name = snpName;
@@ -195,7 +197,7 @@ text: "In a study in Italy of 179 unrelated subjects with sporadic or familial h
         variantOb.properties.mutations = props.mutations? props.mutations : v.mutations;
         variantOb.properties.description = props.description? props.description : v.name;
         variantOb.properties.clinvarAccessions = props.clinvarAccessions? props.clinvarAccessions : 'null';
-        variantOb.properties.Text = props.Text.length == 0? props.text : props.text;
+        variantOb.properties.Text = props.Text? props.Text : props.text;
         //let props = variantOb.properties.properties? variantOb.properties.properties : variantOb.properties;
        // let propOb = typeof props == "string"? JSON.parse(props):props;
         //console.log('var Obs', propOb);
@@ -204,6 +206,8 @@ text: "In a study in Italy of 179 unrelated subjects with sporadic or familial h
            // console.log('snp is loading');
             let snp = await search.loadSNP(variantOb.name);
            // console.log('snpppp',snp);
+
+
             variantOb.properties.Type = snp.variant_type;
             variantOb.properties.Location.anchor = snp.anchor? snp.anchor : 'null';
             variantOb.properties.Location.placements_with_allele = snp.placements_with_allele;
@@ -227,11 +231,10 @@ text: "In a study in Italy of 179 unrelated subjects with sporadic or familial h
 }
 
 export async function structPheno(phenob: object, assocGene:string){
-    console.log('is thisworking?', console.log(phenob))
-
-    let inner = JSON.parse(phenob).nodes? JSON.parse(phenob).nodes:phenob;
+    let inner = phenob.nodes? phenob.nodes : phenob;
+    let parsed = typeof inner == 'string'? JSON.parse(inner) : inner;
     
-    let nodes = inner.map(p=> {
+    let nodes = parsed.map(p=> {
        
         let props = p.properties? p.properties : p;
         props = props.phenotypeMap? props.phenotypeMap : props;

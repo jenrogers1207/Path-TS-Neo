@@ -113,13 +113,12 @@ export async function geneIdtoMim(query:any){
     //return props;
 }
 
-export async function searchString(value:string){
+export async function searchStringInteractors(value:string){
 
     const proxy = 'https://cors-anywhere.herokuapp.com/';
-    let url = 'https://string-db.org/api/json/interaction_partners?identifiers='+ value;
+    let url = 'https://string-db.org/api/json/interaction_partners?identifiers='+ value +'&limit=20';
     let req =  await ky.get(proxy+url).json();
 
-    console.log(req);
     return req;
 }
 

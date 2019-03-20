@@ -3,7 +3,7 @@ import * as d3 from 'D3';
 import { readdirSync } from "fs";
 
 var neo4j = require('neo4j-driver').v1;
-var driver = neo4j.driver("bolt://localhost:7687", neo4j.auth.basic("neo4j", "123"));
+var driver = neo4j.driver("bolt://localhost:11001", neo4j.auth.basic("neo4j", "123"));
 var _ = require('lodash');
 
 export async function addNode(promOb:object, type:string){
@@ -47,7 +47,7 @@ export async function addNode(promOb:object, type:string){
             });
         }
 
-        driver.close();
+     //   driver.close();
 }
 
 
@@ -200,8 +200,7 @@ export function setNodeProperty(type: string, name:string, prop:string, propValu
 }
 
 async function getGraphRelations(type1:string, type2:string, relation: string){
-    let command = 'OPTIONAL MATCH (a)-[r:'+relation+']->(b) \
-    RETURN DISTINCT collect(a) AS '+type1+', collect(b) AS '+type2+', collect(r) AS rel';
+    let command = 'MATCH (a)-[r:'+relation+']->(b) RETURN collect(a) AS '+type1+', collect(b) AS '+type2+', collect(r) AS rel';
     console.log(command)
     var session = driver.session();
 
@@ -212,6 +211,8 @@ async function getGraphRelations(type1:string, type2:string, relation: string){
             return result.records.map(r=> {
 
                 console.log('results updated',r);
+
+                console.log(r.get(type1));
             
                 let node1 = new Array(r.get(type1)).map(g=> {
                     let gen = new Object();
@@ -249,10 +250,11 @@ async function getGraphRelations(type1:string, type2:string, relation: string){
                     var target = indexArray.indexOf(r.end);
                     return {'source': nodes[source].name, 'target': nodes[target].name}
                 })
-            console.log('nodesss',nodes)
+            console.log('nodesss',nodes);
             session.close();
             return {'n':nodes, 'r':rels };
     })   
+    
 })
         .catch(function(error) {
             console.log(error);
@@ -264,33 +266,25 @@ export async function getGraph() {
 
   //  let command = 'MATCH (v, p)-[p:Mutation]->(g) \
   //  RETURN g AS gene, collect(v.name) AS variant, collect(p.name) AS phenotype';
-/*
+
    let command = 'OPTIONAL MATCH (v)-[m:Mutation]->(g) \
     OPTIONAL MATCH (p)-[r:Pheno]->(v) \
-    OPTIONAL MATCH (n)-[i:Interacts]->(g) \
     RETURN DISTINCT collect(v) AS variant, collect(p) AS phenotype, \
-    g AS gene, collect(n) as interaction, collect(r) AS phenoRel, collect(m) AS mutationRel, collect(i) AS interactRel'
-     */  
+    g AS gene, collect(r) AS phenoRel, collect(m) AS mutationRel'
+       
   //  let command = 'MATCH (n) \
   //  OPTIONAL MATCH (n)-[r]-()\
   //  RETURN collect(n) AS nodes, collect(r) AS relation'
-console.log('loading graph?')
-  let rel1 = await getGraphRelations('Variant', 'Gene', 'Mutation');
-  console.log('relation1!',rel1);
+    console.log('loading graph?');
+ // let rel1 = await getGraphRelations('Variant', 'Gene', 'Mutation');
+ // console.log('relation1!',rel1);
 
-  console.log('loading graph?')
-  let rel2 = await getGraphRelations('Phenotype', 'Variant', 'Pheno');
-  console.log('relation2!',rel2);
-
-
-  /*
     var session = driver.session();
 
     return session
         .run(command)
         .then(function(result) {
-         
-     
+        
             return result.records.map(r=> {
 
                 console.log('results updated',r);
@@ -376,7 +370,7 @@ console.log('loading graph?')
             console.log(error);
         });
 
-        */
+        
 
 }
 

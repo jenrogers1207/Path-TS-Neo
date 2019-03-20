@@ -44,7 +44,7 @@ export async function renderCalls(data: Object){
             let text = this.nextSibling;
             d3.select(text).classed('hidden')? d3.select(text).classed('hidden', false) : d3.select(text).classed('hidden', true);
         });
-        console.log('variantData', variantData);
+
         let varDes = varEnter.append('div').classed('var-descript', true).classed('hidden', true);
         let blurbs = varDes.selectAll('.blurb').data(d=>d3.entries(d)
                 .filter(f=> f.key != 'allelicVariantList' && f.key != 'text' && f.key != 'name' && f.key != 'properties'))
@@ -94,7 +94,7 @@ export async function renderGeneDetail(data: Object){
         return phenoD;
     });
     let phenoEnter = phenotype.enter().append('div').classed('pheno-wrap', true);
-    let phenoSec = phenoEnter.append('text').text(d=> JSON.parse(d.properties).description);
+    let phenoSec = phenoEnter.append('text').text(d=> d.properties.description);
 
     let titles = propEnter.filter(d=> d == "Titles").selectAll('.title').data(d=> {return d3.entries(data.properties[d])});
     let titleEnter = titles.enter().append('div').classed('title sections', true);
