@@ -30,9 +30,22 @@ export async function searchBySymbol(query:object) {
     
 }
 
+export async function searchUniprot(value:string){
+    //P29033
+    let proxy = 'https://cors-anywhere.herokuapp.com/';
+    //let url = 'https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esummary.fcgi?db=clinvar&id='+digits+'&retmode=json&apiKey=mUYjhLsCRVOuShEhrHLG_w'
+   // 'https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esummary.fcgi?db=clinvar&id=328931&retmode=json&apiKey=mUYjhLsCRVOuShEhrHLG_w'
+    let url = 'https://www.uniprot.org/uniprot/'+value+'.xml';
+
+    let req = await ky.get(url);
+
+    console.log(req);
+    console.log(req);
+
+}
+
 export async function loadSNP(value: string){
     
-
     let query = value.includes(',') ? value.split(',')[0] : value;
     let digits = query.replace(/\D/g,'');
     let proxy = 'https://cors-anywhere.herokuapp.com/';

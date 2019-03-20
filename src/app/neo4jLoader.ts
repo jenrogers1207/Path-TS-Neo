@@ -316,8 +316,6 @@ export async function getGraph() {
             console.log(error);
         });
 
-        
-
 }
 
 export async function addRelation(sourceName:string, sourceType:string, targetName:string, targetType:string, linkType:string) {
