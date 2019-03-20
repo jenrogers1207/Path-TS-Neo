@@ -114,7 +114,12 @@ export async function structureRelation(node1: Array<object>, node2: Array<objec
                 let index = phenoNames.indexOf(fil.accession)
        
                 if(index > -1){ relationArr.push({'pheno': fil.accession, 'variant': p.name}) }
+<<<<<<< HEAD
             })       
+=======
+            })
+  
+>>>>>>> test
 });
 
     relationArr.forEach(rel => {
@@ -186,6 +191,7 @@ export function setNodeProperty(type: string, name:string, prop:string, propValu
             console.log(error);
         });
 
+<<<<<<< HEAD
       
 }
 
@@ -246,15 +252,15 @@ async function getGraphRelations(type1:string, type2:string, relation: string){
             console.log(error);
         });
 
+=======
+>>>>>>> test
 }
 
 export async function getGraph() {
 
-  //  let command = 'MATCH (v, p)-[p:Mutation]->(g) \
-  //  RETURN g AS gene, collect(v.name) AS variant, collect(p.name) AS phenotype';
-
    let command = 'OPTIONAL MATCH (v)-[m:Mutation]->(g) \
     OPTIONAL MATCH (p)-[r:Pheno]->(v) \
+<<<<<<< HEAD
     RETURN DISTINCT collect(v) AS variant, collect(p) AS phenotype, \
     g AS gene, collect(r) AS phenoRel, collect(m) AS mutationRel'
        
@@ -264,6 +270,13 @@ export async function getGraph() {
  
  // let rel1 = await getGraphRelations('Variant', 'Gene', 'Mutation');
  // console.log('relation1!',rel1);
+=======
+    OPTIONAL MATCH (n)-[i:Interacts]->(g)\
+    RETURN DISTINCT collect(distinct v) AS variant, collect(distinct p) AS phenotype, collect(distinct n) as inters,\
+    g AS gene, collect(distinct r) AS phenoRel, collect(distinct m) AS mutationRel, collect(distinct i) as interRel'
+
+    console.log('loading graph?');
+>>>>>>> test
 
     var session = driver.session();
 
@@ -273,7 +286,7 @@ export async function getGraph() {
         
             return result.records.map(r=> {
 
-                console.log('results updated',r);
+                console.log('results updated', r);
             
                 let gene = new Array(r.get('gene')).map(g=> {
                
@@ -305,7 +318,21 @@ export async function getGraph() {
                     ph.label = p.labels[0];
                     return ph;
                 });
+<<<<<<< HEAD
              
+=======
+                console.log('pheno', pheno);
+
+                let interactNodes = r.get('inters').map(p=>{
+                    let ph = new Object();
+                    ph.index = p.identity.low;
+                    ph.name = p.properties.name;
+                    ph.properties = p.properties;
+                    ph.label = p.labels[0];
+                    return ph;
+                });
+
+>>>>>>> test
                 let phenopaths = r.get('phenoRel').map(p=>{
                     let ph = new Object();
                     ph.start = p.start.low;
@@ -314,6 +341,7 @@ export async function getGraph() {
                     ph.type = p.type;
                     return ph;
                 });
+
                 let mutationpaths = r.get('mutationRel').map(m=> {
                     let meh = new Object();
                     meh.start = m.start.low;
@@ -322,9 +350,19 @@ export async function getGraph() {
                     meh.type = m.type;
                     return meh;
                 });
+
+                
+                let interpaths = r.get('interRel').map(p=>{
+                    let ph = new Object();
+                    ph.start = p.start.low;
+                    ph.end = p.end.low;
+                    ph.index = p.identity.low;
+                    ph.type = p.type;
+                    return ph;
+                });
         
-                let nodes = gene.concat(vars, pheno);
-                let relations = phenopaths.concat(mutationpaths);
+                let nodes = gene.concat(vars, pheno, interactNodes);
+                let relations = phenopaths.concat(mutationpaths, interpaths);
                 let indexArray = nodes.map(n=> n.index);
                 let rels = relations.map(r=> {
                     var source = indexArray.indexOf(r.start);
