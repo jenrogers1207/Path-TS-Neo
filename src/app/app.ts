@@ -26,7 +26,8 @@ dataLoad.loadFile().then(async (d)=> {
     let graph = await neoAPI.getGraph();//.then(g => {
 
     if(graph != undefined && graph != null){
-      
+       
+       // neoAPI.getGraphRelations('Variant', 'Gene', 'Mutation');
         let relationships = graph[0].links.map(rel=> { 
             return{'source': rel.source.name, 'target':rel.target.name} })
     
@@ -59,7 +60,7 @@ dataLoad.loadFile().then(async (d)=> {
         geneNode.properties.Variants = variantOb;
         geneNode.properties.Phenotypes = uniquePheno;
 
-        neoAPI.structureRelation(uniquePheno, variantOb, "Pheno");
+       // neoAPI.structureRelation(uniquePheno, variantOb, "Pheno");
 
         let interactP = await search.searchStringInteractors(geneNode.name);
         geneNode.properties.Ids.stringID = interactP[0].stringId_A;
@@ -76,7 +77,7 @@ dataLoad.loadFile().then(async (d)=> {
        neoAPI.addNodeArray(interactionNodes);
 
         interactionNodes.forEach(rel => {
-            neoAPI.addRelation(rel.name, 'Interaction', rel.properties.Source, 'Gene', 'Interacts');
+         //   neoAPI.addRelation(rel.name, 'Interaction', rel.properties.Source, 'Gene', 'Interacts');
         });
 
         gCanvas.drawGraph(graph);

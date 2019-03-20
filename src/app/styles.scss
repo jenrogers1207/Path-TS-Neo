@@ -143,6 +143,12 @@ body {
     opacity: .7;
 }
 
+.node.Interaction circle {
+    fill: gray;
+    r: 20px;
+    opacity: .5;
+}
+
 .node.Gene.selected circle {
     fill: red;
     r: 25px;

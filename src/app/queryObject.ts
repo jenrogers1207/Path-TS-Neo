@@ -179,8 +179,7 @@ text: "In a study in Italy of 179 unrelated subjects with sporadic or familial h
 
     let variants = typeof varArray === 'string' ? JSON.parse(varArray) : varArray;
    // if(!nodeOb.properties){ nodeOb.properties = nodeOb.data}
-  //  console.log('struct variants',variants);
-  //console.log('variants',variants)
+
     let obs = variants.map(async (v)=> {
       
         let props = v.properties.properties? JSON.parse(v.properties.properties): v.properties;
@@ -188,7 +187,6 @@ text: "In a study in Italy of 179 unrelated subjects with sporadic or familial h
         let snpName = v.name? v.name : props.Ids.dbsnp;
         let variantOb = new VariantObject(snpName);
 
-        console.log('vars', variantOb);
        // let variantOb = v;
         //determine if properties exist -  has this already been loaded?
       //  variantOb.name = snpName;
@@ -200,14 +198,11 @@ text: "In a study in Italy of 179 unrelated subjects with sporadic or familial h
         variantOb.properties.Text = props.Text? props.Text : props.text;
         //let props = variantOb.properties.properties? variantOb.properties.properties : variantOb.properties;
        // let propOb = typeof props == "string"? JSON.parse(props):props;
-        //console.log('var Obs', propOb);
+      
 
         if(props.allelleAnnotations == undefined){
-           // console.log('snp is loading');
+        
             let snp = await search.loadSNP(variantOb.name);
-           // console.log('snpppp',snp);
-
-
             variantOb.properties.Type = snp.variant_type;
             variantOb.properties.Location.anchor = snp.anchor? snp.anchor : 'null';
             variantOb.properties.Location.placements_with_allele = snp.placements_with_allele;
