@@ -3,30 +3,23 @@ import * as d3 from 'D3';
 import { readdirSync } from "fs";
 
 var neo4j = require('neo4j-driver').v1;
-var driver = neo4j.driver("bolt://localhost:11001", neo4j.auth.basic("neo4j", "1234"));
+var driver = neo4j.driver("bolt://localhost:11001", neo4j.auth.basic("neo4j", "123"));
 var _ = require('lodash');
 
 export async function addNode(promOb:object, type:string){
 
   console.log('add node firing', promOb, type)
     let queryOb = await Promise.resolve(promOb);
-    //console.log(queryOb)
-
     let value = queryOb.name? queryOb.name : queryOb.properties.name;
-
     let node = await checkForNode(value, type);
 
     if(node.length > 0){
        console.log(value +' already exists');
     }else{
-        
         let name = queryOb.value ? queryOb.value : queryOb.properties.name;
         let prop = {};
-
         let properties = queryOb.properties ? queryOb.properties : queryOb;
-
         let idKeys = d3.keys(queryOb.properties.Ids);
-       
         let propKeys = d3.keys(properties).filter(f=> f != 'Ids');
 
         propKeys.forEach(el => {
@@ -50,17 +43,18 @@ export async function addNode(promOb:object, type:string){
                 console.log(error);
             });
         }
+
+     //   driver.close();
 }
 
 
 export async function addNodeArray(phenoObs:Array<object>){
+
     let names: Array<string> = phenoObs.map(v=> v.name);
   
     let type = phenoObs[0].type;
     let originalNames : Array<string> = await checkForNodeArray(names, type);
-
     let newNames = names.filter(n=> originalNames.indexOf(n) == -1);
-   
     if(newNames.length > 0){
      
         let newObs = phenoObs.filter(ob=> newNames.indexOf(ob.name) > -1)
@@ -77,7 +71,6 @@ export async function addNodeArray(phenoObs:Array<object>){
             return o;
         });
         
-       // console.log('new', newnew);
         let command = 'UNWIND $props AS map CREATE (n:'+type+') SET n = map'
    
         var session = driver.session();
@@ -100,7 +93,7 @@ export async function structureRelation(node1: Array<object>, node2: Array<objec
     let node2Label = node2[0].type ? node2[0].type : node2[0].label;
 
     let phenoNames = node1.map(p=> p.name.toString());
-
+    let relationArr = []
     let relatedPhenotypes = node2.map(p=>{
         
             let varProps = typeof p.properties == 'string'? JSON.parse(p.properties) : p.properties;
@@ -108,34 +101,24 @@ export async function structureRelation(node1: Array<object>, node2: Array<objec
             varProps = typeof varProps == 'string'? JSON.parse(varProps) : varProps;
        
             let phenoFromVars = varProps.Phenotypes.map(p=> {
-               // let omimCheck = p.map(dis=> dis.disease_ids.map(d=> d.organization).filter(g=> g.includes('OMIM')));
                 let omimCheck = p.map(dis=> dis.disease_ids.filter(d=> d.organization == "OMIM"));
                 return omimCheck;
             });
 
-           
             let filtered = phenoFromVars.flatMap(fil=>{ 
                 return fil.filter(test=> test.length > 0);
-            });
+            }).flatMap(d=> d);
 
-            console.log(filtered);
         
-            let pindex = phenoNames.indexOf(varProps.description.toString().toUpperCase());
-           
-            if(pindex > -1 ){
-                let name = node2[pindex].name ? node2[pindex].name : node2[pindex].properties.name; 
-                
-                p.varIds = name;
-            }else{
-                p.varIds = null;
-            }
-            return p;
-        })//.filter(p=> p.varIds != null);
+            filtered.forEach(fil=> {
+                let index = phenoNames.indexOf(fil.accession)
+       
+                if(index > -1){ relationArr.push({'pheno': fil.accession, 'variant': p.name}) }
+            })       
+});
 
-        console.log(relatedPhenotypes);
-
-        relatedPhenotypes.forEach(rel => {
-           addRelation(rel.name, 'Phenotype', rel.varIds, 'Variant', relation);
+    relationArr.forEach(rel => {
+    addRelation(rel.pheno, 'Phenotype', rel.variant, 'Variant', relation);
     });
 }
 
@@ -202,26 +185,96 @@ export function setNodeProperty(type: string, name:string, prop:string, propValu
         .catch(function(error:any) {
             console.log(error);
         });
+
+      
 }
 
-export async function getGraph() {
-/*
-    let command = 'MATCH (v, p)-[p:Mutation]->(g) \
-    RETURN g AS gene, collect(v.name) AS variant, collect(p.name) AS phenotype';
-*/
-    let command = 'OPTIONAL MATCH (v)-[m:Mutation]->(g) \
-    OPTIONAL MATCH (p)-[r:Pheno]->(v) \
-    RETURN collect(v) AS variant, collect(p) AS phenotype, g AS gene, collect(r) AS phenoRel, collect(m) AS mutationRel'
-                   
+async function getGraphRelations(type1:string, type2:string, relation: string){
+    let command = 'MATCH (a)-[r:'+relation+']->(b) RETURN collect(a) AS '+type1+', collect(b) AS '+type2+', collect(r) AS rel';
+    
     var session = driver.session();
 
     return session
         .run(command)
         .then(function(result) {
-            session.close();
-     
+         
             return result.records.map(r=> {
-           
+            
+                let node1 = new Array(r.get(type1)).map(g=> {
+                    let gen = new Object();
+                    gen.index = g.identity.low;
+                    gen.name = g.properties.name;
+                    gen.properties = g.properties;
+                    gen.label = g.labels[0];
+                    return  gen;
+                });
+
+              
+                let node2 = r.get(type2).map(v=> {
+                    let vari = new Object();
+                    vari.index = v.identity.low;
+                    vari.name = v.properties.name;
+                    vari.properties = v.properties;
+                    vari.label = v.labels[0];
+                    return vari;
+                });
+
+                let relations = r.get('rel').map(m=> {
+                    let meh = new Object();
+                    meh.start = m.start.low;
+                    meh.end = m.end.low;
+                    meh.index = m.identity.low;
+                    meh.type = m.type;
+                    return meh;
+                });
+
+                let nodes = node1.concat(node2);
+
+                let indexArray = nodes.map(n=> n.index);
+                let rels = relations.map(r=> {
+                    var source = indexArray.indexOf(r.start);
+                    var target = indexArray.indexOf(r.end);
+                    return {'source': nodes[source].name, 'target': nodes[target].name}
+                })
+            console.log('nodesss',nodes);
+            session.close();
+            return {'n':nodes, 'r':rels };
+    })   
+    
+})
+        .catch(function(error) {
+            console.log(error);
+        });
+
+}
+
+export async function getGraph() {
+
+  //  let command = 'MATCH (v, p)-[p:Mutation]->(g) \
+  //  RETURN g AS gene, collect(v.name) AS variant, collect(p.name) AS phenotype';
+
+   let command = 'OPTIONAL MATCH (v)-[m:Mutation]->(g) \
+    OPTIONAL MATCH (p)-[r:Pheno]->(v) \
+    RETURN DISTINCT collect(v) AS variant, collect(p) AS phenotype, \
+    g AS gene, collect(r) AS phenoRel, collect(m) AS mutationRel'
+       
+  //  let command = 'MATCH (n) \
+  //  OPTIONAL MATCH (n)-[r]-()\
+  //  RETURN collect(n) AS nodes, collect(r) AS relation'
+ 
+ // let rel1 = await getGraphRelations('Variant', 'Gene', 'Mutation');
+ // console.log('relation1!',rel1);
+
+    var session = driver.session();
+
+    return session
+        .run(command)
+        .then(function(result) {
+        
+            return result.records.map(r=> {
+
+                console.log('results updated',r);
+            
                 let gene = new Array(r.get('gene')).map(g=> {
                
                     let gen = new Object();
@@ -231,6 +284,8 @@ export async function getGraph() {
                     gen.label = g.labels[0];
                     return  gen;
                 });
+
+             
                 let vars = r.get('variant').map(v=> {
                     let vari = new Object();
                     vari.index = v.identity.low;
@@ -239,6 +294,9 @@ export async function getGraph() {
                     vari.label = v.labels[0];
                     return vari;
                 });
+
+             
+
                 let pheno = r.get('phenotype').map(p=> {
                     let ph = new Object();
                     ph.index = p.identity.low;
@@ -247,7 +305,7 @@ export async function getGraph() {
                     ph.label = p.labels[0];
                     return ph;
                 });
-
+             
                 let phenopaths = r.get('phenoRel').map(p=>{
                     let ph = new Object();
                     ph.start = p.start.low;
@@ -271,15 +329,34 @@ export async function getGraph() {
                 let rels = relations.map(r=> {
                     var source = indexArray.indexOf(r.start);
                     var target = indexArray.indexOf(r.end);
-                    return {'source': source, 'target': target}
+                    return {'source': nodes[source].name, 'target': nodes[target].name}
                 })
-                return { nodes, links: rels };  
+
+                let varNames = [];
+                let uniVars = [];
+
+                nodes.forEach(v=>{
+                    if(varNames.indexOf(v.name) == -1){
+                        varNames.push(v.name);
+                        uniVars.push(v);
+                    }
+                });
+
+                let nameArr = uniVars.map(d=> d.name)
+          
+                let relInd = rels.map(v=>{
+                    return {'source': nameArr.indexOf(v.source), 'target': nameArr.indexOf(v.target) }
+                });
+
+                session.close();
+                return {nodes: uniVars, links: relInd };  
         });
-    })
+    })   
         .catch(function(error) {
             console.log(error);
         });
 
+        
 
 }
 
@@ -293,7 +370,6 @@ export async function addRelation(sourceName:string, sourceType:string, targetNa
         .run(command)
         .then(function(result) {
             session.close();
-          //  console.log('pathway exists '+linkType+'?', result)
             return result;
         })
         .catch(function(error) {

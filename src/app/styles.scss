@@ -140,6 +140,7 @@ body {
 .node.Gene circle {
     fill: coral;
     r: 20px;
+    opacity: .7;
 }
 
 .node.Gene.selected circle {
@@ -148,13 +149,15 @@ body {
 }
 
 .node.Variant circle {
-    fill: goldenrod;
+    fill: #66CDAA;
     r: 10px;
+    opacity: .7;
 }
 
 .node.Phenotype circle {
-    fill: green;
+    fill: #9ACD32;
     r: 10px;
+    opacity: .7;
 }
 
 .link {
@@ -210,6 +213,7 @@ div.tooltip {
     text-align: center;
     width: 100px;
     height: 20px;
+    min-height: 20px;
     padding: 3px;
     font: 12px sans-serif;
     color: #fff;

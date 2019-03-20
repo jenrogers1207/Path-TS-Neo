@@ -11,14 +11,12 @@ export function removeThings(){
 }
 
 export async function renderCalls(data: Object){
- 
-    let varOb = await Promise.resolve(data.properties.Variants);
     let sidebar = d3.select('#left-nav');
     let callTable = sidebar.select('.call-table');
     let geneDiv = callTable.selectAll('.gene').data([data]);
     geneDiv.exit().remove();
 
-    let variantData = varOb.map(d=>{ 
+    let variantData = data.properties.Variants.map(d=>{ 
         d.tag = d.properties.Phenotypes[0][0].clinical_significances;
         return d;
     });
@@ -27,7 +25,7 @@ export async function renderCalls(data: Object){
         let geneHeader = geneEnterDiv.append('div').classed('gene-header', true)
         geneHeader.append('text').text(d=> d.name);
         geneDiv = geneEnterDiv.merge(geneDiv);
-    
+
         let variantBox = geneDiv.append('div').classed('variant-wrapper', true);
     
         let variants = variantBox.selectAll('.variant').data(variantData);
@@ -48,8 +46,12 @@ export async function renderCalls(data: Object){
 
         let varDes = varEnter.append('div').classed('var-descript', true).classed('hidden', true);
         let blurbs = varDes.selectAll('.blurb').data(d=>d3.entries(d)
-                .filter(f=> f.key != 'allelicVariantList' && f.key != 'text' && f.key != 'name'))
+                .filter(f=> f.key != 'allelicVariantList' && f.key != 'text' && f.key != 'name' && f.key != 'properties'))
                 .enter().append('div').classed('blurb', true);
+
+        let properties = varDes.selectAll('.props').data(d=> d3.entries(d.properties));
+        let propEnter = properties.enter().append('div').classed('props', true);
+        let propText = propEnter.append('text').text(d=> d.key + ": "+ d.value);
 
         let idBlurbs = blurbs.filter(b=> b.key != 'snpProps').append('text').text(d=> d.key + ": "+ d.value);
         let snps = blurbs.filter(b=> b.key == 'snpProps').selectAll('.snp').data(d=> d3.entries(d.value));
@@ -62,53 +64,47 @@ export async function renderCalls(data: Object){
         variants.on('mouseover', function(d){
            
         });
-     
       
 }
 
 export async function renderGeneDetail(data: Object){
  
-    let headers = d3.keys(data.properties).filter(d=> d != 'allelicVariantList' && d != 'referenceList' && d != 'name');
-    console.log(data);
+    let headers = d3.keys(data.properties).filter(d=> d != 'References' && d !='Variants'  && d != 'name');
+    console.log('data?', data);
     
     let sidebar = d3.select('#left-nav');
     let geneDet = sidebar.select('.gene-detail');
-    let geneHeader = geneDet.append('div').attr('class', 'detail-head').append('h4').text(data.title);
+    let geneHeader = geneDet.append('div').attr('class', 'detail-head').append('h4').text(data.name);
    // let symbolBand = geneDet.append('div').classed('symbols', true).data(JSON.parse(data.Symbols));
     let propertyDivs = geneDet.selectAll('.prop-headers').data(headers);
     let propEnter = propertyDivs.enter().append('div').classed('prop-headers', true);
     propEnter.append('div').attr('class', (d)=> d).classed('head-wrapper', true).append('h5').text((d)=> d.toUpperCase());
-    let ids = propEnter.filter(d=> d == 'MIM' || d == 'entrezgene' || d == 'symbol' || d == 'description');
-    let idsSec = ids.append('text').text(d=> '  ' +data.properties[d]);
-    let titles = propEnter.filter(d=> d == "titles");
-    let titleSec = titles.selectAll('.sections').data(d=> {
-        let titleData = typeof data.properties[d] == "string" ? d3.entries(JSON.parse(data.properties[d])) : d3.entries(data.properties[d]);
-        return titleData;
+
+    let ids = propEnter.filter(d=> d == 'Ids').selectAll('.ids').data(d=> d3.entries(data.properties[d]));
+    let idEnter = ids.enter().append('div').classed('ids', true);
+    let idsSec = idEnter.append('text').text(d=> d.key + ': ' + d.value);
+
+    let location = propEnter.filter(d=> d == "Location").selectAll('.location').data(d=> d3.entries(data.properties[d]));
+    let locEnter = location.enter().append('div').classed('location', true);
+    let locSec = locEnter.append('text').text(d=> d.key + ': ' + d.value);
+
+    let phenotype = propEnter.filter(d=> d == "Phenotypes").selectAll('.pheno-wrap').data(d=> {
+        let phenoD = data.properties[d].map(p=> p.properties);
+        return phenoD;
     });
-    let titleEnter = titleSec.enter().append('div').classed('title sections', true);
+    let phenoEnter = phenotype.enter().append('div').classed('pheno-wrap', true);
+    let phenoSec = phenoEnter.append('text').text(d=> d.properties.description);
+
+    let titles = propEnter.filter(d=> d == "Titles").selectAll('.title').data(d=> {return d3.entries(data.properties[d])});
+    let titleEnter = titles.enter().append('div').classed('title sections', true);
     titleEnter.append('text').text(d=> d.value);
 
-    let geneMap = propEnter.filter(d=> d == 'geneMap');
-    let geneSec = geneMap.selectAll('.sections').data(d=> {
-        return d3.entries(data.properties[d]).filter(d=> d.key != "phenotypeMapList");
-    });
-    let geneEnter = geneSec.enter().append('div').classed('geneMap sections', true);
-    geneEnter.append('text').text(d=> d.key + ': ' + d.value " <br>");
+    let models = propEnter.filter(d=> d == "Models").selectAll('.des').data(d=> {return d3.entries(data.properties[d])});
+    let modEnter = models.enter().append('div').classed('des', true);
+    modEnter.append('text').text(d=> d.key + ": " + JSON.stringify(d.value));
 
-    let phenoHead = geneMap.append('h5').text('Phenotype');
-    let phenoSec = geneMap.selectAll('.pheno').data(d => data.properties[d].phenotypeMapList);
-    let phenoEnter = phenoSec.enter().append('div').classed('pheno sections', true);
-
-    phenoEnter.append('text').text(d=> {
-        return d.description + ': ' + d.phenotypeInheritance + " <br>"});
-
-    let textProp = propEnter.filter(d=> d == 'text');
-    let textSec = textProp.selectAll('.sections').data(d=> {
-        let textData = typeof data.properties[d] == 'string' ? JSON.parse(data.properties[d]) : data.properties[d];
-        return textData;
-    });
-
-    let textEnter = textSec.enter().append('div').classed('text sections', true);
+    let textProp = propEnter.filter(d=> d == 'Text').selectAll('.text').data(d=> {return data.properties[d]});
+    let textEnter = textProp.enter().append('div').classed('text', true);
     let headText = textEnter.append('div').classed('text-sec-head', true).append('h5').text(d=> d.textSectionTitle + ': ');
     let textDiv = textEnter.append('div').classed('textbody', true).classed('hidden', true);
     let textText = textDiv.append('text').text(d=> d.textSectionContent);
@@ -116,17 +112,31 @@ export async function renderGeneDetail(data: Object){
     headText.on('click', function(d) {
         let text = this.parentNode.nextSibling
         d3.select(text).classed('hidden')? d3.select(text).classed('hidden', false) : d3.select(text).classed('hidden', true);
-    })
+    });
+
+    let descript = propEnter.filter(d=> d == "Description").append('div').append('text').text(d=> data.properties[d]);
+    let symbols = propEnter.filter(d=> d == "Symbols").append('div').append('text').text(d=> data.properties[d]);
+
+    let structure = propEnter.filter(d=> d == "Structure").selectAll('.structure').data(d=> {
+        return d3.entries(data.properties[d])});
+    let structEnter = structure.enter().append('div').classed('structure', true);
+    structEnter.append('text').text(d=> d.key+ ': ' + d.value);
+
+    let orthology = propEnter.filter(d=> d == "Orthology").selectAll('.orthology').data(d=> {return d3.entries(data.properties[d])});
+    let orthoEnter = orthology.enter().append('div').classed('orthology', true);
+    orthoEnter.append('text').text(d=> d.key+ ': ' + d.value);
+
+    let brite = propEnter.filter(d=> d == "Brite").selectAll('.brite').data(d=> {return d3.entries(data.properties[d])});
+    let briteEnter = brite.enter().append('div').classed('brite', true);
+    briteEnter.append('text').text(d=> d.key+ ': ' + d.value);
 
     propertyDivs = propEnter.merge(propertyDivs);
 
 }
 
 export function drawGraph(dataArr: Object) {
-  // console.log(dataArr)
+ 
     let data = dataArr[0];
-   // console.log(data)
-  // let data = dataArr;
     let canvas = d3.select('#graph-render').select('.graph-canvas'),
         width = +canvas.attr("width"),
         height = +canvas.attr("height"),
@@ -137,7 +147,7 @@ export function drawGraph(dataArr: Object) {
 
     let simulation = d3.forceSimulation()
         .velocityDecay(0.1)
-        .force("link", d3.forceLink().distance(80).strength(.5))
+        .force("link", d3.forceLink().distance(120).strength(.5))
         .force("x", d3.forceX(width / 2).strength(.05))
         .force("y", d3.forceY(height / 2).strength(.05))
         .force("charge", d3.forceManyBody().strength(-80))
@@ -166,7 +176,6 @@ export function drawGraph(dataArr: Object) {
         });
 
     let circles = nodeEnter.append('circle')
-        //.attr("r", radius - .75)
         .call(d3.drag()
             .on("start", dragstarted)
            .on("drag", dragged)
@@ -205,12 +214,12 @@ export function drawGraph(dataArr: Object) {
                 .style("opacity", .8);
             console.log(d)
             if(d.label == 'Phenotype'){
-                toolDiv.html(d.properties.description + "<br/>")
+                toolDiv.html(JSON.parse(d.properties.properties).description + "<br/>")
                 .style("left", (d3.event.pageX) + "px")
                 .style("top", (d3.event.pageY - 28) + "px");
 
             }else{
-                toolDiv.html(d.title + "<br/>")
+                toolDiv.html(d.name + "<br/>")
                 .style("left", (d3.event.pageX) + "px")
                 .style("top", (d3.event.pageY - 28) + "px");
             }
@@ -230,7 +239,6 @@ export function drawGraph(dataArr: Object) {
         node.classed('selected', false);
         return SelectedOb != null ? d.title == SelectedOb.name : null;
     });
-
 
     selectedNode != null ? selectedNode.classed('selected', true) : console.log('no node');
 

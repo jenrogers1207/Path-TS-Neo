@@ -18,125 +18,113 @@ let toolDiv = d3.select('body').append("div")
 let queryPanel = d3.select('#wrapper').append('div').attr('id', 'query-panel');
 
 dataLoad.loadFile().then(async (d)=> {
-  //  console.log('init data file', d);
 
     let geneOb = new qo.QueryObject(d[0].key);
     geneOb.type = "Gene";
 
-
     let fileVariants = await variantObjectMaker(d[0].values);
     let graph = await neoAPI.getGraph();//.then(g => {
 
-    if(graph != undefined){
-
+    if(graph != undefined && graph != null){
+      
+        let relationships = graph[0].links.map(rel=> { 
+            return{'source': rel.source.name, 'target':rel.target.name} })
+    
+        let geneNode = await isStored(graph[0], 'GJB2', 'Gene', geneOb)//.then(async (nodeO)=> {
         let graphVariants = graph[0].nodes.filter(d=> d.label == 'Variant');
 
-        if(graphVariants.length > 0){
+        let variants = await updateVariants(fileVariants, graphVariants)
+        let variantOb = await Promise.resolve(variants);
 
-            console.log('graph variants', graphVariants);
-            let variants = updateVariants(fileVariants, graphVariants);
-        }
-        
-        let geneNode = await isStored(graph[0], 'GJB2', 'Gene', geneOb)//.then(async (nodeO)=> {
-        
-        graphVariants.forEach(v=>{
-                neoAPI.addRelation(v.name, v.type, geneOb.name, geneOb.type, 'Mutation');
-            });
-        
-        gCanvas.drawGraph(graph);
-
+        variantOb.forEach(v=>{
+                if(relationships.includes({'source': v.name, 'target': geneOb.name})){
+                    console.log("already there");
+                }else{
+                 //   neoAPI.addRelation(v.name, v.type, geneOb.name, geneOb.type, 'Mutation');
+                }
+        });
+    
         let graphPhenotypes = graph[0].nodes.filter(d=> d.label == 'Phenotype');
-        let phenotypes = graphPhenotypes.length > 0? graphPhenotypes :await qo.structPheno(geneNode.properties.Phenotypes, geneNode.name);
-
-        console.log('pheno?', phenotypes);
-        console.log('graphvar?', graphVariants);
-
-        neoAPI.structureRelation(phenotypes, graphVariants, "Pheno");
+        let phenotypes = graphPhenotypes.length > 0? graphPhenotypes : await qo.structPheno(geneNode.properties.Phenotypes, geneNode.name);
         
-        gCanvas.renderCalls(geneOb);
-        gCanvas.renderGeneDetail(geneOb);
+        let uniqueNameArray = []
+        let uniquePheno = []
+        phenotypes.forEach(pheno => {
+            if(uniqueNameArray.indexOf(pheno.name) == -1){
+                uniqueNameArray.push(pheno.name);
+                uniquePheno.push(pheno);
+            }
+        });
+ 
+        geneNode.properties.Variants = variantOb;
+        geneNode.properties.Phenotypes = uniquePheno;
+
+     //   neoAPI.structureRelation(uniquePheno, variantOb, "Pheno");
+
+        let interactP = await search.searchStringInteractors(geneNode.name);
+        geneNode.properties.Ids.stringID = interactP[0].stringId_A;
+        geneNode.properties.InteractionPartners = interactP;
+
+        let interactionNodes = interactP.map(m => {
+            let ob = {'name' : m.preferredName_B, 'type': 'Interaction', 'properties': { 'Ids': {}, 'Metrics': {} } };
+            ob.properties.Ids.stringID = m.stringId_B;
+            ob.properties.Source = m.preferredName_A;
+            ob.properties.Metrics = d3.entries(m).filter(f=> f.key.includes('score'))
+            return ob;
+        });
+
+       neoAPI.addNodeArray(interactionNodes);
+
+        interactionNodes.forEach(rel => {
+          //  neoAPI.addRelation(rel.name, 'Interaction', rel.properties.Source, 'Gene', 'Interacts');
+        });
+
+        gCanvas.drawGraph(graph);
+        gCanvas.renderCalls(geneNode);
+        gCanvas.renderGeneDetail(geneNode);
   
         }else{
-            console.groupCollapsed('graph did not load');
-            initialSearch(geneOb).then(async n=> {
-               
-                let varAlleles = await variantObjectMaker(n.properties.Variants);
-              
-                let variants = await updateVariants(fileVariants, varAlleles);
-                console.log('var alleles from graph not loading', variants);
        
-                //let structuredVars = await qo.structVariants(variants);
-         
+            initialSearch(geneOb).then(async n=> {
+              
+                let varAlleles = await variantObjectMaker(n.properties.Variants);
+                let variants = await updateVariants(fileVariants, varAlleles);
                 n.properties.Variants = variants;
-            
+
+                let structuredPheno = await qo.structPheno(n.properties.Phenotypes, n.name);
+                n.properties.Phenotypes.nodes = structuredPheno;
+
+                let interactP = await search.searchStringInteractors(n.name);
+                n.properties.Ids.stringID = interactP[0].stringId_A;
+               
+                let interactionNodes = interactP.map(m => {
+                    let ob = {'name' : m.preferredName_B, 'type': 'Interaction', 'properties': { 'Ids': {}, 'Metrics': {} } };
+                    ob.properties.Ids.stringID = m.stringId_B;
+                    ob.properties.Source = m.preferredName_A;
+                    ob.properties.Metrics = d3.entries(m).filter(f=> f.key.includes('score'))
+                    return ob;
+                });
+
+                n.properties.InteractionPartners = interactionNodes;
+
+                console.log('n- reworked', n)
+
                 neoAPI.addNode(n, n.type);
 
                 neoAPI.addNodeArray(variants).then(async ()=> {
                     variants.forEach(v=>{
                         neoAPI.addRelation(v.name, v.type, n.name, n.type, 'Mutation');
-                    });
-                
-                let structuredPheno = await qo.structPheno(n.properties.Phenotypes, n.name);
-                n.properties.Phenotypes.nodes = structuredPheno;
-                console.log(structuredPheno);
-
-                neoAPI.addNodeArray(structuredPheno);
-                  
-                let varNames = variants.map(v=> {
-                    let des = typeof v.properties == 'string'? JSON.parse(v.properties) : v.properties;
-                    console.log(des.description)
-                    return des.description.toString()
                 });
-             
-                let relatedPhenotypes = n.properties.Phenotypes.nodes.map(p=>{
-                        let pindex = varNames.indexOf(p.properties.description.toString().toUpperCase())
-                        if(pindex > -1 ){
-                            p.varIds = n.properties.Variants[pindex].name;
-                        }else{
-                            p.varIds = null;
-                        }
-                        return p;
-                    }).filter(p=> p.varIds != null);
-
-                    relatedPhenotypes.forEach(rel => {
-                        neoAPI.addRelation(rel.name, 'Phenotype', rel.varIds, 'Variant', 'Pheno');
-                });
-
-/*
-Ids: {dpSnp: "rs80338940"}
-Location: {}
-Name: {}
-Phenotypes: {}
-Structure: {}
-Text: {}
-associatedGene: "GJB2"
-description: "rs80338940"
-gene: "GJB2"
-id: "rs80338940"
-__proto__: Object
-type: "Variant"*/
-
-
-/*
-                qo.structVariants(n).then(async (vars)=> {
-                    n.properties.Variants = vars;
-                    neoAPI.addNode(n, n.type);
-                    neoAPI.addNodeArray(n.properties.Variants).then(async ()=> {
-                        n.properties.Variants.forEach(v=>{
-                            neoAPI.addRelation(v.name, v.type, n.value, n.type, 'Mutation');
-                        });
-
-                    n.properties.Phenotypes.nodes = await qo.structPheno(n);
-
-                    neoAPI.addNodeArray(n.properties.Phenotypes.nodes);
-                      
-                    let varNames = n.properties.Variants.map(v=> {
+               
+                neoAPI.addNodeArray(structuredPheno).then(async ()=> {
+                    let varNames = variants.map(v=> {
                         let des = typeof v.properties == 'string'? JSON.parse(v.properties) : v.properties;
                         return des.description.toString()
                     });
                  
                     let relatedPhenotypes = n.properties.Phenotypes.nodes.map(p=>{
-                            let pindex = varNames.indexOf(p.properties.description.toString().toUpperCase())
+                            let descript = p.properties == 'string'? JSON.parse(p.properties).description : p.properties.description;
+                            let pindex = varNames.indexOf(descript.toString().toUpperCase())
                             if(pindex > -1 ){
                                 p.varIds = n.properties.Variants[pindex].name;
                             }else{
@@ -144,36 +132,43 @@ type: "Variant"*/
                             }
                             return p;
                         }).filter(p=> p.varIds != null);
-
                         relatedPhenotypes.forEach(rel => {
                             neoAPI.addRelation(rel.name, 'Phenotype', rel.varIds, 'Variant', 'Pheno');
                     });
+                });
 
-                });*/
-
-            });
-    
-    })
+                neoAPI.addNodeArray(interactionNodes).then(async()=> {
+                    interactionNodes.forEach(rel => {
+                        neoAPI.addRelation(rel.name, 'Interaction', rel.properties.Source, 'Gene', 'Interacts');
+                    });
+                });
+            });   
+        });
 
     }
+});
 
 async function variantObjectMaker(varArray: Array<object>){
-   
-    return varArray.map(v=> {
-        let name = v.id? v.id : v.dbSnps;
-        let variant = new qo.VariantObject(name);
-        variant.type = "Variant";
-        let keys = v.properties? Object.keys(v.properties) : Object.keys(v);
-     
-        keys.map(key=> {
-            variant.properties[key.toString()] = v[key];
-            variant.properties.associatedGene = d[0].key;
-            variant.properties.description = variant.name;
-            variant.properties.Ids.dbSnp = name;
-        });
-        return variant
-    });
-}
+  
+    let varObs = typeof varArray == 'string'? JSON.parse(varArray): varArray;
+    
+      return varObs.map(v=> {
+       
+          let name = v.id? v.id : v.dbSnps;
+          let variant = new qo.VariantObject(name);
+          variant.type = "Variant";
+          
+          let keys = v.properties? Object.keys(v.properties) : Object.keys(v);
+
+          keys.map(key=> {
+              variant.properties[key.toString()] = v[key];
+          });
+          variant.properties.associatedGene = v.gene? v.gene : null;
+          variant.properties.description = variant.name;
+          variant.properties.Ids.dbSnp = name;
+          return variant
+      });
+  }
 
 async function initialSearch(queryOb: object){
    
@@ -188,23 +183,35 @@ async function initialSearch(queryOb: object){
 async function isStored(graph: object, nameSearch:string, nodeType:string, data:object){
     let foundGraphNodes = graph.nodes.filter(n=> n.properties.symbol == nameSearch);
     let nodeOb = foundGraphNodes.length > 0 ? foundGraphNodes[0] : initialSearch(data);
- 
-    return nodeOb
+    
+    return await qo.structGene(nodeOb);
 }
 
-async function updateVariants(fileVarArr:Array<Object>, graphVarArr: Array<Object>){
-
+async function updateVariants(fileVarArr:Array<Object>, graphVarArr: Array<any>){
+   
     let graphVars = typeof graphVarArr == 'string'? JSON.parse(graphVarArr) : graphVarArr;
     let variantNames = graphVars.map(v=> v.name);
-    let newVars = fileVariants.filter(v=> variantNames.indexOf(v.name) == -1);
-    return await addIn(newVars, graphVars);
-        
+    let newVars = fileVarArr.filter(v=> variantNames.indexOf(v.name) == -1);
+
+    return addIn(newVars, await findCopies(graphVars));
+
+    async function findCopies(nodeArray){
+        let uniqueNameArray = []
+        let uniqueVar = []
+
+        await nodeArray.forEach(v => {
+            if(uniqueNameArray.indexOf(v.name) == -1){
+                uniqueNameArray.push(v.name);
+                uniqueVar.push(v);
+            }
+        });
+        return uniqueVar;
+    }
         
     async function addIn(newArray:Array<Object>, oldArray:Array<Object>){
         if(newArray.length > 0){ newArray.forEach(v=> oldArray.push(v)) }
-        return await qo.structVariants(oldArray);
+  
+        return qo.structVariants(oldArray);
     }
 
 }
-
-});

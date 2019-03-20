@@ -32,17 +32,19 @@ export async function searchBySymbol(query:object) {
 
 export async function loadSNP(value: string){
     
-    if(value.includes(',')){ console.log(value.split(','))}
     let query = value.includes(',') ? value.split(',')[0] : value;
     let digits = query.replace(/\D/g,'');
     let proxy = 'https://cors-anywhere.herokuapp.com/';
     //let url = 'https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esummary.fcgi?db=clinvar&id='+digits+'&retmode=json&apiKey=mUYjhLsCRVOuShEhrHLG_w'
    // 'https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esummary.fcgi?db=clinvar&id=328931&retmode=json&apiKey=mUYjhLsCRVOuShEhrHLG_w'
     let url = 'https://api.ncbi.nlm.nih.gov/variation/v0/beta/refsnp/' + digits;
-    let req = await ky.get(proxy + url).json();
+
+    let req = await ky.get(url).json();
+
+    //Maybe add a try catch here
     //neoAPI.setNodeProperty('Variant', value, 'snpProps', JSON.stringify(req.primary_snapshot_data))
-    
-    return await Promise.resolve(req.primary_snapshot_data);
+
+    return req.primary_snapshot_data;
 }
 
 export async function searchOMIM(queryOb:any){
@@ -96,10 +98,8 @@ export async function searchOMIM(queryOb:any){
 }
 export async function geneIdtoMim(query:any){
  
-   // console.log(query.properties.ids.entrezgene);
- 
     let value = query.properties.Ids.entrezgene;
-    console.log(value);
+
     const proxy = 'https://cors-anywhere.herokuapp.com/';
     let url = 'http://mygene.info/v2/gene/'+value+'?fields=MIM';
           
@@ -110,8 +110,17 @@ export async function geneIdtoMim(query:any){
     
     return query;
     //return props;
-
 }
+
+export async function searchStringInteractors(value:string){
+
+    const proxy = 'https://cors-anywhere.herokuapp.com/';
+    let url = 'https://string-db.org/api/json/interaction_partners?identifiers='+ value +'&limit=20';
+    let req =  await ky.get(proxy+url).json();
+
+    return req;
+}
+
 export async function getKegg(value: string, queryOb:object){
   
    // let ncbi = queryOb.properties.ncbi;
@@ -145,7 +154,7 @@ export async function getKegg(value: string, queryOb:object){
             return {key: keyz, values: val}
         });
 
-      //  console.log(Object.entries(newData))
+
 
         return newData.filter(n=> n.key != "///" && n.key != "");
     }
@@ -200,8 +209,6 @@ export async function linkData(ob1, ob2){
 
 //Formater for CONVERT. Passed as param to query
 export async function getPathways(queryOb) {
-    //console.log(queryOb);
-   // console.log(queryOb.properties.titles.preferredTitle.contains('PRROTEIN'))
 
     let value = queryOb.properties.ids.ncbi;
 
