@@ -9,8 +9,6 @@ import ky from 'ky';
 import { SrvRecord } from 'dns';
 
 
-const queryKeeper = new qo.QueryKeeper();
-
 export async function searchBySymbol(query:object) {
 
     const proxy = 'https://cors-anywhere.herokuapp.com/';
@@ -185,7 +183,7 @@ export async function getKegg(value: string, queryOb:object){
             return {key: keyz, values: val}
         });
 
-
+        console.log('brite?', newData.filter(n=> n.key != "///" && n.key != ""));
 
         return newData.filter(n=> n.key != "///" && n.key != "");
     }

@@ -282,3 +282,12 @@ div.tooltip {
     height: 25px;
     padding-top: 10px;
 }
+
+.gene.selected .gene-header {
+    background-color: orange;
+    height: 30px;
+    width: 100%;
+    padding: 5px;
+    // border-radius: 5px;
+    border: .5px solid #808080;
+}

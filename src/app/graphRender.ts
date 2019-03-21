@@ -1,7 +1,7 @@
 import "./styles.scss";
 import * as d3 from 'D3';
 import * as search from './search';
-import { SelectedTest, SelectedOb, drawSelectedPanel } from './queryObject';
+import * as qo from './queryObject';
 
 export function removeThings(){
     d3.select('#linked-pathways').selectAll('*').remove();
@@ -11,6 +11,9 @@ export function removeThings(){
 }
 
 export async function renderCalls(data: Object){
+
+
+    let selectedNames = qo.selected.queryKeeper.map(k=> k.name);
 
     let sidebar = d3.select('#left-nav');
     let callTable = sidebar.select('.call-table');
@@ -26,6 +29,9 @@ export async function renderCalls(data: Object){
         let geneHeader = geneEnterDiv.append('div').classed('gene-header', true)
         geneHeader.append('text').text(d=> d.name);
         geneDiv = geneEnterDiv.merge(geneDiv);
+
+  
+        geneDiv.filter(d=> selectedNames.includes(d.name)).classed('selected', true);
 
         let variantBox = geneDiv.append('div').classed('variant-wrapper', true);
     
@@ -65,14 +71,12 @@ export async function renderCalls(data: Object){
         variants.on('mouseover', function(d){
            
         });
-      
 }
 
 export async function renderGeneDetail(data: Object){
  
     let headers = d3.keys(data.properties).filter(d=> d != 'References' && d !='Variants'  && d != 'name');
-    console.log('data?', data);
-    
+
     let sidebar = d3.select('#left-nav');
     let geneDet = sidebar.select('.gene-detail');
     let geneHeader = geneDet.append('div').attr('class', 'detail-head').append('h4').text(data.name);
@@ -94,7 +98,9 @@ export async function renderGeneDetail(data: Object){
         return phenoD;
     });
     let phenoEnter = phenotype.enter().append('div').classed('pheno-wrap', true);
-    let phenoSec = phenoEnter.append('text').text(d=> d.properties.description);
+    let phenoSec = phenoEnter.append('text').text(d=> {
+        let descript = typeof d.properties == 'string'? JSON.parse(d.properties) : d.properties;
+        return descript.description});
 
     let titles = propEnter.filter(d=> d == "Titles").selectAll('.title').data(d=> {return d3.entries(data.properties[d])});
     let titleEnter = titles.enter().append('div').classed('title sections', true);
@@ -127,15 +133,21 @@ export async function renderGeneDetail(data: Object){
     let orthoEnter = orthology.enter().append('div').classed('orthology', true);
     orthoEnter.append('text').text(d=> d.key+ ': ' + d.value);
 
-    let brite = propEnter.filter(d=> d == "Brite").selectAll('.brite').data(d=> {return d3.entries(data.properties[d])});
+    let brite = propEnter.filter(d=> d == "Brite").selectAll('.brite').data(d=> {return data.properties[d]});
     let briteEnter = brite.enter().append('div').classed('brite', true);
-    briteEnter.append('text').text(d=> d.key+ ': ' + d.value);
+    briteEnter.append('text').text(d=> d.id+ ': ' + d.tag );
+
+    let interactors = propEnter.filter(d=> d == "InteractionPartners").selectAll('.interact').data(d=> {return data.properties[d]});
+    let intEnter = interactors.enter().append('div').classed('interact', true);
+    intEnter.append('text').text(d=> d.preferredName_B);
 
     propertyDivs = propEnter.merge(propertyDivs);
 
 }
 
-export function drawGraph(dataArr: Object) {
+export function drawGraph(dataArr: Object, gnode:object) {
+
+    let selectedNames = qo.selected.queryKeeper.map(k=> k.name);
  
     let data = dataArr[0];
     let canvas = d3.select('#graph-render').select('.graph-canvas'),
@@ -185,6 +197,8 @@ export function drawGraph(dataArr: Object) {
 
     let geneNode = nodeEnter.filter(d => d.label == 'Gene');
 
+    nodeEnter.filter(d=> selectedNames.includes(d.name)).classed('selected', true);
+
     geneNode.classed("fixed", d=> d.fixed = true);
 
     function dragstart(d) {
@@ -205,15 +219,24 @@ export function drawGraph(dataArr: Object) {
     node = nodeEnter.merge(node);
 
     node.on('click', (d) => {
-        SelectedOb = d.properties;
-        drawGraph(data);
+       
+        let mapped = qo.selected.queryKeeper.map(m=> m.name);
+        if(mapped.includes(d.properties.name)){
+            console.log('ALLREADY IN THE KEEPER');
+            qo.selected.removeQueryOb(d.properties.name);
+        }else{
+            qo.selected.addQueryOb(d.properties);
+        }
+
+      //  drawGraph(dataArr, gnode);
+      //  renderCalls(gnode);
+        
     });
 
     node.on("mouseover", function(d) {
             toolDiv.transition()
                 .duration(200)
                 .style("opacity", .8);
-            console.log(d)
             if(d.label == 'Phenotype'){
                 toolDiv.html(JSON.parse(d.properties.properties).description + "<br/>")
                 .style("left", (d3.event.pageX) + "px")

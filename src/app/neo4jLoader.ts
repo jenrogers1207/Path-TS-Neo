@@ -202,7 +202,7 @@ export async function getGraph() {
     RETURN DISTINCT collect(distinct v) AS variant, collect(distinct p) AS phenotype, collect(distinct n) as inters,\
     g AS gene, collect(distinct r) AS phenoRel, collect(distinct m) AS mutationRel, collect(distinct i) as interRel'
 
-    console.log('loading graph?');
+  //  console.log('loading graph?');
 
     var session = driver.session();
 
@@ -212,7 +212,7 @@ export async function getGraph() {
         
             return result.records.map(r=> {
 
-                console.log('results updated', r);
+              //  console.log('results updated', r);
             
                 let gene = new Array(r.get('gene')).map(g=> {
                
@@ -224,7 +224,7 @@ export async function getGraph() {
                     return  gen;
                 });
 
-                console.log('gene', gene);
+             //   console.log('gene', gene);
                 let vars = r.get('variant').map(v=> {
                     let vari = new Object();
                     vari.index = v.identity.low;
@@ -234,7 +234,7 @@ export async function getGraph() {
                     return vari;
                 });
 
-                console.log('vars', vars);
+              //  console.log('vars', vars);
 
                 let pheno = r.get('phenotype').map(p=> {
                     let ph = new Object();
@@ -244,7 +244,7 @@ export async function getGraph() {
                     ph.label = p.labels[0];
                     return ph;
                 });
-                console.log('pheno', pheno);
+               // console.log('pheno', pheno);
 
                 let interactNodes = r.get('inters').map(p=>{
                     let ph = new Object();
