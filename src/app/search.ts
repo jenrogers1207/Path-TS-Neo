@@ -37,7 +37,8 @@ export async function searchUniprot(value:string){
    // 'https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esummary.fcgi?db=clinvar&id=328931&retmode=json&apiKey=mUYjhLsCRVOuShEhrHLG_w'
     let url = 'https://www.uniprot.org/uniprot/'+value+'.xml';
 
-    let req = await ky.get(url);
+   // let req = await ky.get(url);
+   let req =  await got(proxy+url);
 
     console.log(req);
     console.log(req);
@@ -132,6 +133,22 @@ export async function searchStringInteractors(value:string){
     let url = 'https://string-db.org/api/json/interaction_partners?identifiers='+ value +'&limit=20';
     let req =  await ky.get(proxy+url).json();
 
+    return req;
+}
+
+export async function searchStringEnrichment(value:string){
+
+    const proxy = 'https://cors-anywhere.herokuapp.com/';
+    let url = 'https://string-db.org/api/json/enrichment?identifiers='+value;
+
+    let url2 = 'http://string-db.org/api/json/network?identifier=gjb2&limit=10&network_flavor=evidence%20Additional%20information%20about%20the%20API'
+
+    let req =  await ky.get(proxy+url).json();
+    console.log(req);
+
+    let req2 = await ky.get(proxy+url2).json();
+
+    console.log('req2', req2);
     return req;
 }
 

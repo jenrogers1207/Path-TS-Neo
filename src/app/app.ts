@@ -60,11 +60,13 @@ dataLoad.loadFile().then(async (d)=> {
         geneNode.properties.Variants = variantOb;
         geneNode.properties.Phenotypes = uniquePheno;
 
-        let uniprot = search.searchUniprot(geneNode.properties.Ids.UniProt);
+       // let uniprot = search.searchUniprot(geneNode.properties.Ids.UniProt);
 
        // neoAPI.structureRelation(uniquePheno, variantOb, "Pheno");
 
         let interactP = await search.searchStringInteractors(geneNode.name);
+        let enrighmentP = await search.searchStringEnrichment(geneNode.name);
+        
         geneNode.properties.Ids.stringID = interactP[0].stringId_A;
         geneNode.properties.InteractionPartners = interactP;
 
