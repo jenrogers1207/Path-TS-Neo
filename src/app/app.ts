@@ -28,12 +28,9 @@ dataLoad.loadFile().then(async (d)=> {
     if(graph != undefined && graph != null){
        
        // neoAPI.getGraphRelations('Variant', 'Gene', 'Mutation');
-        let relationships = graph[0].links.map(rel=> { 
-            return{'source': rel.source.name, 'target':rel.target.name} })
     
         let geneNode = await isStored(graph[0], geneOb);
         
-       
         //adding to the selection now;
         qo.selected.addQueryOb(geneNode);
 
@@ -42,19 +39,14 @@ dataLoad.loadFile().then(async (d)=> {
         let variants = await updateVariants(fileVariants, graphVariants)
         let variantOb = await Promise.resolve(variants);
 
-        variantOb.forEach(v=>{
-                if(relationships.includes({'source': v.name, 'target': geneOb.name})){
-                    console.log("already there");
-                }else{
-                   // neoAPI.addRelation(v.name, v.type, geneOb.name, geneOb.type, 'Mutation');
-                }
-        });
+        geneNode.properties.Variants = variantOb;
     
         let graphPhenotypes = graph[0].nodes.filter(d=> d.label == 'Phenotype');
         let phenotypes = graphPhenotypes.length > 0? graphPhenotypes : await qo.structPheno(geneNode.properties.Phenotypes, geneNode.name);
         
         let uniqueNameArray = []
         let uniquePheno = []
+
         phenotypes.forEach(pheno => {
             if(uniqueNameArray.indexOf(pheno.name) == -1){
                 uniqueNameArray.push(pheno.name);
@@ -62,18 +54,13 @@ dataLoad.loadFile().then(async (d)=> {
             }
         });
  
-        geneNode.properties.Variants = variantOb;
         geneNode.properties.Phenotypes = uniquePheno;
-
-      //  let uniprot = search.searchUniprot(geneNode.properties.Ids.UniProt);
-
-      //  neoAPI.structureRelation(uniquePheno, variantOb, "Pheno");
 
         let interactP = await search.searchStringInteractors(geneNode.name);
         let enrighmentP = await search.searchStringEnrichment(geneNode.name);
       // console.log('geneNode', geneNode);
        if(geneNode.properties.Brite.kegg){
-
+    
         geneNode.properties.Brite = geneNode.properties.Brite.kegg.map(b=>{
             if(b[0].match(/\d/)){
                 let tag = b.slice(1, (b.length))
@@ -84,25 +71,12 @@ dataLoad.loadFile().then(async (d)=> {
             }
         })
         console.log(geneNode.properties.Brite);
-
        }
         
         geneNode.properties.Ids.stringID = interactP[0].stringId_A;
         geneNode.properties.InteractionPartners = interactP;
-
-        let interactionNodes = interactP.map(m => {
-            let ob = {'name' : m.preferredName_B, 'type': 'Interaction', 'properties': { 'Ids': {}, 'Metrics': {} } };
-            ob.properties.Ids.stringID = m.stringId_B;
-            ob.properties.Source = m.preferredName_A;
-            ob.properties.Metrics = d3.entries(m).filter(f=> f.key.includes('score'))
-            return ob;
-        });
-
-       neoAPI.addNodeArray(interactionNodes);
-
-        interactionNodes.forEach(rel => {
-         //   neoAPI.addRelation(rel.name, 'Interaction', rel.properties.Source, 'Gene', 'Interacts');
-        });
+    
+        buildSubGraph(geneNode, graph);
 
         gCanvas.drawGraph(graph, geneNode);
         gCanvas.renderCalls(geneNode);
@@ -208,6 +182,41 @@ async function variantObjectMaker(varArray: Array<object>){
           return variant
       });
   }
+
+export async function buildSubGraph(geneNode: object, graph){
+    
+    let relationships = graph[0].links.map(rel=> { 
+        return{'source': rel.source.name, 'target':rel.target.name} })
+    //VARIANTS
+    let varObs = geneNode.properties.Variants;
+    neoAPI.addNodeArray(varObs).then(()=> {
+        varObs.forEach(v=>{
+            if(relationships.includes({'source': v.name, 'target': geneNode.name})){
+                console.log("already there");
+            }else{
+                neoAPI.addRelation(v.name, v.type, geneNode.name, geneNode.type, 'Mutation');
+            }
+        });
+    })
+    
+    //PHENOTYPES
+    neoAPI.structureRelation(geneNode.properties.Phenotypes,geneNode.properties.Variants, "Pheno");
+
+    let interactionNodes = interactP.map(m => {
+        let ob = {'name' : m.preferredName_B, 'type': 'Interaction', 'properties': { 'Ids': {}, 'Metrics': {} } };
+        ob.properties.Ids.stringID = m.stringId_B;
+        ob.properties.Source = m.preferredName_A;
+        ob.properties.Metrics = d3.entries(m).filter(f=> f.key.includes('score'))
+        return ob;
+    });
+
+   neoAPI.addNodeArray(interactionNodes);
+
+    interactionNodes.forEach(rel => {
+        neoAPI.addRelation(rel.name, 'Interaction', rel.properties.Source, 'Gene', 'Interacts');
+    });
+
+}
 
 
 export async function isStored(graph: object, data:object){

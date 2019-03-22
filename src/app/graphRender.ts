@@ -174,6 +174,7 @@ export async function renderGeneDetail(data: Object){
         let g = await neoAPI.getGraph();
         let newNode = await search.addGene(d);
         let geneNode = await app.isStored(g[0], newNode);
+        
     });
 
     propertyDivs = propEnter.merge(propertyDivs);
