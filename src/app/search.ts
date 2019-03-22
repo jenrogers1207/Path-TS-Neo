@@ -9,8 +9,6 @@ import ky from 'ky';
 import { SrvRecord } from 'dns';
 
 
-const queryKeeper = new qo.QueryKeeper();
-
 export async function searchBySymbol(query:object) {
 
     const proxy = 'https://cors-anywhere.herokuapp.com/';
@@ -28,6 +26,21 @@ export async function searchBySymbol(query:object) {
     return query;
   // return props;
     
+}
+
+export async function searchUniprot(value:string){
+    //P29033
+    let proxy = 'https://cors-anywhere.herokuapp.com/';
+    //let url = 'https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esummary.fcgi?db=clinvar&id='+digits+'&retmode=json&apiKey=mUYjhLsCRVOuShEhrHLG_w'
+   // 'https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esummary.fcgi?db=clinvar&id=328931&retmode=json&apiKey=mUYjhLsCRVOuShEhrHLG_w'
+    let url = 'https://www.uniprot.org/uniprot/'+value+'.xml';
+
+   // let req = await ky.get(url);
+   let req =  await got(proxy+url);
+
+    console.log(req);
+    console.log(req);
+
 }
 
 export async function loadSNP(value: string){
@@ -121,6 +134,22 @@ export async function searchStringInteractors(value:string){
     return req;
 }
 
+export async function searchStringEnrichment(value:string){
+
+    const proxy = 'https://cors-anywhere.herokuapp.com/';
+    let url = 'https://string-db.org/api/json/enrichment?identifiers='+value;
+
+    let url2 = 'http://string-db.org/api/json/network?identifier=gjb2&limit=10&network_flavor=evidence%20Additional%20information%20about%20the%20API'
+
+    let req =  await ky.get(proxy+url).json();
+    console.log(req);
+
+    let req2 = await ky.get(proxy+url2).json();
+
+    console.log('req2', req2);
+    return req;
+}
+
 export async function getKegg(value: string, queryOb:object){
   
    // let ncbi = queryOb.properties.ncbi;
@@ -154,7 +183,7 @@ export async function getKegg(value: string, queryOb:object){
             return {key: keyz, values: val}
         });
 
-
+        console.log('brite?', newData.filter(n=> n.key != "///" && n.key != ""));
 
         return newData.filter(n=> n.key != "///" && n.key != "");
     }

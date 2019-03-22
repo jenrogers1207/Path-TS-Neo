@@ -2,6 +2,8 @@ import * as d3 from 'D3';
 import { promises } from 'fs';
 var search = require('./search');
 
+
+
 export class SelectedOb {
 
 }
@@ -83,42 +85,26 @@ export class PhenotypeObject {
     }
 }
 
-
-export class QueryKeeper{
+export class QuerySelected{
     queryKeeper: Array<QueryObject>;
 
     constructor() {
-    this.queryKeeper = [];
+        this.queryKeeper = [];
     }
 
     addQueryOb(queryOb: QueryObject){
         this.queryKeeper.push(queryOb);
+        console.log(this.queryKeeper);          
+    }
+
+    removeQueryOb(queryName: string){
+        this.queryKeeper = this.queryKeeper.filter(q=> q.name != queryName);    
+        console.log(this.queryKeeper);
     }
 }
 
-/*Brite: "{"kegg":[["KEGG","Orthology","(KO)","[BR:hsa00001]"],["09180","Brite","Hierarchies"],["09183","Protein","families:","signaling","and","cellular","processes"],["02000","Transporters","[BR:hsa02000]"],["2706","(GJB2)"],["Transporters","[BR:hsa02000]"],["Other","Transporters"],["Pores","ion","channels","[TC:1]"],["2706","(GJB2)"]]}"
-Description: "gap junction protein beta 2"
-Location: "{"chromosome":13,"chromosomeStart":20187462,"chromosomeEnd":20192974,"chromosomeSort":15,"computedCytoLocation":"13q12.11","cytoLocation":"13q11-q12"}"
-Models: "{"mouse":{"MgiID":"MGI:95720","symbol":"Gjb2"}}"
-NCBI-GeneID: "2706"
-NCBI-ProteinID: "NP_003995"
-Orthology: "{"keggID":"K07621"}"
-Phenotypes: "{"nodes":[{"phenotypeMap":{"mimNumber":121011,"phenotype":"Bart-Pumphrey syndrome","phenotypeMimNumber":149200,"phenotypeMappingKey":3,"phenotypeInheritance":"Autosomal dominant"}},{"phenotypeMap":{"mimNumber":121011,"phenotype":"Deafness, autosomal dominant 3A","phenotypeMimNumber":601544,"phenotypicSeriesNumber":"PS124900","phenotypeMappingKey":3,"phenotypeInheritance":"Autosomal dominant"}},{"phenotypeMap":{"mimNumber":121011,"phenotype":"Deafness, autosomal recessive 1A","phenotypeMimNumber":220290,"phenotypicSeriesNumber":"PS220290","phenotypeMappingKey":3,"phenotypeInheritance":"Autosomal recessive"}},{"phenotypeMap":{"mimNumber":121011,"phenotype":"Hystrix-like ichthyosis with deafness","phenotypeMimNumber":602540,"phenotypeMappingKey":3,"phenotypeInheritance":"Autosomal dominant"}},{"phenotypeMap":{"mimNumber":121011,"phenotype":"Keratitis-ichthyosis-deafness syndrome","phenotypeMimNumber":148210,"phenotypeMappingKey":3,"phenotypeInheritance":"Autosomal dominant"}},{"phenotypeMap":{"mimNumber":121011,"phenotype":"Keratoderma, palmoplantar, with deafness","phenotypeMimNumber":148350,"phenotypeMappingKey":3,"phenotypeInheritance":"Autosomal dominant"}},{"phenotypeMap":{"mimNumber":121011,"phenotype":"Vohwinkel syndrome","phenotypeMimNumber":124500,"phenotypeMappingKey":3,"phenotypeInheritance":"Autosomal dominant"}}],"keggIDs":[{"keggId":"H00604","stringId":["Deafness,","autosomal","dominant"]},{"keggId":"H00605","stringId":["Deafness,","autosomal","recessive"]},{"keggId":"H00706","stringId":["Bart-Pumphrey","syndrome"]},{"keggId":"H00712","stringId":["KID/HID","syndrome"]},{"keggId":"H00714","stringId":["Vohwinkel","syndrome"]},{"keggId":"H00716","stringId":["Palmoplantar","keratoderma","with","deafness"]}]}"
-References: "[{"mimNumber":121011,"referenceNumber":1,"authors""
-Structure: "{"AASEQ":[["226"],["MDWGTLQTILGGVNKHSTSIGKIWLTVLFIFRIMILVVAAKEVWGDEQADFVCNTLQPGC"],["KNVCYDHYFPISHIRLWALQLIFVSTPALLVAMHVAYRRHEKKRKFIKGEIKSEFKDIEE"],["IKTQKVRIEGSLWWTYTSSIFFRVIFEAAFMYVFYVMYDGFSMQRLVKCNAWPCPNTVDC"],["FVSRPTEKTVFTVFMIAVSGICILLNVTELCYLLIRYCSGKSKKPV"]],"NTSEQ":[["681"],["atggattggggcacgctgcagacgatcctggggggtgtgaacaaacactccaccagcatt"],["ggaaagatctggctcaccgtcctcttcatttttcgcattatgatcctcgttgtggctgca"],["aaggaggtgtggggagatgagcaggccgactttgtctgcaacaccctgcagccaggctgc"],["aagaacgtgtgctacgatcactacttccccatctcccacatccggctatgggccctgcag"],["ctgatcttcgtgtccacgccagcgctcctagtggccatgcacgtggcctaccggagacat"],["gagaagaagaggaagttcatcaagggggagataaagagtgaatttaaggacatcgaggag"],["atcaaaacccagaaggtccgcatcgaaggctccctgtggtggacctacacaagcagcatc"],["ttcttccgggtcatcttcgaagccgccttcatgtacgtcttctatgtcatgtacgacggc"],["ttctccatgcagcggctggtgaagtgcaacgcctggccttgtcccaacactgtggactgc"],["tttgtgtcccggcccacggagaagactgtcttcacagtgttcatgattgcagtgtctgga"],["atttgcatcctgctgaatgtcactgaattgtgttatttgctaattagatattgttctggg"],["aagtcaaaaaagccagtttaa"]],"ids":[["PDB:","5ER7","2ZW3","5ERA","3IZ1","3IZ2","5KJG","5KJ3"]],"MOTIF":[["Pfam:","Connexin"]]}"
-Symbols: "GJB2, CX26, DFNB1A, PPK, DFNA3A, KID, HID"
-Text: "[{"textSectionName":"description","textSectionTitl"
-Titles: "{"preferredTitle":"GAP JUNCTION PROTEIN, BETA-2; GJB2","alternativeTitles":"GAP JUNCTION PROTEIN, 26-KD;;\nCONNEXIN 26; CX26"}"
-Transcript: "ENST00000645189.1"
-UniProt: "P29033"
-Variants: (120) [VariantObject, VariantObject, VariantObject, VariantObject, VariantObject, VariantObject, VariantObject, VariantObject, VariantObject, VariantObject, VariantObject, VariantObject, VariantObject, VariantObject, VariantObject, VariantObject, VariantObject, VariantObject, VariantObject, VariantObject, VariantObject, VariantObject, VariantObject, VariantObject, VariantObject, VariantObject, VariantObject, VariantObject, VariantObject, VariantObject, VariantObject, VariantObject, VariantObject, VariantObject, VariantObject, VariantObject, VariantObject, VariantObject, VariantObject, VariantObject, VariantObject, VariantObject, VariantObject, VariantObject, VariantObject, VariantObject, VariantObject, VariantObject, VariantObject, VariantObject, VariantObject, VariantObject, VariantObject, VariantObject, VariantObject, VariantObject, VariantObject, VariantObject, VariantObject, VariantObject, VariantObject, VariantObject, VariantObject, VariantObject, VariantObject, VariantObject, VariantObject, VariantObject, VariantObject, VariantObject, VariantObject, VariantObject, VariantObject, VariantObject, VariantObject, VariantObject, VariantObject, VariantObject, VariantObject, VariantObject, VariantObject, VariantObject, VariantObject, VariantObject, VariantObject, VariantObject, VariantObject, VariantObject, VariantObject, VariantObject, VariantObject, VariantObject, VariantObject, VariantObject, VariantObject, VariantObject, VariantObject, VariantObject, VariantObject, VariantObject, …]
-Vega: "OTTHUMG00000016513"
-description: "gap junction protein beta 2"
+export let selected = new QuerySelected();
 
-mappingMethod: "REa, A, Fd"
-name: "GJB2"
-symbol: "GJB2"
-transcript: "ENST00000645189.1"*/
 
 export async function structGene(g: object){
 
@@ -155,27 +141,6 @@ export async function structGene(g: object){
 }
 
 export async function structVariants(varArray: object){
- /*
- Ids: {dbSnp: "rs886037625"}
-Location: {anchor: "NC_000013.11:0020189297:5:delins", placements_with_allele: Array(7)}
-Name: {}
-Phenotypes: [Array(1)]
-Structure: {}
-Text: {}
-Type: "delins"
-allelleAnnotations: (2) [{…}, {…}]
-associatedGene: "GJB2"
-clinvarAccessions: "RCV000018552"
-dbSnps: "rs886037625"
-description: "rs886037625"
-mimNumber: 121011
-mutations: "GJB2, 5-BP DUP, NT280"
-name: "DEAFNESS, AUTOSOMAL RECESSIVE 1A"
-number: 25
-status: "live"
-text: "In a study in Italy of 179 unrelated subjects with sporadic or familial hearing loss, {46:Gualandi et al. (2002)} identified a patient with sporadic nonsyndromic hearing loss ({220290}) in whom a 5-bp duplication (CACGT) of nucleotides 280 to 284 resulted in a frameshift at codon 96."
-
-*/
 
     let variants = typeof varArray === 'string' ? JSON.parse(varArray) : varArray;
    // if(!nodeOb.properties){ nodeOb.properties = nodeOb.data}
@@ -186,10 +151,6 @@ text: "In a study in Italy of 179 unrelated subjects with sporadic or familial h
        // console.log('props', props);
         let snpName = v.name? v.name : props.Ids.dbsnp;
         let variantOb = new VariantObject(snpName);
-
-       // let variantOb = v;
-        //determine if properties exist -  has this already been loaded?
-      //  variantOb.name = snpName;
         variantOb.properties.associatedGene = props.associatedGene;
         variantOb.properties.OMIM = props.mimNumber? props.mimNumber : v.mimNumber;
         variantOb.properties.mutations = props.mutations? props.mutations : v.mutations;
@@ -199,7 +160,6 @@ text: "In a study in Italy of 179 unrelated subjects with sporadic or familial h
         //let props = variantOb.properties.properties? variantOb.properties.properties : variantOb.properties;
        // let propOb = typeof props == "string"? JSON.parse(props):props;
       
-
         if(props.allelleAnnotations == undefined){
         
             let snp = await search.loadSNP(variantOb.name);
@@ -215,7 +175,6 @@ text: "In a study in Italy of 179 unrelated subjects with sporadic or familial h
             variantOb.properties.Location = props.Location;
             variantOb.properties.allelleAnnotations = props.allelleAnnotations;
             variantOb.properties.Phenotypes = props.Phenotypes;
-
         }
         //console.log(variantOb);
         return variantOb;

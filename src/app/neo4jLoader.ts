@@ -3,7 +3,7 @@ import * as d3 from 'D3';
 import { readdirSync } from "fs";
 
 var neo4j = require('neo4j-driver').v1;
-var driver = neo4j.driver("bolt://localhost:11001", neo4j.auth.basic("neo4j", "123"));
+var driver = neo4j.driver("bolt://localhost:7687", neo4j.auth.basic("neo4j", "123"));
 var _ = require('lodash');
 
 export async function addNode(promOb:object, type:string){
@@ -114,12 +114,8 @@ export async function structureRelation(node1: Array<object>, node2: Array<objec
                 let index = phenoNames.indexOf(fil.accession)
        
                 if(index > -1){ relationArr.push({'pheno': fil.accession, 'variant': p.name}) }
-<<<<<<< HEAD
-            })       
-=======
             })
   
->>>>>>> test
 });
 
     relationArr.forEach(rel => {
@@ -191,92 +187,13 @@ export function setNodeProperty(type: string, name:string, prop:string, propValu
             console.log(error);
         });
 
-<<<<<<< HEAD
-      
-}
-
-async function getGraphRelations(type1:string, type2:string, relation: string){
-    let command = 'MATCH (a)-[r:'+relation+']->(b) RETURN collect(a) AS '+type1+', collect(b) AS '+type2+', collect(r) AS rel';
-    
-    var session = driver.session();
-
-    return session
-        .run(command)
-        .then(function(result) {
-         
-            return result.records.map(r=> {
-            
-                let node1 = new Array(r.get(type1)).map(g=> {
-                    let gen = new Object();
-                    gen.index = g.identity.low;
-                    gen.name = g.properties.name;
-                    gen.properties = g.properties;
-                    gen.label = g.labels[0];
-                    return  gen;
-                });
-
-              
-                let node2 = r.get(type2).map(v=> {
-                    let vari = new Object();
-                    vari.index = v.identity.low;
-                    vari.name = v.properties.name;
-                    vari.properties = v.properties;
-                    vari.label = v.labels[0];
-                    return vari;
-                });
-
-                let relations = r.get('rel').map(m=> {
-                    let meh = new Object();
-                    meh.start = m.start.low;
-                    meh.end = m.end.low;
-                    meh.index = m.identity.low;
-                    meh.type = m.type;
-                    return meh;
-                });
-
-                let nodes = node1.concat(node2);
-
-                let indexArray = nodes.map(n=> n.index);
-                let rels = relations.map(r=> {
-                    var source = indexArray.indexOf(r.start);
-                    var target = indexArray.indexOf(r.end);
-                    return {'source': nodes[source].name, 'target': nodes[target].name}
-                })
-            console.log('nodesss',nodes);
-            session.close();
-            return {'n':nodes, 'r':rels };
-    })   
-    
-})
-        .catch(function(error) {
-            console.log(error);
-        });
-
-=======
->>>>>>> test
 }
 
 export async function getGraph() {
 
-   let command = 'OPTIONAL MATCH (v)-[m:Mutation]->(g) \
-    OPTIONAL MATCH (p)-[r:Pheno]->(v) \
-<<<<<<< HEAD
-    RETURN DISTINCT collect(v) AS variant, collect(p) AS phenotype, \
-    g AS gene, collect(r) AS phenoRel, collect(m) AS mutationRel'
-       
-  //  let command = 'MATCH (n) \
-  //  OPTIONAL MATCH (n)-[r]-()\
-  //  RETURN collect(n) AS nodes, collect(r) AS relation'
- 
- // let rel1 = await getGraphRelations('Variant', 'Gene', 'Mutation');
- // console.log('relation1!',rel1);
-=======
-    OPTIONAL MATCH (n)-[i:Interacts]->(g)\
+   let command = 'OPTIONAL MATCH (n)-[i:Interacts]->(g)\
     RETURN DISTINCT collect(distinct v) AS variant, collect(distinct p) AS phenotype, collect(distinct n) as inters,\
     g AS gene, collect(distinct r) AS phenoRel, collect(distinct m) AS mutationRel, collect(distinct i) as interRel'
-
-    console.log('loading graph?');
->>>>>>> test
 
     var session = driver.session();
 
@@ -286,7 +203,7 @@ export async function getGraph() {
         
             return result.records.map(r=> {
 
-                console.log('results updated', r);
+              //  console.log('results updated', r);
             
                 let gene = new Array(r.get('gene')).map(g=> {
                
@@ -298,7 +215,7 @@ export async function getGraph() {
                     return  gen;
                 });
 
-             
+             //   console.log('gene', gene);
                 let vars = r.get('variant').map(v=> {
                     let vari = new Object();
                     vari.index = v.identity.low;
@@ -308,7 +225,7 @@ export async function getGraph() {
                     return vari;
                 });
 
-             
+              //  console.log('vars', vars);
 
                 let pheno = r.get('phenotype').map(p=> {
                     let ph = new Object();
@@ -318,10 +235,7 @@ export async function getGraph() {
                     ph.label = p.labels[0];
                     return ph;
                 });
-<<<<<<< HEAD
-             
-=======
-                console.log('pheno', pheno);
+
 
                 let interactNodes = r.get('inters').map(p=>{
                     let ph = new Object();
@@ -332,7 +246,7 @@ export async function getGraph() {
                     return ph;
                 });
 
->>>>>>> test
+
                 let phenopaths = r.get('phenoRel').map(p=>{
                     let ph = new Object();
                     ph.start = p.start.low;
@@ -393,8 +307,6 @@ export async function getGraph() {
         .catch(function(error) {
             console.log(error);
         });
-
-        
 
 }
 
