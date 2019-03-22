@@ -101,7 +101,7 @@ dataLoad.loadFile().then(async (d)=> {
        neoAPI.addNodeArray(interactionNodes);
 
         interactionNodes.forEach(rel => {
-            neoAPI.addRelation(rel.name, 'Interaction', rel.properties.Source, 'Gene', 'Interacts');
+         //   neoAPI.addRelation(rel.name, 'Interaction', rel.properties.Source, 'Gene', 'Interacts');
         });
 
         gCanvas.drawGraph(graph, geneNode);

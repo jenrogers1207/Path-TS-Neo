@@ -12,7 +12,6 @@ export function removeThings(){
 
 export async function renderCalls(data: Object){
 
-
     let selectedNames = qo.selected.queryKeeper.map(k=> k.name);
 
     let sidebar = d3.select('#left-nav');
@@ -26,11 +25,22 @@ export async function renderCalls(data: Object){
     });
 
         let geneEnterDiv = geneDiv.enter().append('div').attr('class', d=> d.value).classed('gene', true);
-        let geneHeader = geneEnterDiv.append('div').classed('gene-header', true)
+        let geneHeader = geneEnterDiv.append('div').classed('gene-header', true);
+
         geneHeader.append('text').text(d=> d.name);
+        let geneIcon = geneHeader.append('i').attr('class', d=> d.name);
+        geneIcon.classed('fas fa-chevron-circle-down', true);;
+
+        geneHeader.on('click', function(d){
+         // console.log(this.nextSibling);
+          d3.select(this.nextSibling).classed('hidden')? d3.select(this.nextSibling).classed('hidden', false) : d3.select(this.nextSibling).classed('hidden', true);
+          let icon =  d3.select(this).select('i.'+d.name);
+          icon.classed('fa-chevron-circle-down') ? icon.attr('class', d.name+' fas fa-chevron-circle-up') : icon.attr('class', d.name+' fas fa-chevron-circle-down');
+        });
+      
         geneDiv = geneEnterDiv.merge(geneDiv);
 
-  
+
         geneDiv.filter(d=> selectedNames.includes(d.name)).classed('selected', true);
 
         let variantBox = geneDiv.append('div').classed('variant-wrapper', true);
@@ -40,6 +50,8 @@ export async function renderCalls(data: Object){
         let varEnter = variants.enter().append('div').classed('variant', true);
         let varHead = varEnter.append('div').classed('var-head', true)//.append('h5').text(d=>d.name);
         let varText = varHead.append('h5').text(d=>d.name);
+        let varIcon = varHead.append('i').attr('class', d=> d.name);
+        varIcon.classed('fas fa-chevron-circle-down', true);
         let spanType = varHead.append('span').text(d=> d.properties.Type);
         spanType.classed('badge badge-info', true);
         let spanTag = varHead.append('span').text(d=> d.tag[0]);
@@ -49,6 +61,8 @@ export async function renderCalls(data: Object){
         varHead.on('click', function(d){
             let text = this.nextSibling;
             d3.select(text).classed('hidden')? d3.select(text).classed('hidden', false) : d3.select(text).classed('hidden', true);
+            let icon =  d3.select(this).select('i.'+d.name);
+            icon.classed('fa-chevron-circle-down') ? icon.attr('class', d.name+' fas fa-chevron-circle-up') : icon.attr('class', d.name+' fas fa-chevron-circle-down');
         });
 
         let varDes = varEnter.append('div').classed('var-descript', true).classed('hidden', true);
