@@ -283,6 +283,7 @@ div.tooltip {
     height: 25px;
     padding-top: 10px;
     padding-bottom: 10px;
+    cursor: pointer;
 }
 
 .gene.selected .gene-header {
@@ -297,4 +298,13 @@ div.tooltip {
 i {
     float: right;
     padding-right: 5px;
+}
+
+.interact {
+    background-color: #e6e6e6;
+    height: 25px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    border-top: .5px solid rgb(43, 117, 255);
+    cursor: pointer;
 }
