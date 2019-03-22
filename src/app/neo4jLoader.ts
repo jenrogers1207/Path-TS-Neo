@@ -6,9 +6,30 @@ var neo4j = require('neo4j-driver').v1;
 var driver = neo4j.driver("bolt://localhost:7687", neo4j.auth.basic("neo4j", "123"));
 var _ = require('lodash');
 
+export async function addLabel(node:object){
+    console.log('node', node);
+    
+    let command = 'MATCH (n {name:"'+node.name+'"}) SET n:'+node.type+' RETURN n';
+    console.log(command);
+    var session = driver.session();
+            session
+                .run(command)
+                .then(function(result) {
+
+                    console.log('reselt', result);
+                    session.close();
+                    console.log("adding to graph");
+                })
+                .catch(function(error:any) {
+                    console.log(error);
+                });
+                
+    return node;
+}
+
 export async function addNode(promOb:object, type:string){
 
-  console.log('add node firing', promOb, type)
+    console.log('add node firing', promOb, type);
     let queryOb = await Promise.resolve(promOb);
     //console.log(queryOb)
 

@@ -9,6 +9,23 @@ import ky from 'ky';
 import { SrvRecord } from 'dns';
 
 
+export async function addGene(d: object){
+
+    let geneOb = new qo.QueryObject(d.preferredName_B, 'Gene');
+   
+   // let geneNode = await initialSearch(geneOb);
+    return geneOb;
+}
+
+export async function initialSearch(queryOb: object){
+   
+    let idSearch = await searchBySymbol(queryOb);
+    let mimId = await geneIdtoMim(idSearch);
+    let omimOb = await searchOMIM(mimId);
+    let kegg = await getKegg(omimOb.properties.Ids.ncbi, omimOb);
+    return kegg;
+}
+
 export async function searchBySymbol(query:object) {
 
     const proxy = 'https://cors-anywhere.herokuapp.com/';

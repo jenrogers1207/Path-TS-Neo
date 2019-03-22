@@ -3,11 +3,6 @@ import { promises } from 'fs';
 var search = require('./search');
 
 
-
-export class SelectedOb {
-
-}
-
 export class QueryObject {
 
     name:string;
@@ -17,8 +12,8 @@ export class QueryObject {
     entrez:string;
     type:string;
 
-    constructor(queryVal:string) {
-        this.type = ''
+    constructor(queryVal:string, typeVal:string) {
+        this.type = typeVal;
         this.name = queryVal;
         this.properties = {
             'Ids': {},
@@ -85,7 +80,7 @@ export class PhenotypeObject {
     }
 }
 
-export class QuerySelected{
+export class QueryStore{
     queryKeeper: Array<QueryObject>;
 
     constructor() {
@@ -103,14 +98,19 @@ export class QuerySelected{
     }
 }
 
-export let selected = new QuerySelected();
+export let selected = new QueryStore();
+
+export let allQueries = new QueryStore();
 
 
 export async function structGene(g: object){
+    
+    let ob = await Promise.resolve(g);//.properties;
 
-    let geneOb = g.properties;
+    let geneOb = ob.properties;
 
-    let node = new QueryObject(g.name);
+    let node = new QueryObject(ob.name, 'Gene');
+    node.type = geneOb.type;
     node.properties.Ids.ncbi = geneOb.ncbi;
     node.properties.Ids.sequenceID =  geneOb.sequenceID;
     node.properties.Ids.taxid = geneOb.taxid;

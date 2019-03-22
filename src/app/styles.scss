@@ -297,6 +297,7 @@ div.tooltip {
 i {
     float: right;
     padding-right: 5px;
+    cursor: pointer;
 }
 
 .interact {
@@ -305,5 +306,5 @@ i {
     padding-top: 10px;
     padding-bottom: 10px;
     border-top: .5px solid rgb(43, 117, 255);
-    cursor: pointer;
+    // cursor: pointer;
 }

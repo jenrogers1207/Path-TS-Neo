@@ -1,6 +1,6 @@
 import "./styles.scss";
 import * as d3 from 'D3';
-import { QueryObject, VariantObject } from "./queryObject";
+
 import { searchOMIM } from "./search";
 const gCanvas = require('./graphRender');
 var neoAPI = require('./neo4jLoader');
@@ -19,7 +19,7 @@ let queryPanel = d3.select('#wrapper').append('div').attr('id', 'query-panel');
 
 dataLoad.loadFile().then(async (d)=> {
 
-    let geneOb = new qo.QueryObject(d[0].key);
+    let geneOb = new qo.QueryObject(d[0].key, 'Gene');
     geneOb.type = "Gene";
 
     let fileVariants = await variantObjectMaker(d[0].values);
@@ -31,9 +31,9 @@ dataLoad.loadFile().then(async (d)=> {
         let relationships = graph[0].links.map(rel=> { 
             return{'source': rel.source.name, 'target':rel.target.name} })
     
-        let geneNode = await isStored(graph[0], 'GJB2', 'Gene', geneOb);
+        let geneNode = await isStored(graph[0], geneOb);
         
-
+       
         //adding to the selection now;
         qo.selected.addQueryOb(geneNode);
 
@@ -110,7 +110,7 @@ dataLoad.loadFile().then(async (d)=> {
   
         }else{
        
-            initialSearch(geneOb).then(async n=> {
+            search.initialSearch(geneOb).then(async n=> {
               
                 let varAlleles = await variantObjectMaker(n.properties.Variants);
                 let variants = await updateVariants(fileVariants, varAlleles);
@@ -143,13 +143,10 @@ dataLoad.loadFile().then(async (d)=> {
                         return {'id': b[b.length - 1], 'tag': tag.reduce((a, c)=> a.concat(' '+c)) }
                     }
                 })
-                console.log(n.properties.Brite);
+               
            
                 n.properties.Brite
                 n.properties.Ids.stringID = interactP[0].stringId_A;
-               
-
-                console.log('n- reworked', n)
 
                 neoAPI.addNode(n, n.type);
 
@@ -212,21 +209,26 @@ async function variantObjectMaker(varArray: Array<object>){
       });
   }
 
-async function initialSearch(queryOb: object){
-   
-    let idSearch = await search.searchBySymbol(queryOb);
-    let mimId = await search.geneIdtoMim(idSearch);
-    let omimOb = await searchOMIM(mimId);
-    let kegg = await search.getKegg(omimOb.properties.Ids.ncbi, omimOb);
-   
-    return kegg;
-}
 
-async function isStored(graph: object, nameSearch:string, nodeType:string, data:object){
-    let foundGraphNodes = graph.nodes.filter(n=> n.properties.symbol == nameSearch);
-    let nodeOb = foundGraphNodes.length > 0 ? foundGraphNodes[0] : initialSearch(data);
+export async function isStored(graph: object, data:object){
+
+    let names = qo.allQueries.queryKeeper.map(k=> {return  [k.name, k.type] });
     
-    return await qo.structGene(nodeOb);
+    let foundGraphNodes = graph.nodes.filter(n=> n.name == data.name);
+
+    let nodeOb = foundGraphNodes.length > 0 ? labelsMatch(foundGraphNodes[0], data) : await search.initialSearch(data);
+   
+    let structuredOb = await qo.structGene(nodeOb);
+
+    names.includes(data.name)? console.log('already there'): qo.allQueries.addQueryOb(structuredOb);
+
+    return await structuredOb;
+
+    async function labelsMatch(graphNode:object, newNode:object){
+        let node = graphNode.label == newNode.type? graphNode : neoAPI.addLabel(newNode);
+        console.log(node);
+        return node;
+    }
 }
 
 async function updateVariants(fileVarArr:Array<Object>, graphVarArr: Array<any>){

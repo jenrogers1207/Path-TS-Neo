@@ -2,6 +2,8 @@ import "./styles.scss";
 import * as d3 from 'D3';
 import * as search from './search';
 import * as qo from './queryObject';
+const neoAPI = require('./neo4jLoader');
+const app = require('./app');
 
 export function removeThings(){
     d3.select('#linked-pathways').selectAll('*').remove();
@@ -166,7 +168,13 @@ export async function renderGeneDetail(data: Object){
     let interactors = propEnter.filter(d=> d == "InteractionPartners").select('.detail-wrapper').selectAll('.interact').data(d=> {return data.properties[d]});
     let intEnter = interactors.enter().append('div').classed('interact', true);
     intEnter.append('text').text(d=> d.preferredName_B);
-    intEnter.append('i').attr('class', "far fa-plus-square");
+    let addIcon = intEnter.append('i').attr('class', "fas fa-search-plus");
+    addIcon.on('click', async function(d){
+       console.log(d);
+        let g = await neoAPI.getGraph();
+        let newNode = await search.addGene(d);
+        let geneNode = await app.isStored(g[0], newNode);
+    });
 
     propertyDivs = propEnter.merge(propertyDivs);
 
