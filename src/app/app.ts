@@ -46,7 +46,7 @@ dataLoad.loadFile().then(async (d)=> {
                 if(relationships.includes({'source': v.name, 'target': geneOb.name})){
                     console.log("already there");
                 }else{
-                 //   neoAPI.addRelation(v.name, v.type, geneOb.name, geneOb.type, 'Mutation');
+                   // neoAPI.addRelation(v.name, v.type, geneOb.name, geneOb.type, 'Mutation');
                 }
         });
     
@@ -65,13 +65,15 @@ dataLoad.loadFile().then(async (d)=> {
         geneNode.properties.Variants = variantOb;
         geneNode.properties.Phenotypes = uniquePheno;
 
-       // let uniprot = search.searchUniprot(geneNode.properties.Ids.UniProt);
+      //  let uniprot = search.searchUniprot(geneNode.properties.Ids.UniProt);
 
-       // neoAPI.structureRelation(uniquePheno, variantOb, "Pheno");
+      //  neoAPI.structureRelation(uniquePheno, variantOb, "Pheno");
 
         let interactP = await search.searchStringInteractors(geneNode.name);
         let enrighmentP = await search.searchStringEnrichment(geneNode.name);
-       
+      // console.log('geneNode', geneNode);
+       if(geneNode.properties.Brite.kegg){
+
         geneNode.properties.Brite = geneNode.properties.Brite.kegg.map(b=>{
             if(b[0].match(/\d/)){
                 let tag = b.slice(1, (b.length))
@@ -82,8 +84,8 @@ dataLoad.loadFile().then(async (d)=> {
             }
         })
         console.log(geneNode.properties.Brite);
-   
-        geneNode.properties.Brite
+
+       }
         
         geneNode.properties.Ids.stringID = interactP[0].stringId_A;
         geneNode.properties.InteractionPartners = interactP;
@@ -99,7 +101,7 @@ dataLoad.loadFile().then(async (d)=> {
        neoAPI.addNodeArray(interactionNodes);
 
         interactionNodes.forEach(rel => {
-         //   neoAPI.addRelation(rel.name, 'Interaction', rel.properties.Source, 'Gene', 'Interacts');
+            neoAPI.addRelation(rel.name, 'Interaction', rel.properties.Source, 'Gene', 'Interacts');
         });
 
         gCanvas.drawGraph(graph, geneNode);
@@ -129,6 +131,23 @@ dataLoad.loadFile().then(async (d)=> {
                 });
 
                 n.properties.InteractionPartners = interactionNodes;
+
+                let enrighmentP = await search.searchStringEnrichment(n.name);
+               
+               n.properties.Brite = n.properties.Brite.kegg.map(b=>{
+                    if(b[0].match(/\d/)){
+                        let tag = b.slice(1, (b.length))
+                        return {'id': b[0], 'tag': tag.reduce((a, c)=> a.concat(' '+c)) }
+                    }else{
+                        let tag = b.slice(0, (b.length - 1))
+                        return {'id': b[b.length - 1], 'tag': tag.reduce((a, c)=> a.concat(' '+c)) }
+                    }
+                })
+                console.log(n.properties.Brite);
+           
+                n.properties.Brite
+                n.properties.Ids.stringID = interactP[0].stringId_A;
+               
 
                 console.log('n- reworked', n)
 
