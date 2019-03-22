@@ -32,7 +32,6 @@ export async function renderCalls(data: Object){
         geneIcon.classed('fas fa-chevron-circle-down', true);;
 
         geneHeader.on('click', function(d){
-         // console.log(this.nextSibling);
           d3.select(this.nextSibling).classed('hidden')? d3.select(this.nextSibling).classed('hidden', false) : d3.select(this.nextSibling).classed('hidden', true);
           let icon =  d3.select(this).select('i.'+d.name);
           icon.classed('fa-chevron-circle-down') ? icon.attr('class', d.name+' fas fa-chevron-circle-up') : icon.attr('class', d.name+' fas fa-chevron-circle-down');
@@ -97,17 +96,30 @@ export async function renderGeneDetail(data: Object){
    // let symbolBand = geneDet.append('div').classed('symbols', true).data(JSON.parse(data.Symbols));
     let propertyDivs = geneDet.selectAll('.prop-headers').data(headers);
     let propEnter = propertyDivs.enter().append('div').classed('prop-headers', true);
-    propEnter.append('div').attr('class', (d)=> d).classed('head-wrapper', true).append('h5').text((d)=> d.toUpperCase());
+    let propHead = propEnter.append('div').attr('class', (d)=> d).classed('head-wrapper', true)
+    propHead.append('h5').text((d)=> d.toUpperCase());
+    propHead.append('i').attr('class', (d)=> d+' fas fa-chevron-circle-up');
+    propEnter.append('div').attr('class', (d)=> d+' detail-wrapper');
 
-    let ids = propEnter.filter(d=> d == 'Ids').selectAll('.ids').data(d=> d3.entries(data.properties[d]));
+    propHead.on('click', function(d){
+
+        console.log(d);
+        console.log(this.nextSibling);
+        d3.select(this.nextSibling).classed('hidden')? d3.select(this.nextSibling).classed('hidden', false) : d3.select(this.nextSibling).classed('hidden', true);
+        let icon =  d3.select(this).select('i.'+d);
+        icon.classed('fa-chevron-circle-down') ? icon.attr('class', d+' fas fa-chevron-circle-up') : icon.attr('class', d+' fas fa-chevron-circle-down');
+
+    });
+
+    let ids = propEnter.filter(d=> d == 'Ids').select('.detail-wrapper').selectAll('.ids').data(d=> d3.entries(data.properties[d]));
     let idEnter = ids.enter().append('div').classed('ids', true);
     let idsSec = idEnter.append('text').text(d=> d.key + ': ' + d.value);
 
-    let location = propEnter.filter(d=> d == "Location").selectAll('.location').data(d=> d3.entries(data.properties[d]));
+    let location = propEnter.filter(d=> d == "Location").select('.detail-wrapper').selectAll('.location').data(d=> d3.entries(data.properties[d]));
     let locEnter = location.enter().append('div').classed('location', true);
     let locSec = locEnter.append('text').text(d=> d.key + ': ' + d.value);
 
-    let phenotype = propEnter.filter(d=> d == "Phenotypes").selectAll('.pheno-wrap').data(d=> {
+    let phenotype = propEnter.filter(d=> d == "Phenotypes").select('.detail-wrapper').selectAll('.pheno-wrap').data(d=> {
         let phenoD = data.properties[d].map(p=> p.properties);
         return phenoD;
     });
@@ -116,15 +128,15 @@ export async function renderGeneDetail(data: Object){
         let descript = typeof d.properties == 'string'? JSON.parse(d.properties) : d.properties;
         return descript.description});
 
-    let titles = propEnter.filter(d=> d == "Titles").selectAll('.title').data(d=> {return d3.entries(data.properties[d])});
+    let titles = propEnter.filter(d=> d == "Titles").select('.detail-wrapper').selectAll('.title').data(d=> {return d3.entries(data.properties[d])});
     let titleEnter = titles.enter().append('div').classed('title sections', true);
     titleEnter.append('text').text(d=> d.value);
 
-    let models = propEnter.filter(d=> d == "Models").selectAll('.des').data(d=> {return d3.entries(data.properties[d])});
+    let models = propEnter.filter(d=> d == "Models").select('.detail-wrapper').selectAll('.des').data(d=> {return d3.entries(data.properties[d])});
     let modEnter = models.enter().append('div').classed('des', true);
     modEnter.append('text').text(d=> d.key + ": " + JSON.stringify(d.value));
 
-    let textProp = propEnter.filter(d=> d == 'Text').selectAll('.text').data(d=> {return data.properties[d]});
+    let textProp = propEnter.filter(d=> d == 'Text').select('.detail-wrapper').selectAll('.text').data(d=> {return data.properties[d]});
     let textEnter = textProp.enter().append('div').classed('text', true);
     let headText = textEnter.append('div').classed('text-sec-head', true).append('h5').text(d=> d.textSectionTitle + ': ');
     let textDiv = textEnter.append('div').classed('textbody', true).classed('hidden', true);
@@ -135,25 +147,26 @@ export async function renderGeneDetail(data: Object){
         d3.select(text).classed('hidden')? d3.select(text).classed('hidden', false) : d3.select(text).classed('hidden', true);
     });
 
-    let descript = propEnter.filter(d=> d == "Description").append('div').append('text').text(d=> data.properties[d]);
-    let symbols = propEnter.filter(d=> d == "Symbols").append('div').append('text').text(d=> data.properties[d]);
+    let descript = propEnter.filter(d=> d == "Description").select('.detail-wrapper').append('div').append('text').text(d=> data.properties[d]);
+    let symbols = propEnter.filter(d=> d == "Symbols").select('.detail-wrapper').append('div').append('text').text(d=> data.properties[d]);
 
-    let structure = propEnter.filter(d=> d == "Structure").selectAll('.structure').data(d=> {
+    let structure = propEnter.filter(d=> d == "Structure").select('.detail-wrapper').selectAll('.structure').data(d=> {
         return d3.entries(data.properties[d])});
     let structEnter = structure.enter().append('div').classed('structure', true);
     structEnter.append('text').text(d=> d.key+ ': ' + d.value);
 
-    let orthology = propEnter.filter(d=> d == "Orthology").selectAll('.orthology').data(d=> {return d3.entries(data.properties[d])});
+    let orthology = propEnter.filter(d=> d == "Orthology").select('.detail-wrapper').selectAll('.orthology').data(d=> {return d3.entries(data.properties[d])});
     let orthoEnter = orthology.enter().append('div').classed('orthology', true);
     orthoEnter.append('text').text(d=> d.key+ ': ' + d.value);
 
-    let brite = propEnter.filter(d=> d == "Brite").selectAll('.brite').data(d=> {return data.properties[d]});
+    let brite = propEnter.filter(d=> d == "Brite").select('.detail-wrapper').selectAll('.brite').data(d=> {return data.properties[d]});
     let briteEnter = brite.enter().append('div').classed('brite', true);
     briteEnter.append('text').text(d=> d.id+ ': ' + d.tag );
 
-    let interactors = propEnter.filter(d=> d == "InteractionPartners").selectAll('.interact').data(d=> {return data.properties[d]});
+    let interactors = propEnter.filter(d=> d == "InteractionPartners").select('.detail-wrapper').selectAll('.interact').data(d=> {return data.properties[d]});
     let intEnter = interactors.enter().append('div').classed('interact', true);
     intEnter.append('text').text(d=> d.preferredName_B);
+    intEnter.append('i').attr('class', "far fa-plus-square");
 
     propertyDivs = propEnter.merge(propertyDivs);
 
