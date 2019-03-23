@@ -3,7 +3,7 @@ import { promises } from 'fs';
 var search = require('./search');
 
 
-export class QueryObject {
+export class GeneObject {
 
     name:string;
     ncbi:string;
@@ -81,13 +81,13 @@ export class PhenotypeObject {
 }
 
 export class QueryStore{
-    queryKeeper: Array<QueryObject>;
+    queryKeeper: Array<GeneObject>;
 
     constructor() {
         this.queryKeeper = [];
     }
 
-    addQueryOb(queryOb: QueryObject){
+    addQueryOb(queryOb: GeneObject){
         this.queryKeeper.push(queryOb);
         console.log(this.queryKeeper);          
     }
@@ -109,8 +109,10 @@ export async function structGene(g: object){
 
     let geneOb = ob.properties;
 
-    let node = new QueryObject(ob.name, 'Gene');
-    node.type = geneOb.type;
+    console.log('ob',ob);
+
+    let node = new GeneObject(ob.name, 'Gene');
+    node.type = ob.label? ob.label : ob.type;
     node.properties.Ids.ncbi = geneOb.ncbi;
     node.properties.Ids.sequenceID =  geneOb.sequenceID;
     node.properties.Ids.taxid = geneOb.taxid;
@@ -136,6 +138,7 @@ export async function structGene(g: object){
     node.properties.Titles = typeof geneOb.Titles == 'string'? JSON.parse(geneOb.Titles): geneOb.Titles; //"{"preferredTitle":"GAP JUNCTION PROTEIN, BETA-2; GJB2","alternativeTitles":"GAP JUNCTION PROTEIN, 26-KD;;\nCONNEXIN 26; CX26"}"
     node.properties.Transcript = geneOb.Transcript; //"ENST00000645189.1"
     node.properties.Variants = geneOb.Variants; //(120) [VariantObject,
+    node.properties.InteractionPartners = geneOb.InteractionPartners;
 
     return node;
 }
@@ -205,6 +208,7 @@ export async function structPheno(phenob: object, assocGene:string){
  
    return await Promise.resolve(nodes);
 }
+
 
 export async function drawSelectedPanel(query) {
     let panel = d3.select('#query-panel');

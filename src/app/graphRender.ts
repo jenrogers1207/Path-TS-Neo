@@ -91,7 +91,7 @@ export async function renderCalls(data: Object){
 export async function renderGeneDetail(data: Object){
  
     let headers = d3.keys(data.properties).filter(d=> d != 'References' && d !='Variants'  && d != 'name');
-
+    console.log(data);
     let sidebar = d3.select('#left-nav');
     let geneDet = sidebar.select('.gene-detail');
     let geneHeader = geneDet.append('div').attr('class', 'detail-head').append('h4').text(data.name);
@@ -105,8 +105,6 @@ export async function renderGeneDetail(data: Object){
 
     propHead.on('click', function(d){
 
-        console.log(d);
-        console.log(this.nextSibling);
         d3.select(this.nextSibling).classed('hidden')? d3.select(this.nextSibling).classed('hidden', false) : d3.select(this.nextSibling).classed('hidden', true);
         let icon =  d3.select(this).select('i.'+d);
         icon.classed('fa-chevron-circle-down') ? icon.attr('class', d+' fas fa-chevron-circle-up') : icon.attr('class', d+' fas fa-chevron-circle-down');
@@ -167,13 +165,14 @@ export async function renderGeneDetail(data: Object){
 
     let interactors = propEnter.filter(d=> d == "InteractionPartners").select('.detail-wrapper').selectAll('.interact').data(d=> {return data.properties[d]});
     let intEnter = interactors.enter().append('div').classed('interact', true);
-    intEnter.append('text').text(d=> d.preferredName_B);
+    intEnter.append('text').text(d=> d.name);
     let addIcon = intEnter.append('i').attr('class', "fas fa-search-plus");
     addIcon.on('click', async function(d){
        console.log(d);
-        let g = await neoAPI.getGraph();
+    
         let newNode = await search.addGene(d);
-        let geneNode = await app.isStored(g[0], newNode);
+      //  let geneNode = await app.isStored(g[0], newNode);
+     //   console.log(geneNode);
         
     });
 
@@ -185,7 +184,10 @@ export function drawGraph(dataArr: Object, gnode:object) {
 
     let selectedNames = qo.selected.queryKeeper.map(k=> k.name);
  
-    let data = dataArr[0];
+    let data = dataArr[1];
+
+    console.log('in rrenderrr', data);
+
     let canvas = d3.select('#graph-render').select('.graph-canvas'),
         width = +canvas.attr("width"),
         height = +canvas.attr("height"),

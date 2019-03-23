@@ -11,7 +11,7 @@ import { SrvRecord } from 'dns';
 
 export async function addGene(d: object){
 
-    let geneOb = new qo.QueryObject(d.preferredName_B, 'Gene');
+    let geneOb = new qo.GeneObject(d.preferredName_B, 'Gene');
    
    // let geneNode = await initialSearch(geneOb);
     return geneOb;
@@ -23,7 +23,8 @@ export async function initialSearch(queryOb: object){
     let mimId = await geneIdtoMim(idSearch);
     let omimOb = await searchOMIM(mimId);
     let kegg = await getKegg(omimOb.properties.Ids.ncbi, omimOb);
-    return kegg;
+    let interact = await searchStringInteractors(kegg);
+    return interact;
 }
 
 export async function searchBySymbol(query:object) {
@@ -142,13 +143,26 @@ export async function geneIdtoMim(query:any){
     //return props;
 }
 
-export async function searchStringInteractors(value:string){
+export async function searchStringInteractors(node:object){
 
     const proxy = 'https://cors-anywhere.herokuapp.com/';
-    let url = 'https://string-db.org/api/json/interaction_partners?identifiers='+ value +'&limit=20';
+    let url = 'https://string-db.org/api/json/interaction_partners?identifiers='+ node.name +'&limit=20';
     let req =  await ky.get(proxy+url).json();
 
-    return req;
+    node.properties.Ids.stringID = req[0].stringId_A;
+               
+    let interactionNodes = req.map(m => {
+        let ob = {'name' : m.preferredName_B, 'type': 'Interaction', 'properties': { 'Ids': {}, 'Metrics': {} } };
+        ob.properties.Ids.stringID = m.stringId_B;
+        ob.properties.Source = m.preferredName_A;
+        ob.properties.Metrics = d3.entries(m).filter(f=> f.key.includes('score'))
+        return ob;
+    });
+
+    node.properties.InteractionPartners = interactionNodes;
+
+
+    return node;
 }
 
 export async function searchStringEnrichment(value:string){
@@ -159,11 +173,9 @@ export async function searchStringEnrichment(value:string){
     let url2 = 'http://string-db.org/api/json/network?identifier=gjb2&limit=10&network_flavor=evidence%20Additional%20information%20about%20the%20API'
 
     let req =  await ky.get(proxy+url).json();
-    console.log(req);
-
-    let req2 = await ky.get(proxy+url2).json();
-
-    console.log('req2', req2);
+  //  console.log(req);
+    let req2 = await ky.get(proxy+url2).json();                                                                                                                 
+  //  console.log('req2', req2);
     return req;
 }
 
@@ -200,7 +212,7 @@ export async function getKegg(value: string, queryOb:object){
             return {key: keyz, values: val}
         });
 
-        console.log('brite?', newData.filter(n=> n.key != "///" && n.key != ""));
+       // console.log('brite?', newData.filter(n=> n.key != "///" && n.key != ""));
 
         return newData.filter(n=> n.key != "///" && n.key != "");
     }
@@ -240,6 +252,17 @@ export async function getKegg(value: string, queryOb:object){
     queryOb.properties.Structure.NTSEQ = NTSEQ;
     queryOb.properties.Structure.ids = STRUCTURE;
     queryOb.properties.Structure.MOTIF = MOTIF;
+
+    queryOb.properties.Brite = queryOb.properties.Brite.kegg.map(b=>{
+        if(b[0].match(/\d/)){
+            let tag = b.slice(1, (b.length))
+            return {'id': b[0], 'tag': tag.reduce((a, c)=> a.concat(' '+c)) }
+        }else{
+            let tag = b.slice(0, (b.length - 1))
+            return {'id': b[b.length - 1], 'tag': tag.reduce((a, c)=> a.concat(' '+c)) }
+        }
+    });
+
 
     return queryOb;
 }

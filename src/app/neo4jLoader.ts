@@ -73,7 +73,7 @@ export async function addNode(promOb:object, type:string){
 
 
 export async function addNodeArray(phenoObs:Array<object>){
-
+   
     let names: Array<string> = phenoObs.map(v=> v.name);
     let type = phenoObs[0].type;
     let originalNames : Array<string> = await checkForNodeArray(names, type);
@@ -136,15 +136,14 @@ export async function structureRelation(node1: Array<object>, node2: Array<objec
         
             filtered.forEach(fil=> {
                 let index = phenoNames.indexOf(fil.accession)
-                console.log(index);
+               
                 if(index > -1){ relationArr.push({'pheno': fil.accession, 'variant': p.name}) }
             })
   
 });
 
-    console.log('set!',new Set(relationArr))
+  
     relationArr.forEach(rel => {
-        console.log(rel);
     addRelation(rel.pheno, 'Phenotype', rel.variant, 'Variant', relation);
     });
 }
@@ -276,6 +275,8 @@ export async function getGraph() {
                     return ph;
                 });
 
+                console.log('in get grraph',interactNodes);
+
                 let phenopaths = r.get('phenoRel').map(p=>{
                     let ph = new Object();
                     ph.start = p.start.low;
@@ -349,9 +350,42 @@ export async function addRelation(sourceName:string, sourceType:string, targetNa
         .run(command)
         .then(function(result) {
             session.close();
+            console.log(command, result)
             return result;
         })
         .catch(function(error) {
             console.log(error);
         });
 }
+
+
+export async function buildSubGraph(geneNode: object){
+    
+
+    addNode(geneNode, geneNode.type);
+      //VARIANTS
+      let varObs = geneNode.properties.Variants;
+  
+      addNodeArray(varObs).then(()=> {
+          varObs.forEach(v=>{
+              addRelation(v.name, v.type, geneNode.name, geneNode.type, 'Mutation');
+          });
+      })
+      
+      //PHENOTYPES
+      let phenObs = geneNode.properties.Phenotypes;
+      addNodeArray(phenObs.nodes).then(()=> { 
+           //Phenotype varriant relations
+          structureRelation(phenObs.nodes, varObs, "Pheno");
+      })
+  
+      let interactors = geneNode.properties.InteractionPartners;
+      console.log(interactors);
+  
+      addNodeArray(interactors).then(()=> {
+          interactors.forEach(rel => {
+              addRelation(rel.name, 'Interaction', geneNode.name, 'Gene', 'Interacts');
+          });
+      })
+  
+  }
