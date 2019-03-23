@@ -27,8 +27,8 @@ dataLoad.loadFile().then(async (d)=> {
 
     if(graph != undefined && graph != null){
        
-    
-        let geneNode = await isStored(graph[1], geneOb);
+        console.log('graph', graph);
+        let geneNode = await isStored(graph[0], geneOb);
         
         //adding to the selection now;
         qo.selected.addQueryOb(geneNode);
@@ -40,7 +40,7 @@ dataLoad.loadFile().then(async (d)=> {
 
         geneNode.properties.Variants = variantOb;
     
-        let graphPhenotypes = graph[1].nodes.filter(d=> d.label == 'Phenotype');
+        let graphPhenotypes = graph[0].nodes.filter(d=> d.label == 'Phenotype');
         let phenotypes = graphPhenotypes.length > 0? graphPhenotypes : await qo.structPheno(geneNode.properties.Phenotypes, geneNode.name);
         
         let uniqueNameArray = []
@@ -57,8 +57,8 @@ dataLoad.loadFile().then(async (d)=> {
 
         let enrighmentP = await search.searchStringEnrichment(geneNode.name);
 
-        let graphInteraction = graph[1].nodes.filter(d=> d.label == 'Interaction');
-        console.log(graphInteraction, graph)
+        let graphInteraction = graph[0].nodes.filter(d=> d.label == 'Interaction');
+      
         geneNode.properties.InteractionPartners = graphInteraction.map(int=> {
           
             int.properties = int.properties.properties? JSON.parse(int.properties.properties) : int.properties;
@@ -69,7 +69,7 @@ dataLoad.loadFile().then(async (d)=> {
 
         gCanvas.drawGraph(graph, geneNode);
         gCanvas.renderCalls(geneNode);
-        gCanvas.renderGeneDetail(geneNode);
+        gCanvas.renderGeneDetail(geneNode, graph[0]);
   
         }else{
        
@@ -89,14 +89,14 @@ dataLoad.loadFile().then(async (d)=> {
                 let newGraph = await neoAPI.getGraph();
                 gCanvas.drawGraph(newGraph, n);
                 gCanvas.renderCalls(n);
-                gCanvas.renderGeneDetail(n);
+                gCanvas.renderGeneDetail(n, newGraph[1]);
             
         });
 
     }
 });
 
-async function variantObjectMaker(varArray: Array<object>){
+export async function variantObjectMaker(varArray: Array<object>){
   
     let varObs = typeof varArray == 'string'? JSON.parse(varArray): varArray;
     
@@ -119,10 +119,13 @@ async function variantObjectMaker(varArray: Array<object>){
   }
 
 export async function isStored(graph: object, data:object){
-
+    console.log('is this even worrking?')
     let names = qo.allQueries.queryKeeper.map(k=> {return  [k.name, k.type] });
     
     let foundGraphNodes = graph.nodes.filter(n=> n.name == data.name);
+
+    console.log('data', data);
+    console.log(foundGraphNodes);
 
     let nodeOb = foundGraphNodes.length > 0 ? labelsMatch(foundGraphNodes[0], data) : await search.initialSearch(data);
    

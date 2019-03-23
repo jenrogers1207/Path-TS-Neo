@@ -88,7 +88,7 @@ export async function renderCalls(data: Object){
         });
 }
 
-export async function renderGeneDetail(data: Object){
+export async function renderGeneDetail(data: Object, graph:Array<object>){
  
     let headers = d3.keys(data.properties).filter(d=> d != 'References' && d !='Variants'  && d != 'name');
     console.log(data);
@@ -171,9 +171,24 @@ export async function renderGeneDetail(data: Object){
        console.log(d);
     
         let newNode = await search.addGene(d);
-      //  let geneNode = await app.isStored(g[0], newNode);
-     //   console.log(geneNode);
-        
+      //  let geneNode = await app.isStored(graph, newNode).then(async(n)=>{
+       app.isStored(graph, newNode).then(async(n)=>{
+           
+            let varAlleles = await app.variantObjectMaker(n.properties.Variants);
+           
+            let variants = await qo.structVariants(varAlleles);
+            n.properties.Variants = variants;
+    
+            let structuredPheno = await qo.structPheno(n.properties.Phenotypes, n.name);
+            n.properties.Phenotypes.nodes = structuredPheno;
+    
+            let enrighmentP = await search.searchStringEnrichment(n.name);
+    
+            neoAPI.buildSubGraph(n);
+        });
+      
+
+    
     });
 
     propertyDivs = propEnter.merge(propertyDivs);
@@ -184,7 +199,7 @@ export function drawGraph(dataArr: Object, gnode:object) {
 
     let selectedNames = qo.selected.queryKeeper.map(k=> k.name);
  
-    let data = dataArr[1];
+    let data = dataArr[0];
 
     console.log('in rrenderrr', data);
 

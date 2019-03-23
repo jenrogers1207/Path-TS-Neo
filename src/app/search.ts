@@ -11,10 +11,12 @@ import { SrvRecord } from 'dns';
 
 export async function addGene(d: object){
 
-    let geneOb = new qo.GeneObject(d.preferredName_B, 'Gene');
+    let geneOb = new qo.GeneObject(d.name, 'Gene');
+
+    let newNode = await initialSearch(geneOb);
    
    // let geneNode = await initialSearch(geneOb);
-    return geneOb;
+    return newNode;
 }
 
 export async function initialSearch(queryOb: object){
@@ -112,19 +114,6 @@ export async function searchOMIM(queryOb:any){
     queryOb.properties.Transcript = omim.geneMap.transcript;
     queryOb.properties.mappingMethod = omim.geneMap.mappingMethod;
 
-    /*
-    geneName: "Gap junction protein, beta-2, 26kD (connexin 26)"
-    geneSymbols: "GJB2, CX26, DFNB1A, PPK, DFNA3A, KID, HID"
-    mappingMethod: "REa, A, Fd"
-    mimNumber: 121011
-    mouseGeneSymbol: "Gjb2"
-    mouseMgiID: "MGI:95720"
-    phenotypeMapList: (7) [{…}, {…}, {…}, {…}, {…}, {…}, {…}]
-    sequenceID: 10613
-    transcript: "ENST00000645189.1"
-*/
-  
-   //return props;
    return queryOb;
 }
 export async function geneIdtoMim(query:any){
@@ -252,14 +241,21 @@ export async function getKegg(value: string, queryOb:object){
     queryOb.properties.Structure.NTSEQ = NTSEQ;
     queryOb.properties.Structure.ids = STRUCTURE;
     queryOb.properties.Structure.MOTIF = MOTIF;
-
+    console.log('in kegg', queryOb);
     queryOb.properties.Brite = queryOb.properties.Brite.kegg.map(b=>{
         if(b[0].match(/\d/)){
+            console.log(b);
             let tag = b.slice(1, (b.length))
-            return {'id': b[0], 'tag': tag.reduce((a, c)=> a.concat(' '+c)) }
+            console.log(tag);
+            if(tag.length > 1){
+                return {'id': b[0], 'tag': tag.reduce((a, c)=> a.concat(' '+c)) }
+            }else{return {'id': b[0], 'tag': tag } }
+            
         }else{
-            let tag = b.slice(0, (b.length - 1))
-            return {'id': b[b.length - 1], 'tag': tag.reduce((a, c)=> a.concat(' '+c)) }
+            let tag = b.slice(0, (b.length - 1));
+            if(tag.length > 1){
+                return {'id': b[b.length - 1], 'tag': tag.reduce((a, c)=> a.concat(' '+c)) }
+            }else{return {'id': b[0], 'tag': tag } }
         }
     });
 

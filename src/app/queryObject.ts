@@ -89,12 +89,12 @@ export class QueryStore{
 
     addQueryOb(queryOb: GeneObject){
         this.queryKeeper.push(queryOb);
-        console.log(this.queryKeeper);          
+          
     }
 
     removeQueryOb(queryName: string){
         this.queryKeeper = this.queryKeeper.filter(q=> q.name != queryName);    
-        console.log(this.queryKeeper);
+       
     }
 }
 
@@ -147,11 +147,11 @@ export async function structVariants(varArray: object){
 
     let variants = typeof varArray === 'string' ? JSON.parse(varArray) : varArray;
    // if(!nodeOb.properties){ nodeOb.properties = nodeOb.data}
-
+    console.log('initial varr',variants);
     let obs = variants.map(async (v)=> {
       
         let props = v.properties.properties? JSON.parse(v.properties.properties): v.properties;
-       // console.log('props', props);
+      
         let snpName = v.name? v.name : props.Ids.dbsnp;
         let variantOb = new VariantObject(snpName);
         variantOb.properties.associatedGene = props.associatedGene;
@@ -164,7 +164,7 @@ export async function structVariants(varArray: object){
        // let propOb = typeof props == "string"? JSON.parse(props):props;
       
         if(props.allelleAnnotations == undefined){
-        
+            console.log(variantOb);
             let snp = await search.loadSNP(variantOb.name);
             variantOb.properties.Type = snp.variant_type;
             variantOb.properties.Location.anchor = snp.anchor? snp.anchor : 'null';
@@ -179,11 +179,11 @@ export async function structVariants(varArray: object){
             variantOb.properties.allelleAnnotations = props.allelleAnnotations;
             variantOb.properties.Phenotypes = props.Phenotypes;
         }
-        //console.log(variantOb);
+      
         return variantOb;
     });
 
- // console.log('obs',obs);
+ 
   return await Promise.all(obs);
 }
 
