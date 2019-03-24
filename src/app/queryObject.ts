@@ -147,7 +147,7 @@ export async function structVariants(varArray: object){
 
     let variants = typeof varArray === 'string' ? JSON.parse(varArray) : varArray;
    // if(!nodeOb.properties){ nodeOb.properties = nodeOb.data}
-    console.log('initial varr',variants);
+    console.log('initial varr', variants);
     let obs = variants.filter(f=> f.name != undefined).map(async (v)=> {
       
         let props = v.properties.properties? JSON.parse(v.properties.properties): v.properties;

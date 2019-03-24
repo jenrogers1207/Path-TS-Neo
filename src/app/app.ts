@@ -27,16 +27,22 @@ dataLoad.loadFile().then(async (d)=> {
    
     if(graph != undefined && graph != null){
        
-        console.log('graph', graph);
+     
         let geneNode = await isStored(graph[0], geneOb);
-        
-        //adding to the selection now;
-        
-        qo.selected.addQueryOb(geneNode);
-        console.log('graph', graph[0].nodes.filter(f=> f.label == 'Gene'));
-        console.log('querryKeeper', qo.allQueries.queryKeeper);
+ 
+
+        let queryGenes = graph[0].nodes.filter(f=> f.label == 'Gene');
+        queryGenes.forEach(async (gene:object) => {
+            await isStored(graph[0], gene)
+           // qo.allQueries.addQueryOb(await isStored(graph[0], gene))
+        });
+
+        console.log('querykeeperr',qo.allQueries.queryKeeper)
 
         let graphVariants = graph[0].nodes.filter(d=> d.label == 'Variant');
+
+        //adding selectednode as the file gene
+        qo.selected.addQueryOb(geneNode);
 
         let variants = await updateVariants(fileVariants, graphVariants)
         let variantOb = await Promise.resolve(variants);
@@ -122,26 +128,21 @@ export async function variantObjectMaker(varArray: Array<object>){
   }
 
 export async function isStored(graph: object, data:object){
-    console.log('is this even worrking?')
-    let names = qo.allQueries.queryKeeper.map(k=> {return  [k.name, k.type] });
+
+    let names = qo.allQueries.queryKeeper.map(k=> {return  k.name });
     
     let foundGraphNodes = graph.nodes.filter(n=> n.name == data.name);
-
-    console.log('data', data);
-    console.log(foundGraphNodes);
-
     let nodeOb = foundGraphNodes.length > 0 ? labelsMatch(foundGraphNodes[0], data) : await search.initialSearch(data);
-   
-    let structuredOb = await qo.structGene(nodeOb);
+    console.log('node ob', nodeOb);
+    let structuredOb = await qo.structGene(await Promise.resolve(nodeOb));
 
     names.includes(data.name)? console.log('already there'): qo.allQueries.addQueryOb(structuredOb);
 
     return await structuredOb;
 
     async function labelsMatch(graphNode:object, newNode:object){
-        console.log(graphNode.label, newNode.type)
-        let node = graphNode.label == newNode.type? graphNode : neoAPI.addLabel(newNode);
-        console.log(node);
+        let type = newNode.type? newNode.type : newNode.label;
+        let node = graphNode.label == type? graphNode : neoAPI.addLabel(newNode);
         return await node;
     }
 }
