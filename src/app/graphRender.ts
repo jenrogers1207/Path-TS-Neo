@@ -14,17 +14,17 @@ export function removeThings(){
 
 export async function renderCalls(data: Object){
 
-    let selectedNames = qo.selected.queryKeeper.map(k=> k.name);
+        let selectedNames = qo.selected.queryKeeper.map(k=> k.name);
 
-    let sidebar = d3.select('#left-nav');
-    let callTable = sidebar.select('.call-table');
-    let geneDiv = callTable.selectAll('.gene').data([data]);
-    geneDiv.exit().remove();
+        let sidebar = d3.select('#left-nav');
+        let callTable = sidebar.select('.call-table');
+        let geneDiv = callTable.selectAll('.gene').data([data]);
+        geneDiv.exit().remove();
 
-    let variantData = data.properties.Variants.map(d=>{ 
-        d.tag = d.properties.Phenotypes[0][0].clinical_significances;
-        return d;
-    });
+        let variantData = data.properties.Variants.map(d=>{ 
+            d.tag = d.properties.Phenotypes[0][0].clinical_significances;
+            return d;
+        });
 
         let geneEnterDiv = geneDiv.enter().append('div').attr('class', d=> d.value).classed('gene', true);
         let geneHeader = geneEnterDiv.append('div').classed('gene-header', true);
@@ -40,7 +40,6 @@ export async function renderCalls(data: Object){
         });
       
         geneDiv = geneEnterDiv.merge(geneDiv);
-
 
         geneDiv.filter(d=> selectedNames.includes(d.name)).classed('selected', true);
 
@@ -125,6 +124,7 @@ export async function renderGeneDetail(data: Object, graph:Array<object>){
     });
     let phenoEnter = phenotype.enter().append('div').classed('pheno-wrap', true);
     let phenoSec = phenoEnter.append('text').text(d=> {
+        console.log('propblem child',d);
         let descript = typeof d.properties == 'string'? JSON.parse(d.properties) : d.properties;
         return descript.description});
 
@@ -171,20 +171,19 @@ export async function renderGeneDetail(data: Object, graph:Array<object>){
        console.log(d);
     
         let newNode = await search.addGene(d);
-      //  let geneNode = await app.isStored(graph, newNode).then(async(n)=>{
-       app.isStored(graph, newNode).then(async(n)=>{
+   
+        app.isStored(graph, newNode).then(async(n)=>{
            
             let varAlleles = await app.variantObjectMaker(n.properties.Variants);
-           
             let variants = await qo.structVariants(varAlleles);
             n.properties.Variants = variants;
-    
             let structuredPheno = await qo.structPheno(n.properties.Phenotypes, n.name);
             n.properties.Phenotypes.nodes = structuredPheno;
-    
             let enrighmentP = await search.searchStringEnrichment(n.name);
-    
             neoAPI.buildSubGraph(n);
+
+            let newGraph = await neoAPI.getGraph();
+            drawGraph(newGraph);
         });
       
 
@@ -195,13 +194,11 @@ export async function renderGeneDetail(data: Object, graph:Array<object>){
 
 }
 
-export function drawGraph(dataArr: Object, gnode:object) {
+export function drawGraph(graphArray: Object) {
 
     let selectedNames = qo.selected.queryKeeper.map(k=> k.name);
  
-    let data = dataArr[0];
-
-    console.log('in rrenderrr', data);
+    let data = graphArray[0];
 
     let canvas = d3.select('#graph-render').select('.graph-canvas'),
         width = +canvas.attr("width"),

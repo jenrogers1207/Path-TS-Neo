@@ -15,7 +15,7 @@ export async function addGene(d: object){
 
     let newNode = await initialSearch(geneOb);
    
-   // let geneNode = await initialSearch(geneOb);
+
     return newNode;
 }
 
@@ -57,9 +57,6 @@ export async function searchUniprot(value:string){
 
    // let req = await ky.get(url);
    let req =  await got(proxy+url);
-
-    console.log(req);
-    console.log(req);
 
 }
 
@@ -162,9 +159,8 @@ export async function searchStringEnrichment(value:string){
     let url2 = 'http://string-db.org/api/json/network?identifier=gjb2&limit=10&network_flavor=evidence%20Additional%20information%20about%20the%20API'
 
     let req =  await ky.get(proxy+url).json();
-  //  console.log(req);
     let req2 = await ky.get(proxy+url2).json();                                                                                                                 
-  //  console.log('req2', req2);
+
     return req;
 }
 
@@ -201,11 +197,9 @@ export async function getKegg(value: string, queryOb:object){
             return {key: keyz, values: val}
         });
 
-       // console.log('brite?', newData.filter(n=> n.key != "///" && n.key != ""));
-
         return newData.filter(n=> n.key != "///" && n.key != "");
     }
-    //queryOb.properties.kegg = await testRec(0, data);
+
     let keggData = await structureResponseData(0, data);
     let diseases = keggData.filter(d=> d.key == "DISEASE").map(f=> f.values)[0];
 
@@ -241,12 +235,10 @@ export async function getKegg(value: string, queryOb:object){
     queryOb.properties.Structure.NTSEQ = NTSEQ;
     queryOb.properties.Structure.ids = STRUCTURE;
     queryOb.properties.Structure.MOTIF = MOTIF;
-    console.log('in kegg', queryOb);
+
     queryOb.properties.Brite = queryOb.properties.Brite.kegg.map(b=>{
         if(b[0].match(/\d/)){
-            console.log(b);
             let tag = b.slice(1, (b.length))
-            console.log(tag);
             if(tag.length > 1){
                 return {'id': b[0], 'tag': tag.reduce((a, c)=> a.concat(' '+c)) }
             }else{return {'id': b[0], 'tag': tag } }

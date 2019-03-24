@@ -164,7 +164,7 @@ export async function structVariants(varArray: object){
        // let propOb = typeof props == "string"? JSON.parse(props):props;
       
         if(props.allelleAnnotations == undefined){
-            console.log(variantOb);
+       
             let snp = await search.loadSNP(variantOb.name);
             variantOb.properties.Type = snp.variant_type;
             variantOb.properties.Location.anchor = snp.anchor? snp.anchor : 'null';

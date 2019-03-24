@@ -215,20 +215,6 @@ export function setNodeProperty(type: string, name:string, prop:string, propValu
 }
 
 export async function getGraph() {
-/*
-   let command = 'OPTIONAL MATCH (v)-[m:Mutation]->(g) \
-    OPTIONAL MATCH (p)-[r:Pheno]->(v) \
-    OPTIONAL MATCH (n)-[i:Interacts]->(g)\
-    RETURN DISTINCT collect(distinct v) AS variant, collect(distinct p) AS phenotype, collect(distinct n) as inters,\
-    collect(distinct g) AS gene, collect(distinct r) AS phenoRel, collect(distinct m) AS mutationRel, collect(distinct i) as interRel'
-
-
-    let command = 'OPTIONAL MATCH (v)-[m:Mutation]->(g) \
-    OPTIONAL MATCH (p)-[r:Pheno]->(v) \
-    OPTIONAL MATCH (n)-[i:Interacts]->(g)\
-    RETURN DISTINCT collect(distinct v) AS variant, collect(distinct p) AS phenotype, collect(distinct n) as inters,\
-    g AS gene, collect(distinct r) AS phenoRel, collect(distinct m) AS mutationRel, collect(distinct i) as interRel'
-*/
 
     let command = 'match (n)-[r]-()\
     return collect(distinct n) as nodes, collect(distinct r) as rels'
@@ -239,12 +225,8 @@ export async function getGraph() {
         .run(command)
         .then(async function(result) {
     
-            //return result.records.map(r=> {
             return await result.records.map(r=> {
-                console.log(r.get('nodes'));
-                console.log(r.get('rels'));
-              //  console.log('results updated', r);
-
+           
               let nodes = r.get('nodes').map(n=> {
                 let node = new Object();
                 node.index = n.identity.low;
@@ -254,8 +236,6 @@ export async function getGraph() {
                 return node;
               });
 
-              console.log(nodes);
-
               let rels = r.get('rels').map(m=> {
                 let meh = new Object();
                 meh.start = m.start.low;
@@ -264,8 +244,6 @@ export async function getGraph() {
                 meh.type = m.type;
                 return meh;
               });
-
-              console.log(rels);
 
               let indexArray = nodes.map(n=> n.index);
               let rela = rels.map(r=> {

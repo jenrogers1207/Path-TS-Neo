@@ -23,23 +23,22 @@ dataLoad.loadFile().then(async (d)=> {
     geneOb.type = "Gene";
 
     let fileVariants = await variantObjectMaker(d[0].values);
-    let graph = await neoAPI.getGraph();//.then(g => {
-   
-    if(graph != undefined && graph != null){
-       
-     
-        let geneNode = await isStored(graph[0], geneOb);
+    let graphArray = await neoAPI.getGraph();//.then(g => {
  
+    if(graphArray[0].nodes.length != 0 && graphArray != undefined){
+        
+        let graph = graphArray[0];
 
-        let queryGenes = graph[0].nodes.filter(f=> f.label == 'Gene');
+        let geneNode = await isStored(graph, geneOb);
+ 
+        let queryGenes = graph.nodes.filter(f=> f.label == 'Gene');
         queryGenes.forEach(async (gene:object) => {
             await isStored(graph[0], gene)
-           // qo.allQueries.addQueryOb(await isStored(graph[0], gene))
         });
 
         console.log('querykeeperr',qo.allQueries.queryKeeper)
 
-        let graphVariants = graph[0].nodes.filter(d=> d.label == 'Variant');
+        let graphVariants = graph.nodes.filter(d=> d.label == 'Variant');
 
         //adding selectednode as the file gene
         qo.selected.addQueryOb(geneNode);
@@ -49,7 +48,7 @@ dataLoad.loadFile().then(async (d)=> {
 
         geneNode.properties.Variants = variantOb;
     
-        let graphPhenotypes = graph[0].nodes.filter(d=> d.label == 'Phenotype');
+        let graphPhenotypes = graph.nodes.filter(d=> d.label == 'Phenotype');
         let phenotypes = graphPhenotypes.length > 0? graphPhenotypes : await qo.structPheno(geneNode.properties.Phenotypes, geneNode.name);
         
         let uniqueNameArray = []
@@ -66,7 +65,7 @@ dataLoad.loadFile().then(async (d)=> {
 
         let enrighmentP = await search.searchStringEnrichment(geneNode.name);
 
-        let graphInteraction = graph[0].nodes.filter(d=> d.label == 'Interaction');
+        let graphInteraction = graph.nodes.filter(d=> d.label == 'Interaction');
       
         geneNode.properties.InteractionPartners = graphInteraction.map(int=> {
           
@@ -76,30 +75,35 @@ dataLoad.loadFile().then(async (d)=> {
 
       //  neoAPI.buildSubGraph(geneNode);
 
-        gCanvas.drawGraph(graph, geneNode);
+        gCanvas.drawGraph(graph);
         gCanvas.renderCalls(geneNode);
-        gCanvas.renderGeneDetail(geneNode, graph[0]);
+        gCanvas.renderGeneDetail(geneNode, graph);
   
         }else{
        
             search.initialSearch(geneOb).then(async n=> {
-               
-                let varAlleles = await variantObjectMaker(n.properties.Variants);
+                console.log(n);
+                let geneNode = await qo.structGene(n);
+                console.log(geneNode);
+                let varAlleles = await variantObjectMaker(geneNode.properties.Variants);
                 let variants = await updateVariants(fileVariants, varAlleles);
-                n.properties.Variants = variants;
+                geneNode.properties.Variants = variants;
 
-                let structuredPheno = await qo.structPheno(n.properties.Phenotypes, n.name);
-                n.properties.Phenotypes.nodes = structuredPheno;
+                let structuredPheno = await qo.structPheno(geneNode.properties.Phenotypes, n.name);
+                geneNode.properties.Phenotypes.nodes = structuredPheno;
 
-                let enrighmentP = await search.searchStringEnrichment(n.name);
+                let enrighmentP = await search.searchStringEnrichment(geneNode.name);
 
-                neoAPI.buildSubGraph(n);
-
-                let newGraph = await neoAPI.getGraph();
-                gCanvas.drawGraph(newGraph, n);
-                gCanvas.renderCalls(n);
-                gCanvas.renderGeneDetail(n, newGraph[1]);
-            
+                neoAPI.buildSubGraph(geneNode).then(()=> {
+                    neoAPI.getGraph().then(g=> {
+                        console.log('g',g);
+                        let graph = g[0];
+                        gCanvas.drawGraph(graph, geneNode);
+                        gCanvas.renderCalls(geneNode);
+                        gCanvas.renderGeneDetail(geneNode, graph);
+                        gCanvas.drawGraph(graph);
+                    });
+                });
         });
 
     }
