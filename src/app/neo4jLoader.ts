@@ -215,12 +215,20 @@ export function setNodeProperty(type: string, name:string, prop:string, propValu
 }
 
 export async function getGraph() {
-
+/*
    let command = 'OPTIONAL MATCH (v)-[m:Mutation]->(g) \
     OPTIONAL MATCH (p)-[r:Pheno]->(v) \
     OPTIONAL MATCH (n)-[i:Interacts]->(g)\
     RETURN DISTINCT collect(distinct v) AS variant, collect(distinct p) AS phenotype, collect(distinct n) as inters,\
+    collect(distinct g) AS gene, collect(distinct r) AS phenoRel, collect(distinct m) AS mutationRel, collect(distinct i) as interRel'
+*/
+
+    let command = 'OPTIONAL MATCH (v)-[m:Mutation]->(g) \
+    OPTIONAL MATCH (p)-[r:Pheno]->(v) \
+    OPTIONAL MATCH (n)-[i:Interacts]->(g)\
+    RETURN DISTINCT collect(distinct v) AS variant, collect(distinct p) AS phenotype, collect(distinct n) as inters,\
     g AS gene, collect(distinct r) AS phenoRel, collect(distinct m) AS mutationRel, collect(distinct i) as interRel'
+
 
   //  console.log('loading graph?');
 
@@ -228,9 +236,10 @@ export async function getGraph() {
 
     return session
         .run(command)
-        .then(function(result) {
-        
-            return result.records.map(r=> {
+        .then(async function(result) {
+    
+            //return result.records.map(r=> {
+            return await result.records.map(r=> {
 
               //  console.log('results updated', r);
             
@@ -244,7 +253,8 @@ export async function getGraph() {
                     return  gen;
                 });
 
-             //   console.log('gene', gene);
+                console.log('gene', gene);
+
                 let vars = r.get('variant').map(v=> {
                     let vari = new Object();
                     vari.index = v.identity.low;

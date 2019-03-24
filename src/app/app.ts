@@ -24,14 +24,17 @@ dataLoad.loadFile().then(async (d)=> {
 
     let fileVariants = await variantObjectMaker(d[0].values);
     let graph = await neoAPI.getGraph();//.then(g => {
-
+   
     if(graph != undefined && graph != null){
        
         console.log('graph', graph);
         let geneNode = await isStored(graph[0], geneOb);
         
         //adding to the selection now;
+        
         qo.selected.addQueryOb(geneNode);
+        console.log('graph', graph[0].nodes.filter(f=> f.label == 'Gene'));
+        console.log('querryKeeper', qo.allQueries.queryKeeper);
 
         let graphVariants = graph[0].nodes.filter(d=> d.label == 'Variant');
 
