@@ -221,16 +221,17 @@ export async function getGraph() {
     OPTIONAL MATCH (n)-[i:Interacts]->(g)\
     RETURN DISTINCT collect(distinct v) AS variant, collect(distinct p) AS phenotype, collect(distinct n) as inters,\
     collect(distinct g) AS gene, collect(distinct r) AS phenoRel, collect(distinct m) AS mutationRel, collect(distinct i) as interRel'
-*/
+
 
     let command = 'OPTIONAL MATCH (v)-[m:Mutation]->(g) \
     OPTIONAL MATCH (p)-[r:Pheno]->(v) \
     OPTIONAL MATCH (n)-[i:Interacts]->(g)\
     RETURN DISTINCT collect(distinct v) AS variant, collect(distinct p) AS phenotype, collect(distinct n) as inters,\
     g AS gene, collect(distinct r) AS phenoRel, collect(distinct m) AS mutationRel, collect(distinct i) as interRel'
+*/
 
-
-  //  console.log('loading graph?');
+    let command = 'match (n)-[r]-()\
+    return collect(distinct n) as nodes, collect(distinct r) as rels'
 
     var session = driver.session();
 
@@ -240,108 +241,48 @@ export async function getGraph() {
     
             //return result.records.map(r=> {
             return await result.records.map(r=> {
-
+                console.log(r.get('nodes'));
+                console.log(r.get('rels'));
               //  console.log('results updated', r);
-            
-                let gene = new Array(r.get('gene')).map(g=> {
-               
-                    let gen = new Object();
-                    gen.index = g.identity.low;
-                    gen.name = g.properties.name;
-                    gen.properties = g.properties;
-                    gen.label = g.labels[0];
-                    return  gen;
-                });
 
-                console.log('gene', gene);
+              let nodes = r.get('nodes').map(n=> {
+                let node = new Object();
+                node.index = n.identity.low;
+                node.name = n.properties.name;
+                node.properties = n.properties;
+                node.label = n.labels[0];
+                return node;
+              });
 
-                let vars = r.get('variant').map(v=> {
-                    let vari = new Object();
-                    vari.index = v.identity.low;
-                    vari.name = v.properties.name;
-                    vari.properties = v.properties;
-                    vari.label = v.labels[0];
-                    return vari;
-                });
+              console.log(nodes);
 
-              //  console.log('vars', vars);
+              let rels = r.get('rels').map(m=> {
+                let meh = new Object();
+                meh.start = m.start.low;
+                meh.end = m.end.low;
+                meh.index = m.identity.low;
+                meh.type = m.type;
+                return meh;
+              });
 
-                let pheno = r.get('phenotype').map(p=> {
-                    let ph = new Object();
-                    ph.index = p.identity.low;
-                    ph.name = p.properties.name;
-                    ph.properties = p.properties;
-                    ph.label = p.labels[0];
-                    return ph;
-                });
-               // console.log('pheno', pheno);
+              console.log(rels);
 
-                let interactNodes = r.get('inters').map(p=>{
-                    let ph = new Object();
-                    ph.index = p.identity.low;
-                    ph.name = p.properties.name;
-                    ph.properties = p.properties;
-                    ph.label = p.labels[0];
-                    return ph;
-                });
-
-                console.log('in get grraph',interactNodes);
-
-                let phenopaths = r.get('phenoRel').map(p=>{
-                    let ph = new Object();
-                    ph.start = p.start.low;
-                    ph.end = p.end.low;
-                    ph.index = p.identity.low;
-                    ph.type = p.type;
-                    return ph;
-                });
-
-                let mutationpaths = r.get('mutationRel').map(m=> {
-                    let meh = new Object();
-                    meh.start = m.start.low;
-                    meh.end = m.end.low;
-                    meh.index = m.identity.low;
-                    meh.type = m.type;
-                    return meh;
-                });
-
-                
-                let interpaths = r.get('interRel').map(p=>{
-                    let ph = new Object();
-                    ph.start = p.start.low;
-                    ph.end = p.end.low;
-                    ph.index = p.identity.low;
-                    ph.type = p.type;
-                    return ph;
-                });
-        
-                let nodes = gene.concat(vars, pheno, interactNodes);
-                let relations = phenopaths.concat(mutationpaths, interpaths);
-                let indexArray = nodes.map(n=> n.index);
-                let rels = relations.map(r=> {
+              let indexArray = nodes.map(n=> n.index);
+              let rela = rels.map(r=> {
                     var source = indexArray.indexOf(r.start);
                     var target = indexArray.indexOf(r.end);
                     return {'source': nodes[source].name, 'target': nodes[target].name}
                 })
 
-                let varNames = [];
-                let uniVars = [];
-
-                nodes.forEach(v=>{
-                    if(varNames.indexOf(v.name) == -1){
-                        varNames.push(v.name);
-                        uniVars.push(v);
-                    }
-                });
-
-                let nameArr = uniVars.map(d=> d.name)
+                let nameArr = nodes.map(d=> d.name)
           
-                let relInd = rels.map(v=>{
+                let relInd = rela.map(v=>{
                     return {'source': nameArr.indexOf(v.source), 'target': nameArr.indexOf(v.target) }
                 });
 
                 session.close();
-                return {nodes: uniVars, links: relInd };  
+                return {nodes: nodes, links: relInd };  
+               
         });
     })   
         .catch(function(error) {
