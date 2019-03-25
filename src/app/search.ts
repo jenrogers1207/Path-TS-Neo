@@ -37,13 +37,12 @@ export async function searchBySymbol(query:object) {
   
     let json = JSON.parse(req.body);
 
-    console.log('json', json)
-
     let idSearch = json.hits[0];
    
     let ids = { 'symbol': idSearch.symbol, 'ncbi': idSearch._id, 'entrezgene': idSearch.entrezgene, 'taxid': idSearch.taxid, 'description': idSearch.name };
     query.properties.Ids = ids
     query.properties.Description = idSearch.name;
+
     return query;
   // return props;
     
@@ -87,6 +86,8 @@ export async function searchOMIM(queryOb:any){
     let json = JSON.parse(req.body);
 
     let omim = json.omim.entryList[0].entry;
+
+    console.log('omim',omim);
 
     //add these more dynamically
     queryOb.properties.Variants = omim.allelicVariantList.map(p=> p['allelicVariant']);
@@ -202,16 +203,25 @@ export async function getKegg(value: string, queryOb:object){
     }
 
     let keggData = await structureResponseData(0, data);
-    let diseases = keggData.filter(d=> d.key == "DISEASE").map(f=> f.values)[0];
 
-    let matchDis = diseases.map(d=> {
-        let keggId = d[0];
-        let stringId = [];
-        for(let i = 1; i < d.length; i++){
-            stringId.push(d[i]);
-        }
-        return {'keggId': keggId, 'stringId': stringId};
-    });
+    console.log('keggData',keggData);
+
+    if(keggData.filter(d=> d.key == "DISEASE").length > 0){
+
+        let diseases = keggData.filter(d=> d.key == "DISEASE").map(f=> f.values)[0];
+
+        let matchDis = diseases.map(d=> {
+            let keggId = d[0];
+            let stringId = [];
+            for(let i = 1; i < d.length; i++){
+                stringId.push(d[i]);
+            }
+            return {'keggId': keggId, 'stringId': stringId};
+        });
+
+        queryOb.properties.Phenotypes.keggIDs = matchDis;
+    }
+    
 
     let keggOrthoID = keggData.filter(d=> d.key == "ORTHOLOGY").map(f=> f.values)[0];
     let keggBrite = keggData.filter(d=> d.key == "BRITE").map(f=> f.values)[0];
@@ -229,7 +239,7 @@ export async function getKegg(value: string, queryOb:object){
         queryOb.properties.Ids[el.key] = el.value;
     });
 
-    queryOb.properties.Phenotypes.keggIDs = matchDis;
+    
     queryOb.properties.Orthology.keggID = keggOrthoID[0][0]
     queryOb.properties.Brite.kegg = keggBrite;
     queryOb.properties.Structure.AASEQ = AASEQ;

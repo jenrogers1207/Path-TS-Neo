@@ -183,15 +183,23 @@ export async function renderGeneDetail(data: Object, graph:Array<object>){
     let addIcon = intEnter.append('i').attr('class', "fas fa-search-plus");
     addIcon.on('click', async function(d){
 
+        //THIS IS ADDING THE INTERRACTORAS A NEW GENE
+
         let newNode = await search.addGene(d);
+      
         app.isStored(graph, newNode).then(async(n)=>{
 
             let varAlleles = await app.variantObjectMaker(n.properties.Variants);
             let variants = await qo.structVariants(varAlleles);
             n.properties.Variants = variants;
-            let structuredPheno = await qo.structPheno(n.properties.Phenotypes, n.name);
-            n.properties.Phenotypes.nodes = structuredPheno;
-            let enrighmentP = await search.searchStringEnrichment(n.name);
+
+            if(n.properties.Phenotypes.nodes != undefined){
+                let structuredPheno = await qo.structPheno(n.properties.Phenotypes, n.name);
+                n.properties.Phenotypes.nodes = structuredPheno;
+            }
+           
+          //  let enrighmentP = await search.searchStringEnrichment(n.name);
+            console.log('n', n);
             neoAPI.buildSubGraph(n);
 
             let newGraph = await neoAPI.getGraph();
@@ -211,8 +219,6 @@ export function drawGraph(graphArray: Object) {
     let selectedNames = qo.selected.queryKeeper.map(k=> k.name);
  
     let data = graphArray;
-
-    console.log('is this working?', data);
 
     let canvas = d3.select('#graph-render').select('.graph-canvas'),
         width = +canvas.attr("width"),

@@ -3,7 +3,7 @@ import * as d3 from 'D3';
 import { readdirSync } from "fs";
 
 var neo4j = require('neo4j-driver').v1;
-var driver = neo4j.driver("bolt://localhost:11007", neo4j.auth.basic("neo4j", "123"));
+var driver = neo4j.driver("bolt://localhost:11004", neo4j.auth.basic("neo4j", "123"));
 var _ = require('lodash');
 
 export async function addLabel(node:object){
@@ -25,6 +25,38 @@ export async function addLabel(node:object){
     return node;
 }
 
+export async function setProperties(node:object){
+    
+    let prop = {};
+
+    console.log('node insetprops', node);
+       
+    let propKeys = d3.keys(node.properties);
+
+    propKeys.forEach(el => {
+        prop[el] = typeof node.properties[el] === 'string' ? node.properties[el] : JSON.stringify(node.properties[el]);
+    });
+
+    prop.name = node.name;
+    prop.type = node.type;
+
+    let command = 'MATCH (n {name:"'+node.name+'"}) SET n += $props RETURN n';
+    var session = driver.session();
+            session
+                .run(command, {props: prop})
+                .then(function(result) {
+
+                    console.log('reselt', result);
+                    session.close();
+                    console.log("adding to graph");
+                })
+                .catch(function(error:any) {
+                    console.log(error);
+                });
+                
+    return node;
+}
+
 export async function addNode(promOb:object, type:string){
 
     let queryOb = await Promise.resolve(promOb);
@@ -33,6 +65,7 @@ export async function addNode(promOb:object, type:string){
     if(node.length > 0){
        console.log(value +' already exists');
        console.log(node)
+       setProperties(queryOb);
        if(node[0].labels.includes(type)){
         console.log('already has label');
        }else{
@@ -69,8 +102,8 @@ export async function addNode(promOb:object, type:string){
 
 
 export async function addNodeArray(obArray:Array<object>){
-   
-    let names: Array<string> = obArray.map(v=> v.name);
+   console.log('in node array',obArray);
+    let names: Array<string> = await obArray.map(v=> v.name);
     let type = obArray[0].type;
 
     let originalNodes : Array<string> = await checkForNodeArray(names);
@@ -205,22 +238,6 @@ export async function checkForNodeArray(names:Array<string>) {
         });
 }
 
-export function setNodeProperty(type: string, name:string, prop:string, propValue:string) {
-    //
-    let command = 'MATCH (n:'+type+' {name: "' + name + '" }) UNWIND $props AS map SET n.' + prop + ' = map';
-     
-    var session = driver.session();
-
-    session
-        .run(command, {props: propValue})
-        .then(function(result:any) {
-            session.close();
-        })
-        .catch(function(error:any) {
-            console.log(error);
-        });
-
-}
 
 export async function getGraph() {
 
@@ -287,7 +304,7 @@ export async function addRelation(sourceName:string, sourceType:string, targetNa
         .run(command)
         .then(function(result) {
             session.close();
-            console.log(command, result)
+           
             return result;
         })
         .catch(function(error) {
@@ -298,7 +315,7 @@ export async function addRelation(sourceName:string, sourceType:string, targetNa
 
 export async function buildSubGraph(geneNode: object){
     
-    console.log('in build subgraph', geneNode);
+    console.log(geneNode.name+' in build subgraph', geneNode);
 
     
     await addNode(geneNode, geneNode.type);
@@ -306,27 +323,37 @@ export async function buildSubGraph(geneNode: object){
       
     let varObs = geneNode.properties.Variants;
   
-    addNodeArray(varObs).then(()=> {
-          varObs.forEach(v=>{
-              addRelation(v.name, v.type, geneNode.name, geneNode.type, 'Mutation');
-          });
-    })
-      
+    if(varObs != undefined){
+        addNodeArray(varObs).then(()=> {
+            varObs.forEach(v=>{
+                addRelation(v.name, v.type, geneNode.name, geneNode.type, 'Mutation');
+            });
+      })
+    }
 
+      
       //PHENOTYPES
+    
     let phenObs = geneNode.properties.Phenotypes;
-    addNodeArray(phenObs.nodes).then(()=> { 
-           //Phenotype varriant relations
-        structureRelation(phenObs.nodes, varObs, "Pheno");
-    })
+
+    if(phenObs.nodes != undefined){
+        addNodeArray(phenObs.nodes).then(()=> { 
+            //Phenotype varriant relations
+         structureRelation(phenObs.nodes, varObs, "Pheno");
+     })
+    }
+    
   
       let interactors = geneNode.properties.InteractionPartners;
       console.log(interactors);
-  
-      addNodeArray(interactors).then(()=> {
-          interactors.forEach(rel => {
-              addRelation(rel.name, 'Interaction', geneNode.name, 'Gene', 'Interacts');
-          });
-      })
+
+  if(interactors != undefined){
+    addNodeArray(interactors).then(()=> {
+        interactors.forEach(rel => {
+            addRelation(rel.name, 'Interaction', geneNode.name, 'Gene', 'Interacts');
+        });
+    })
+  }
+
   
   }

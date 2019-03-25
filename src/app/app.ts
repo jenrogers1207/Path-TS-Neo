@@ -50,10 +50,8 @@ dataLoad.loadFile().then(async (d)=> {
 
         selectedGene.properties.Variants = variantOb;
 
-        console.log('selectedgene', variantOb);
-    
         let graphPhenotypes = graph.nodes.filter(d=> d.label == 'Phenotype');
-        console.log('P', graphPhenotypes);
+     
         let phenotypes = graphPhenotypes.length > 0? graphPhenotypes : await qo.structPheno(selectedGene.properties.Phenotypes, selectedGene.name);
       
         selectedGene.properties.Phenotypes = phenotypes;
