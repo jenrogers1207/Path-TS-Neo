@@ -2,6 +2,7 @@ import "./styles.scss";
 import * as d3 from 'D3';
 import * as search from './search';
 import * as qo from './queryObject';
+import { BaseType } from "D3";
 const neoAPI = require('./neo4jLoader');
 const app = require('./app');
 
@@ -34,12 +35,24 @@ export async function renderCalls(promis: Array<object>){
         let geneHeader = geneEnterDiv.append('div').classed('gene-header', true);
 
         geneHeader.append('text').text(d=> d.name);
-        let geneIcon = geneHeader.append('i').attr('class', d=> d.name);
-        geneIcon.classed('fas fa-chevron-circle-down', true);;
 
-        geneHeader.on('click', function(d){
-          d3.select(this.nextSibling).classed('hidden')? d3.select(this.nextSibling).classed('hidden', false) : d3.select(this.nextSibling).classed('hidden', true);
-          let icon =  d3.select(this).select('i.'+d.name);
+   
+
+        let geneIcon = geneHeader.append('i').attr('class', d=> d.name);
+        geneIcon.classed('fas fa-chevron-circle-down', true);
+
+        let selectIcon = geneHeader.append('i').attr('class', "fas fa-binoculars");
+
+        selectIcon.on('click', function(d){
+            console.log('click', d);
+        });
+    
+        geneIcon.on('click', function(d){
+          let header:any = this.parentElement.nextSibling;
+        
+          d3.select(header).classed('hidden')? d3.select(header).classed('hidden', false) : d3.select(header).classed('hidden', true);
+          let icon =  d3.select(this.parentElement).select('i.'+d.name);
+        
           icon.classed('fa-chevron-circle-down') ? icon.attr('class', d.name+' fas fa-chevron-circle-up') : icon.attr('class', d.name+' fas fa-chevron-circle-down');
         });
       
@@ -108,6 +121,7 @@ export async function renderGeneDetail(data: Object, graph:Array<object>){
     let sidebar = d3.select('#left-nav');
     let geneDet = sidebar.select('.gene-detail');
     let geneHeader = geneDet.append('div').attr('class', 'detail-head').append('h4').text(data.name);
+  
    // let symbolBand = geneDet.append('div').classed('symbols', true).data(JSON.parse(data.Symbols));
     let propertyDivs = geneDet.selectAll('.prop-headers').data(headers);
     let propEnter = propertyDivs.enter().append('div').classed('prop-headers', true);
@@ -297,6 +311,7 @@ export function drawGraph(graphArray: Object) {
     node.on('click', (d) => {
        
         let mapped = qo.selected.queryKeeper.map(m=> m.name);
+
         if(mapped.includes(d.properties.name)){
             console.log('ALLREADY IN THE KEEPER');
             qo.selected.removeQueryOb(d.properties.name);
