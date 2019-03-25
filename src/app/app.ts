@@ -24,88 +24,86 @@ dataLoad.loadFile().then(async (d)=> {
 
     let fileVariants = await variantObjectMaker(d[0].values);
     let graphArray = await neoAPI.getGraph();//.then(g => {
- 
+
     if(graphArray[0].nodes.length != 0 && graphArray != undefined){
         
         let graph = graphArray[0];
 
-        let geneNode = await isStored(graph, geneOb);
- 
         let queryGenes = graph.nodes.filter(f=> f.label == 'Gene');
-        queryGenes.forEach(async (gene:object) => {
-            await isStored(graph[0], gene)
+
+        let queryKeeper = queryGenes.map(async (gene:object) => {
+            let ob = isStored(graph, gene);
+            return ob;
         });
 
-        console.log('querykeeperr',qo.allQueries.queryKeeper)
+        console.log('querykeeper', queryKeeper);
 
         let graphVariants = graph.nodes.filter(d=> d.label == 'Variant');
 
         //adding selectednode as the file gene
-        qo.selected.addQueryOb(geneNode);
-
-        let variants = await updateVariants(fileVariants, graphVariants)
+        let selectedGene = await Promise.resolve(queryKeeper[0]);
+        qo.selected.addQueryOb(selectedGene);
+        
+        let variants = await updateVariants(fileVariants, graphVariants);
+        
         let variantOb = await Promise.resolve(variants);
 
-        geneNode.properties.Variants = variantOb;
+        selectedGene.properties.Variants = variantOb;
+
+        console.log('selectedgene', variantOb);
     
         let graphPhenotypes = graph.nodes.filter(d=> d.label == 'Phenotype');
-        let phenotypes = graphPhenotypes.length > 0? graphPhenotypes : await qo.structPheno(geneNode.properties.Phenotypes, geneNode.name);
-        
-        let uniqueNameArray = []
-        let uniquePheno = []
+        console.log('P', graphPhenotypes);
+        let phenotypes = graphPhenotypes.length > 0? graphPhenotypes : await qo.structPheno(selectedGene.properties.Phenotypes, selectedGene.name);
+      
+        selectedGene.properties.Phenotypes = phenotypes;
 
-        phenotypes.forEach(pheno => {
-            if(uniqueNameArray.indexOf(pheno.name) == -1){
-                uniqueNameArray.push(pheno.name);
-                uniquePheno.push(pheno);
-            }
-        });
- 
-        geneNode.properties.Phenotypes = uniquePheno;
-
-        let enrighmentP = await search.searchStringEnrichment(geneNode.name);
+      //  let enrighmentP = search.searchStringEnrichment(selectedGene.name);
 
         let graphInteraction = graph.nodes.filter(d=> d.label == 'Interaction');
       
-        geneNode.properties.InteractionPartners = graphInteraction.map(int=> {
+        selectedGene.properties.InteractionPartners = graphInteraction.map(int=> {
           
             int.properties = int.properties.properties? JSON.parse(int.properties.properties) : int.properties;
             return int;
         });
 
-      //  neoAPI.buildSubGraph(geneNode);
+        
+
+      //  neoAPI.buildSubGraph(selectedGene);
 
         gCanvas.drawGraph(graph);
-        gCanvas.renderCalls(geneNode);
-        gCanvas.renderGeneDetail(geneNode, graph);
+        gCanvas.renderCalls(queryKeeper);
+        gCanvas.renderGeneDetail(selectedGene, graph);
   
         }else{
        
-            search.initialSearch(geneOb).then(async n=> {
-                console.log(n);
-                let geneNode = await qo.structGene(n);
-                console.log(geneNode);
-                let varAlleles = await variantObjectMaker(geneNode.properties.Variants);
+            search.initialSearch(geneOb).then(async no=> {
+                
+                let varAlleles = await variantObjectMaker(no.properties.Variants);
                 let variants = await updateVariants(fileVariants, varAlleles);
-                geneNode.properties.Variants = variants;
+                no.properties.Variants = variants;
 
-                let structuredPheno = await qo.structPheno(geneNode.properties.Phenotypes, n.name);
-                geneNode.properties.Phenotypes.nodes = structuredPheno;
+                let structuredPheno = await qo.structPheno(no.properties.Phenotypes, no.name);
+                no.properties.Phenotypes.nodes = structuredPheno;
 
-                let enrighmentP = await search.searchStringEnrichment(geneNode.name);
+                let enrighmentP = await search.searchStringEnrichment(no.name);
+    
 
-                neoAPI.buildSubGraph(geneNode).then(()=> {
+                neoAPI.buildSubGraph(no).then(()=> {
+
                     neoAPI.getGraph().then(g=> {
+
                         console.log('g',g);
+                        
                         let graph = g[0];
-                        gCanvas.drawGraph(graph, geneNode);
-                        gCanvas.renderCalls(geneNode);
-                        gCanvas.renderGeneDetail(geneNode, graph);
+                        gCanvas.drawGraph(graph, no);
+                        gCanvas.renderCalls(no);
+                        gCanvas.renderGeneDetail(no, graph);
                         gCanvas.drawGraph(graph);
                     });
                 });
         });
-
     }
 });
 
@@ -124,6 +122,7 @@ export async function variantObjectMaker(varArray: Array<object>){
           keys.map(key=> {
               variant.properties[key.toString()] = v[key];
           });
+
           variant.properties.associatedGene = v.gene? v.gene : null;
           variant.properties.description = variant.name;
           variant.properties.Ids.dbSnp = name;
@@ -133,14 +132,13 @@ export async function variantObjectMaker(varArray: Array<object>){
 
 export async function isStored(graph: object, data:object){
 
-    let names = qo.allQueries.queryKeeper.map(k=> {return  k.name });
-    
-    let foundGraphNodes = graph.nodes.filter(n=> n.name == data.name);
-    let nodeOb = foundGraphNodes.length > 0 ? labelsMatch(foundGraphNodes[0], data) : await search.initialSearch(data);
-    console.log('node ob', nodeOb);
-    let structuredOb = await qo.structGene(await Promise.resolve(nodeOb));
+   // let names = qo.allQueries.queryKeeper.map(k=> {return  k.name });
 
-    names.includes(data.name)? console.log('already there'): qo.allQueries.addQueryOb(structuredOb);
+    let foundGraphNodes = graph.nodes.filter(n=> n.name == data.name);
+
+    let nodeOb = foundGraphNodes.length > 0 ? labelsMatch(foundGraphNodes[0], data) : await search.initialSearch(data);
+
+    let structuredOb = await qo.structGene(nodeOb);
 
     return await structuredOb;
 

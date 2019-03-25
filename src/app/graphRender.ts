@@ -12,19 +12,23 @@ export function removeThings(){
     d3.select('#gene-id').selectAll('*').remove();
 }
 
-export async function renderCalls(data: Object){
+export async function renderCalls(promis: Array<object>){
 
         let selectedNames = qo.selected.queryKeeper.map(k=> k.name);
 
+        let data = await Promise.all(promis)
+        console.log(data);
+
         let sidebar = d3.select('#left-nav');
         let callTable = sidebar.select('.call-table');
-        let geneDiv = callTable.selectAll('.gene').data([data]);
+        let geneDiv = callTable.selectAll('.gene').data(data);
         geneDiv.exit().remove();
-
+/*
         let variantData = data.properties.Variants.map(d=>{ 
             d.tag = d.properties.Phenotypes[0][0].clinical_significances;
             return d;
-        });
+        });*/
+      
 
         let geneEnterDiv = geneDiv.enter().append('div').attr('class', d=> d.value).classed('gene', true);
         let geneHeader = geneEnterDiv.append('div').classed('gene-header', true);
@@ -45,7 +49,13 @@ export async function renderCalls(data: Object){
 
         let variantBox = geneDiv.append('div').classed('variant-wrapper', true);
     
-        let variants = variantBox.selectAll('.variant').data(variantData);
+        let variants = variantBox.selectAll('.variant').data((dat)=> {
+            console.log('dat',dat)
+            return dat.properties.Variants.map(d=>{ 
+                d.tag = d.properties.Phenotypes[0][0].clinical_significances;
+                return d;
+            });
+        });
         variants.exit().remove();
         let varEnter = variants.enter().append('div').classed('variant', true);
         let varHead = varEnter.append('div').classed('var-head', true)//.append('h5').text(d=>d.name);
@@ -90,7 +100,7 @@ export async function renderCalls(data: Object){
 export async function renderGeneDetail(data: Object, graph:Array<object>){
  
     let headers = d3.keys(data.properties).filter(d=> d != 'References' && d !='Variants'  && d != 'name');
-    console.log(data);
+
     let sidebar = d3.select('#left-nav');
     let geneDet = sidebar.select('.gene-detail');
     let geneHeader = geneDet.append('div').attr('class', 'detail-head').append('h4').text(data.name);
@@ -124,7 +134,7 @@ export async function renderGeneDetail(data: Object, graph:Array<object>){
     });
     let phenoEnter = phenotype.enter().append('div').classed('pheno-wrap', true);
     let phenoSec = phenoEnter.append('text').text(d=> {
-        console.log('propblem child',d);
+
         let descript = typeof d.properties == 'string'? JSON.parse(d.properties) : d.properties;
         return descript.description});
 
@@ -168,12 +178,10 @@ export async function renderGeneDetail(data: Object, graph:Array<object>){
     intEnter.append('text').text(d=> d.name);
     let addIcon = intEnter.append('i').attr('class', "fas fa-search-plus");
     addIcon.on('click', async function(d){
-       console.log(d);
-    
+
         let newNode = await search.addGene(d);
-   
         app.isStored(graph, newNode).then(async(n)=>{
-           
+
             let varAlleles = await app.variantObjectMaker(n.properties.Variants);
             let variants = await qo.structVariants(varAlleles);
             n.properties.Variants = variants;
@@ -198,7 +206,9 @@ export function drawGraph(graphArray: Object) {
 
     let selectedNames = qo.selected.queryKeeper.map(k=> k.name);
  
-    let data = graphArray[0];
+    let data = graphArray;
+
+    console.log('isthis working?');
 
     let canvas = d3.select('#graph-render').select('.graph-canvas'),
         width = +canvas.attr("width"),

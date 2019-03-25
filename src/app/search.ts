@@ -15,7 +15,6 @@ export async function addGene(d: object){
 
     let newNode = await initialSearch(geneOb);
    
-
     return newNode;
 }
 
