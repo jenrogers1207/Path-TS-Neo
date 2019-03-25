@@ -36,8 +36,6 @@ dataLoad.loadFile().then(async (d)=> {
             return ob;
         });
 
-        console.log('querykeeper', queryKeeper);
-
         let graphVariants = graph.nodes.filter(d=> d.label == 'Variant');
 
         //adding selectednode as the file gene
@@ -68,9 +66,9 @@ dataLoad.loadFile().then(async (d)=> {
 
       //  neoAPI.buildSubGraph(selectedGene);
 
-        gCanvas.drawGraph(graph);
+        gCanvas.drawGraph(graph, [selectedGene]);
         gCanvas.renderCalls(queryKeeper);
-        gCanvas.renderGeneDetail(selectedGene, graph);
+        gCanvas.renderGeneDetail([selectedGene], graph);
   
         }else{
        
@@ -90,8 +88,6 @@ dataLoad.loadFile().then(async (d)=> {
 
                     neoAPI.getGraph().then(g=> {
 
-                        console.log('g',g);
-                        
                         let graph = g[0];
                         gCanvas.drawGraph(graph, no);
                         gCanvas.renderCalls(no);

@@ -36,23 +36,22 @@ export async function renderCalls(promis: Array<object>){
 
         geneHeader.append('text').text(d=> d.name);
 
-   
-
         let geneIcon = geneHeader.append('i').attr('class', d=> d.name);
         geneIcon.classed('fas fa-chevron-circle-down', true);
 
         let selectIcon = geneHeader.append('i').attr('class', "fas fa-binoculars");
 
-        selectIcon.on('click', function(d){
-            console.log('click', d);
+        selectIcon.on('click', async function(d){
+           
+            let graph = neoAPI.getGraph();
+            renderGeneDetail(d, graph);
+            drawGraph(graph, [d]);
         });
     
         geneIcon.on('click', function(d){
           let header:any = this.parentElement.nextSibling;
-        
           d3.select(header).classed('hidden')? d3.select(header).classed('hidden', false) : d3.select(header).classed('hidden', true);
           let icon =  d3.select(this.parentElement).select('i.'+d.name);
-        
           icon.classed('fa-chevron-circle-down') ? icon.attr('class', d.name+' fas fa-chevron-circle-up') : icon.attr('class', d.name+' fas fa-chevron-circle-down');
         });
       
@@ -115,11 +114,12 @@ export async function renderCalls(promis: Array<object>){
 }
 
 export async function renderGeneDetail(data: Object, graph:Array<object>){
- 
+    console.log('inrenderdetail', data);
     let headers = d3.keys(data.properties).filter(d=> d != 'References' && d !='Variants'  && d != 'name');
 
     let sidebar = d3.select('#left-nav');
     let geneDet = sidebar.select('.gene-detail');
+    geneDet.selectAll('*').remove();
     let geneHeader = geneDet.append('div').attr('class', 'detail-head').append('h4').text(data.name);
   
    // let symbolBand = geneDet.append('div').classed('symbols', true).data(JSON.parse(data.Symbols));
@@ -131,7 +131,6 @@ export async function renderGeneDetail(data: Object, graph:Array<object>){
     propEnter.append('div').attr('class', (d)=> d+' detail-wrapper');
 
     propHead.on('click', function(d){
-
         d3.select(this.nextSibling).classed('hidden')? d3.select(this.nextSibling).classed('hidden', false) : d3.select(this.nextSibling).classed('hidden', true);
         let icon =  d3.select(this).select('i.'+d);
         icon.classed('fa-chevron-circle-down') ? icon.attr('class', d+' fas fa-chevron-circle-up') : icon.attr('class', d+' fas fa-chevron-circle-down');
@@ -146,15 +145,19 @@ export async function renderGeneDetail(data: Object, graph:Array<object>){
     let locEnter = location.enter().append('div').classed('location', true);
     let locSec = locEnter.append('text').text(d=> d.key + ': ' + d.value);
 
-    let phenotype = propEnter.filter(d=> d == "Phenotypes").select('.detail-wrapper').selectAll('.pheno-wrap').data(d=> {
-        let phenoD = data.properties[d].map(p=> p.properties);
-        return phenoD;
-    });
-    let phenoEnter = phenotype.enter().append('div').classed('pheno-wrap', true);
-    let phenoSec = phenoEnter.append('text').text(d=> {
 
-        let descript = typeof d.properties == 'string'? JSON.parse(d.properties) : d.properties;
-        return descript.description});
+  
+    if(data[0].properties.Phenotypes.length != undefined){
+        let phenotype = propEnter.filter(d=> d == "Phenotypes").select('.detail-wrapper').selectAll('.pheno-wrap').data(d=> {
+                let phenoD = data.properties[d].map(p=> p.properties);
+                return phenoD;
+        });
+        let phenoEnter = phenotype.enter().append('div').classed('pheno-wrap', true);
+        let phenoSec = phenoEnter.append('text').text(d=> {   
+            let descript = typeof d.properties == 'string'? JSON.parse(d.properties) : d.properties;
+                return descript.description});
+    }
+   
 
     let titles = propEnter.filter(d=> d == "Titles").select('.detail-wrapper').selectAll('.title').data(d=> {return d3.entries(data.properties[d])});
     let titleEnter = titles.enter().append('div').classed('title sections', true);
@@ -213,7 +216,6 @@ export async function renderGeneDetail(data: Object, graph:Array<object>){
             }
            
           //  let enrighmentP = await search.searchStringEnrichment(n.name);
-            console.log('n', n);
             neoAPI.buildSubGraph(n);
 
             let newGraph = await neoAPI.getGraph();
@@ -228,9 +230,12 @@ export async function renderGeneDetail(data: Object, graph:Array<object>){
 
 }
 
-export function drawGraph(graphArray: Object) {
+export function drawGraph(graphArray: Object, selectedGene: Array<object>) {
 
-    let selectedNames = qo.selected.queryKeeper.map(k=> k.name);
+    //let selectedNames = qo.selected.queryKeeper.map(k=> k.name);
+    let selectedNames = selectedGene.map(m=> m.name);
+
+    console.log('in draw graph',selectedNames);
  
     let data = graphArray;
 
@@ -303,14 +308,17 @@ export function drawGraph(graphArray: Object) {
     let labels = geneNode.append('text').text(d => d.name).style('color', '#ffffff').attr('x', 0)
         .attr('y', 3).attr('text-anchor', 'middle');
 
-    node.append("title")
+    nodeEnter.append("title")
         .text(function(d) { return d.name; });
 
     node = nodeEnter.merge(node);
 
-    node.on('click', (d) => {
+    node.on('click', function(d){
        
         let mapped = qo.selected.queryKeeper.map(m=> m.name);
+        canvas.select('.nodes').selectAll('.selected').classed('selected', false);
+      //  node.filter(d=> selectedNames.includes(d.properties.name)).classed('selected', true);
+        d3.select(this).classed('selected', true);
 
         if(mapped.includes(d.properties.name)){
             console.log('ALLREADY IN THE KEEPER');
@@ -318,8 +326,9 @@ export function drawGraph(graphArray: Object) {
         }else{
             qo.selected.addQueryOb(d.properties);
         }
-
-      //  drawGraph(dataArr, gnode);
+      //  link.selectAll('*').remove();
+     //   node.selectAll('*');
+     //   drawGraph(data, [d]);
       //  renderCalls(gnode);
         
     });
