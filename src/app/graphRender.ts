@@ -50,11 +50,15 @@ export async function renderCalls(promis: Array<object>){
         let variantBox = geneDiv.append('div').classed('variant-wrapper', true);
     
         let variants = variantBox.selectAll('.variant').data((dat)=> {
-            console.log('dat',dat)
-            return dat.properties.Variants.map(d=>{ 
-                d.tag = d.properties.Phenotypes[0][0].clinical_significances;
-                return d;
-            });
+            console.log('dat',dat);
+            if(dat.properties.Variants != undefined){
+                return dat.properties.Variants.map(d=>{ 
+                    d.tag = d.properties.Phenotypes[0][0].clinical_significances;
+                    return d;
+                });
+                
+            }else return [];
+    
         });
         variants.exit().remove();
         let varEnter = variants.enter().append('div').classed('variant', true);
@@ -208,7 +212,7 @@ export function drawGraph(graphArray: Object) {
  
     let data = graphArray;
 
-    console.log('isthis working?');
+    console.log('is this working?', data);
 
     let canvas = d3.select('#graph-render').select('.graph-canvas'),
         width = +canvas.attr("width"),
@@ -244,8 +248,14 @@ export function drawGraph(graphArray: Object) {
     node.exit().remove();
     let nodeEnter = node
         .enter().append("g")
-        .attr("class", d => {
-            return "node " + d.label;
+        .attr("class", function(d) {
+
+            if(d.label.includes('Gene')){
+                return "node Gene"
+            }else{
+                return "node " + d.label[0];
+            }
+           
         });
 
     let circles = nodeEnter.append('circle')

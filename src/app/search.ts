@@ -37,6 +37,8 @@ export async function searchBySymbol(query:object) {
   
     let json = JSON.parse(req.body);
 
+    console.log('json', json)
+
     let idSearch = json.hits[0];
    
     let ids = { 'symbol': idSearch.symbol, 'ncbi': idSearch._id, 'entrezgene': idSearch.entrezgene, 'taxid': idSearch.taxid, 'description': idSearch.name };

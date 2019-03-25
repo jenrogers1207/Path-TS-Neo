@@ -119,7 +119,9 @@ export async function structGene(g: object){
 
     let geneOb = ob.properties;
     let node = new GeneObject(ob.name, 'Gene');
-    node.type = ob.label? ob.label : ob.type;
+    node.label = ob.label? ob.label : ob.type;
+
+    node.type = ob.type? ob.type: ob.label[0];
     /*
     node.properties.Ids.ncbi = geneOb.ncbi;
     node.properties.Ids.sequenceID =  geneOb.sequenceID;

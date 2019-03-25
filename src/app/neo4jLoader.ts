@@ -27,12 +27,12 @@ export async function addLabel(node:object){
 
 export async function addNode(promOb:object, type:string){
 
-  
     let queryOb = await Promise.resolve(promOb);
     let value = queryOb.name? queryOb.name : queryOb.properties.name;
     let node = await checkForNode(value, type);
     if(node.length > 0){
        console.log(value +' already exists');
+       console.log(node)
        if(node[0].labels.includes(type)){
         console.log('already has label');
        }else{
@@ -240,7 +240,7 @@ export async function getGraph() {
                 node.index = n.identity.low;
                 node.name = n.properties.name;
                 node.properties = n.properties;
-                node.label = n.labels[0];
+                node.label = n.labels;
                 return node;
               });
 

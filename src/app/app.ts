@@ -29,7 +29,7 @@ dataLoad.loadFile().then(async (d)=> {
         
         let graph = graphArray[0];
 
-        let queryGenes = graph.nodes.filter(f=> f.label == 'Gene');
+        let queryGenes = graph.nodes.filter(f=> f.label.includes('Gene'));
 
         let queryKeeper = queryGenes.map(async (gene:object) => {
             let ob = isStored(graph, gene);
@@ -67,8 +67,6 @@ dataLoad.loadFile().then(async (d)=> {
             int.properties = int.properties.properties? JSON.parse(int.properties.properties) : int.properties;
             return int;
         });
-
-        
 
       //  neoAPI.buildSubGraph(selectedGene);
 
