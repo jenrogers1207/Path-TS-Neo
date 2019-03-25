@@ -13,23 +13,26 @@ export function removeThings(){
     d3.select('#gene-id').selectAll('*').remove();
 }
 
-export async function renderCalls(promis: Array<object>){
+export async function changeSelectedClasses(dataArray: Array<object>){
+    let selected = dataArray.map(m=> m.name);
+    d3.select('body').selectAll('.selected').classed('selected', false);
+    d3.select('.call-table')
+}
 
-        let selectedNames = qo.selected.queryKeeper.map(k=> k.name);
+export async function renderCalls(promis: Array<object>, selectedNode:Array<object>){
+
+      //  let selectedNames = qo.selected.queryKeeper.map(k=> k.name);
+        let selectedNames = selectedNode.map(k=> k.name);
 
         let data = await Promise.all(promis)
-        console.log(data);
-
+      
         let sidebar = d3.select('#left-nav');
         let callTable = sidebar.select('.call-table');
+
+        callTable.selectAll('*').remove();
+
         let geneDiv = callTable.selectAll('.gene').data(data);
         geneDiv.exit().remove();
-/*
-        let variantData = data.properties.Variants.map(d=>{ 
-            d.tag = d.properties.Phenotypes[0][0].clinical_significances;
-            return d;
-        });*/
-      
 
         let geneEnterDiv = geneDiv.enter().append('div').attr('class', d=> d.value).classed('gene', true);
         let geneHeader = geneEnterDiv.append('div').classed('gene-header', true);
@@ -43,9 +46,10 @@ export async function renderCalls(promis: Array<object>){
 
         selectIcon.on('click', async function(d){
            
-            let graph = neoAPI.getGraph();
-            renderGeneDetail(d, graph);
-            drawGraph(graph, [d]);
+            let graph = await neoAPI.getGraph();
+            renderGeneDetail([d], graph);
+            drawGraph(graph[0], [d]);
+            renderCalls(promis, [d]);
         });
     
         geneIcon.on('click', function(d){
@@ -113,8 +117,9 @@ export async function renderCalls(promis: Array<object>){
         });
 }
 
-export async function renderGeneDetail(data: Object, graph:Array<object>){
-    console.log('inrenderdetail', data);
+export async function renderGeneDetail(dataArray: Array<object>, graph:object){
+    
+    let data = dataArray[0];
     let headers = d3.keys(data.properties).filter(d=> d != 'References' && d !='Variants'  && d != 'name');
 
     let sidebar = d3.select('#left-nav');
@@ -144,10 +149,8 @@ export async function renderGeneDetail(data: Object, graph:Array<object>){
     let location = propEnter.filter(d=> d == "Location").select('.detail-wrapper').selectAll('.location').data(d=> d3.entries(data.properties[d]));
     let locEnter = location.enter().append('div').classed('location', true);
     let locSec = locEnter.append('text').text(d=> d.key + ': ' + d.value);
-
-
   
-    if(data[0].properties.Phenotypes.length != undefined){
+    if(data.properties.Phenotypes.length > 0){
         let phenotype = propEnter.filter(d=> d == "Phenotypes").select('.detail-wrapper').selectAll('.pheno-wrap').data(d=> {
                 let phenoD = data.properties[d].map(p=> p.properties);
                 return phenoD;
@@ -219,11 +222,8 @@ export async function renderGeneDetail(data: Object, graph:Array<object>){
             neoAPI.buildSubGraph(n);
 
             let newGraph = await neoAPI.getGraph();
-            drawGraph(newGraph);
+            //drawGraph(newGraph);
         });
-      
-
-    
     });
 
     propertyDivs = propEnter.merge(propertyDivs);
@@ -236,6 +236,7 @@ export function drawGraph(graphArray: Object, selectedGene: Array<object>) {
     let selectedNames = selectedGene.map(m=> m.name);
 
     console.log('in draw graph',selectedNames);
+   
  
     let data = graphArray;
 
@@ -243,6 +244,9 @@ export function drawGraph(graphArray: Object, selectedGene: Array<object>) {
         width = +canvas.attr("width"),
         height = +canvas.attr("height"),
         radius = 20;
+
+    canvas.select('.links').selectAll('*').remove();
+    canvas.select('.nodes').selectAll('*').remove();
 
     // Define the div for the tooltip
     var toolDiv = d3.select('.tooltip');
@@ -290,7 +294,7 @@ export function drawGraph(graphArray: Object, selectedGene: Array<object>) {
             .on("end", dragended))
          //   .on('dblclick', connectedNodes); 
 
-    let geneNode = nodeEnter.filter(d => d.label == 'Gene');
+    let geneNode = nodeEnter.filter(d => d.label.includes('Gene'));
 
     nodeEnter.filter(d=> selectedNames.includes(d.name)).classed('selected', true);
 
@@ -313,24 +317,22 @@ export function drawGraph(graphArray: Object, selectedGene: Array<object>) {
 
     node = nodeEnter.merge(node);
 
-    node.on('click', function(d){
+    node.on('click', async function(d){
        
         let mapped = qo.selected.queryKeeper.map(m=> m.name);
         canvas.select('.nodes').selectAll('.selected').classed('selected', false);
-      //  node.filter(d=> selectedNames.includes(d.properties.name)).classed('selected', true);
         d3.select(this).classed('selected', true);
+        let newSelected = await qo.structGene(d);
+        let queryKeeper = qo.allQueries.queryKeeper.map(m=> m);
+        renderGeneDetail([newSelected], graphArray);
+        renderCalls(queryKeeper, [newSelected]);
 
         if(mapped.includes(d.properties.name)){
             console.log('ALLREADY IN THE KEEPER');
             qo.selected.removeQueryOb(d.properties.name);
         }else{
             qo.selected.addQueryOb(d.properties);
-        }
-      //  link.selectAll('*').remove();
-     //   node.selectAll('*');
-     //   drawGraph(data, [d]);
-      //  renderCalls(gnode);
-        
+        }      
     });
 
     node.on("mouseover", function(d) {
@@ -341,7 +343,6 @@ export function drawGraph(graphArray: Object, selectedGene: Array<object>) {
                 toolDiv.html(JSON.parse(d.properties.properties).description + "<br/>")
                 .style("left", (d3.event.pageX) + "px")
                 .style("top", (d3.event.pageY - 28) + "px");
-
             }else{
                 toolDiv.html(d.name + "<br/>")
                 .style("left", (d3.event.pageX) + "px")
@@ -353,21 +354,8 @@ export function drawGraph(graphArray: Object, selectedGene: Array<object>) {
             toolDiv.transition()
                 .duration(500)
                 .style("opacity", 0);
-        });
-
-//YOU NEED TO FIX THE SELECTED NODE
-
-        /*
-    let selectedNode = node.filter(d => {
-      
-        node.classed('selected', false);
-        return SelectedOb != null ? d.title == SelectedOb.name : null;
     });
 
-    selectedNode != null ? selectedNode.classed('selected', true) : console.log('no node');
-
-    SelectedOb != null ? drawSelectedPanel(SelectedOb) : console.log('no code');
-*/
     simulation
         .nodes(data.nodes)
         .on("tick", ticked);

@@ -33,6 +33,7 @@ dataLoad.loadFile().then(async (d)=> {
 
         let queryKeeper = queryGenes.map(async (gene:object) => {
             let ob = isStored(graph, gene);
+            qo.allQueries.addQueryOb(ob);
             return ob;
         });
 
@@ -59,7 +60,6 @@ dataLoad.loadFile().then(async (d)=> {
         let graphInteraction = graph.nodes.filter(d=> d.label == 'Interaction');
       
         selectedGene.properties.InteractionPartners = graphInteraction.map(int=> {
-          
             int.properties = int.properties.properties? JSON.parse(int.properties.properties) : int.properties;
             return int;
         });
@@ -67,7 +67,7 @@ dataLoad.loadFile().then(async (d)=> {
       //  neoAPI.buildSubGraph(selectedGene);
 
         gCanvas.drawGraph(graph, [selectedGene]);
-        gCanvas.renderCalls(queryKeeper);
+        gCanvas.renderCalls(queryKeeper, [selectedGene]);
         gCanvas.renderGeneDetail([selectedGene], graph);
   
         }else{
