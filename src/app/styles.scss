@@ -314,3 +314,28 @@ i {
     border-top: .5px solid rgb(43, 117, 255);
     // cursor: pointer;
 }
+
+.graph-canvas .pheno-wrap {
+    padding-top: 75px;
+    padding-left: 300px;
+    width: inherit;
+    height: inherit;
+}
+
+.pheno-tab circle.pheno-g {
+    fill: coral;
+    r: 10px;
+    opacity: .7;
+}
+
+.pheno-tab circle.pheno-c {
+    fill: #9ACD32;
+    r: 20px;
+    opacity: .7;
+}
+
+.pheno-tab circle.pheno-v {
+    fill: #9ACD32;
+    r: 5px;
+    opacity: .7;
+}
