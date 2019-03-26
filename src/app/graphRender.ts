@@ -2,6 +2,9 @@ import "./styles.scss";
 import * as d3 from 'D3';
 import * as search from './search';
 import * as qo from './queryObject';
+import { BaseType } from "D3";
+const neoAPI = require('./neo4jLoader');
+const app = require('./app');
 
 export function removeThings(){
     d3.select('#linked-pathways').selectAll('*').remove();
@@ -10,41 +13,69 @@ export function removeThings(){
     d3.select('#gene-id').selectAll('*').remove();
 }
 
-export async function renderCalls(data: Object){
+export async function changeSelectedClasses(dataArray: Array<object>){
+    let selected = dataArray.map(m=> m.name);
+    d3.select('body').selectAll('.selected').classed('selected', false);
+    d3.select('.call-table')
+}
 
-    let selectedNames = qo.selected.queryKeeper.map(k=> k.name);
+export async function renderCalls(promis: Array<object>, selectedNode:Array<object>){
 
-    let sidebar = d3.select('#left-nav');
-    let callTable = sidebar.select('.call-table');
-    let geneDiv = callTable.selectAll('.gene').data([data]);
-    geneDiv.exit().remove();
+      //  let selectedNames = qo.selected.queryKeeper.map(k=> k.name);
+        let selectedNames = selectedNode.map(k=> k.name);
 
-    let variantData = data.properties.Variants.map(d=>{ 
-        d.tag = d.properties.Phenotypes[0][0].clinical_significances;
-        return d;
-    });
+        let data = await Promise.all(promis)
+      
+        let sidebar = d3.select('#left-nav');
+        let callTable = sidebar.select('.call-table');
+
+        callTable.selectAll('*').remove();
+
+        let geneDiv = callTable.selectAll('.gene').data(data);
+        geneDiv.exit().remove();
 
         let geneEnterDiv = geneDiv.enter().append('div').attr('class', d=> d.value).classed('gene', true);
         let geneHeader = geneEnterDiv.append('div').classed('gene-header', true);
 
         geneHeader.append('text').text(d=> d.name);
-        let geneIcon = geneHeader.append('i').attr('class', d=> d.name);
-        geneIcon.classed('fas fa-chevron-circle-down', true);;
 
-        geneHeader.on('click', function(d){
-          d3.select(this.nextSibling).classed('hidden')? d3.select(this.nextSibling).classed('hidden', false) : d3.select(this.nextSibling).classed('hidden', true);
-          let icon =  d3.select(this).select('i.'+d.name);
+        let geneIcon = geneHeader.append('i').attr('class', d=> d.name);
+        geneIcon.classed('fas fa-chevron-circle-down', true);
+
+        let selectIcon = geneHeader.append('i').attr('class', "fas fa-binoculars");
+
+        selectIcon.on('click', async function(d){
+           
+            let graph = await neoAPI.getGraph();
+            renderGeneDetail([d], graph);
+            drawGraph(graph[0], [d]);
+            renderCalls(promis, [d]);
+        });
+    
+        geneIcon.on('click', function(d){
+          let header:any = this.parentElement.nextSibling;
+          d3.select(header).classed('hidden')? d3.select(header).classed('hidden', false) : d3.select(header).classed('hidden', true);
+          let icon =  d3.select(this.parentElement).select('i.'+d.name);
           icon.classed('fa-chevron-circle-down') ? icon.attr('class', d.name+' fas fa-chevron-circle-up') : icon.attr('class', d.name+' fas fa-chevron-circle-down');
         });
       
         geneDiv = geneEnterDiv.merge(geneDiv);
 
-
         geneDiv.filter(d=> selectedNames.includes(d.name)).classed('selected', true);
 
         let variantBox = geneDiv.append('div').classed('variant-wrapper', true);
     
-        let variants = variantBox.selectAll('.variant').data(variantData);
+        let variants = variantBox.selectAll('.variant').data((dat)=> {
+            console.log('dat',dat);
+            if(dat.properties.Variants != undefined){
+                return dat.properties.Variants.map(d=>{ 
+                    d.tag = d.properties.Phenotypes[0][0].clinical_significances;
+                    return d;
+                });
+                
+            }else return [];
+    
+        });
         variants.exit().remove();
         let varEnter = variants.enter().append('div').classed('variant', true);
         let varHead = varEnter.append('div').classed('var-head', true)//.append('h5').text(d=>d.name);
@@ -86,13 +117,16 @@ export async function renderCalls(data: Object){
         });
 }
 
-export async function renderGeneDetail(data: Object){
- 
+export async function renderGeneDetail(dataArray: Array<object>, graph:object){
+    
+    let data = dataArray[0];
     let headers = d3.keys(data.properties).filter(d=> d != 'References' && d !='Variants'  && d != 'name');
 
     let sidebar = d3.select('#left-nav');
     let geneDet = sidebar.select('.gene-detail');
+    geneDet.selectAll('*').remove();
     let geneHeader = geneDet.append('div').attr('class', 'detail-head').append('h4').text(data.name);
+  
    // let symbolBand = geneDet.append('div').classed('symbols', true).data(JSON.parse(data.Symbols));
     let propertyDivs = geneDet.selectAll('.prop-headers').data(headers);
     let propEnter = propertyDivs.enter().append('div').classed('prop-headers', true);
@@ -102,9 +136,6 @@ export async function renderGeneDetail(data: Object){
     propEnter.append('div').attr('class', (d)=> d+' detail-wrapper');
 
     propHead.on('click', function(d){
-
-        console.log(d);
-        console.log(this.nextSibling);
         d3.select(this.nextSibling).classed('hidden')? d3.select(this.nextSibling).classed('hidden', false) : d3.select(this.nextSibling).classed('hidden', true);
         let icon =  d3.select(this).select('i.'+d);
         icon.classed('fa-chevron-circle-down') ? icon.attr('class', d+' fas fa-chevron-circle-up') : icon.attr('class', d+' fas fa-chevron-circle-down');
@@ -118,15 +149,18 @@ export async function renderGeneDetail(data: Object){
     let location = propEnter.filter(d=> d == "Location").select('.detail-wrapper').selectAll('.location').data(d=> d3.entries(data.properties[d]));
     let locEnter = location.enter().append('div').classed('location', true);
     let locSec = locEnter.append('text').text(d=> d.key + ': ' + d.value);
-
-    let phenotype = propEnter.filter(d=> d == "Phenotypes").select('.detail-wrapper').selectAll('.pheno-wrap').data(d=> {
-        let phenoD = data.properties[d].map(p=> p.properties);
-        return phenoD;
-    });
-    let phenoEnter = phenotype.enter().append('div').classed('pheno-wrap', true);
-    let phenoSec = phenoEnter.append('text').text(d=> {
-        let descript = typeof d.properties == 'string'? JSON.parse(d.properties) : d.properties;
-        return descript.description});
+  
+    if(data.properties.Phenotypes.length > 0){
+        let phenotype = propEnter.filter(d=> d == "Phenotypes").select('.detail-wrapper').selectAll('.pheno-wrap').data(d=> {
+                let phenoD = data.properties[d].map(p=> p.properties);
+                return phenoD;
+        });
+        let phenoEnter = phenotype.enter().append('div').classed('pheno-wrap', true);
+        let phenoSec = phenoEnter.append('text').text(d=> {   
+            let descript = typeof d.properties == 'string'? JSON.parse(d.properties) : d.properties;
+                return descript.description});
+    }
+   
 
     let titles = propEnter.filter(d=> d == "Titles").select('.detail-wrapper').selectAll('.title').data(d=> {return d3.entries(data.properties[d])});
     let titleEnter = titles.enter().append('div').classed('title sections', true);
@@ -165,22 +199,54 @@ export async function renderGeneDetail(data: Object){
 
     let interactors = propEnter.filter(d=> d == "InteractionPartners").select('.detail-wrapper').selectAll('.interact').data(d=> {return data.properties[d]});
     let intEnter = interactors.enter().append('div').classed('interact', true);
-    intEnter.append('text').text(d=> d.preferredName_B);
-    intEnter.append('i').attr('class', "far fa-plus-square");
+    intEnter.append('text').text(d=> d.name);
+    let addIcon = intEnter.append('i').attr('class', "fas fa-search-plus");
+    addIcon.on('click', async function(d){
+
+        //THIS IS ADDING THE INTERRACTORAS A NEW GENE
+
+        let newNode = await search.addGene(d);
+      
+        app.isStored(graph, newNode).then(async(n)=>{
+
+            let varAlleles = await app.variantObjectMaker(n.properties.Variants);
+            let variants = await qo.structVariants(varAlleles);
+            n.properties.Variants = variants;
+
+            if(n.properties.Phenotypes.nodes != undefined){
+                let structuredPheno = await qo.structPheno(n.properties.Phenotypes, n.name);
+                n.properties.Phenotypes.nodes = structuredPheno;
+            }
+           
+          //  let enrighmentP = await search.searchStringEnrichment(n.name);
+            neoAPI.buildSubGraph(n);
+
+            let newGraph = await neoAPI.getGraph();
+            //drawGraph(newGraph);
+        });
+    });
 
     propertyDivs = propEnter.merge(propertyDivs);
 
 }
 
-export function drawGraph(dataArr: Object, gnode:object) {
+export function drawGraph(graphArray: Object, selectedGene: Array<object>) {
 
-    let selectedNames = qo.selected.queryKeeper.map(k=> k.name);
+    //let selectedNames = qo.selected.queryKeeper.map(k=> k.name);
+    let selectedNames = selectedGene.map(m=> m.name);
+
+    console.log('in draw graph',selectedNames);
+   
  
-    let data = dataArr[0];
+    let data = graphArray;
+
     let canvas = d3.select('#graph-render').select('.graph-canvas'),
         width = +canvas.attr("width"),
         height = +canvas.attr("height"),
         radius = 20;
+
+    canvas.select('.links').selectAll('*').remove();
+    canvas.select('.nodes').selectAll('*').remove();
 
     // Define the div for the tooltip
     var toolDiv = d3.select('.tooltip');
@@ -211,8 +277,14 @@ export function drawGraph(dataArr: Object, gnode:object) {
     node.exit().remove();
     let nodeEnter = node
         .enter().append("g")
-        .attr("class", d => {
-            return "node " + d.label;
+        .attr("class", function(d) {
+
+            if(d.label.includes('Gene')){
+                return "node Gene"
+            }else{
+                return "node " + d.label[0];
+            }
+           
         });
 
     let circles = nodeEnter.append('circle')
@@ -222,7 +294,7 @@ export function drawGraph(dataArr: Object, gnode:object) {
             .on("end", dragended))
          //   .on('dblclick', connectedNodes); 
 
-    let geneNode = nodeEnter.filter(d => d.label == 'Gene');
+    let geneNode = nodeEnter.filter(d => d.label.includes('Gene'));
 
     nodeEnter.filter(d=> selectedNames.includes(d.name)).classed('selected', true);
 
@@ -240,24 +312,27 @@ export function drawGraph(dataArr: Object, gnode:object) {
     let labels = geneNode.append('text').text(d => d.name).style('color', '#ffffff').attr('x', 0)
         .attr('y', 3).attr('text-anchor', 'middle');
 
-    node.append("title")
+    nodeEnter.append("title")
         .text(function(d) { return d.name; });
 
     node = nodeEnter.merge(node);
 
-    node.on('click', (d) => {
+    node.on('click', async function(d){
        
         let mapped = qo.selected.queryKeeper.map(m=> m.name);
+        canvas.select('.nodes').selectAll('.selected').classed('selected', false);
+        d3.select(this).classed('selected', true);
+        let newSelected = await qo.structGene(d);
+        let queryKeeper = qo.allQueries.queryKeeper.map(m=> m);
+        renderGeneDetail([newSelected], graphArray);
+        renderCalls(queryKeeper, [newSelected]);
+
         if(mapped.includes(d.properties.name)){
             console.log('ALLREADY IN THE KEEPER');
             qo.selected.removeQueryOb(d.properties.name);
         }else{
             qo.selected.addQueryOb(d.properties);
-        }
-
-      //  drawGraph(dataArr, gnode);
-      //  renderCalls(gnode);
-        
+        }      
     });
 
     node.on("mouseover", function(d) {
@@ -268,7 +343,6 @@ export function drawGraph(dataArr: Object, gnode:object) {
                 toolDiv.html(JSON.parse(d.properties.properties).description + "<br/>")
                 .style("left", (d3.event.pageX) + "px")
                 .style("top", (d3.event.pageY - 28) + "px");
-
             }else{
                 toolDiv.html(d.name + "<br/>")
                 .style("left", (d3.event.pageX) + "px")
@@ -280,21 +354,8 @@ export function drawGraph(dataArr: Object, gnode:object) {
             toolDiv.transition()
                 .duration(500)
                 .style("opacity", 0);
-        });
-
-//YOU NEED TO FIX THE SELECTED NODE
-
-        /*
-    let selectedNode = node.filter(d => {
-      
-        node.classed('selected', false);
-        return SelectedOb != null ? d.title == SelectedOb.name : null;
     });
 
-    selectedNode != null ? selectedNode.classed('selected', true) : console.log('no node');
-
-    SelectedOb != null ? drawSelectedPanel(SelectedOb) : console.log('no code');
-*/
     simulation
         .nodes(data.nodes)
         .on("tick", ticked);

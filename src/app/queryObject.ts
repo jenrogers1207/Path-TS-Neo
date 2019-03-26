@@ -3,12 +3,7 @@ import { promises } from 'fs';
 var search = require('./search');
 
 
-
-export class SelectedOb {
-
-}
-
-export class QueryObject {
+export class GeneObject {
 
     name:string;
     ncbi:string;
@@ -17,8 +12,8 @@ export class QueryObject {
     entrez:string;
     type:string;
 
-    constructor(queryVal:string) {
-        this.type = ''
+    constructor(queryVal:string, typeVal:string) {
+        this.type = typeVal;
         this.name = queryVal;
         this.properties = {
             'Ids': {},
@@ -85,32 +80,49 @@ export class PhenotypeObject {
     }
 }
 
-export class QuerySelected{
-    queryKeeper: Array<QueryObject>;
+export class QueryStore{
+    queryKeeper: Array<object>;
 
     constructor() {
         this.queryKeeper = [];
     }
 
-    addQueryOb(queryOb: QueryObject){
+    addQueryOb(queryOb: GeneObject){
         this.queryKeeper.push(queryOb);
-        console.log(this.queryKeeper);          
+        
+        return this.queryKeeper;
     }
 
     removeQueryOb(queryName: string){
         this.queryKeeper = this.queryKeeper.filter(q=> q.name != queryName);    
-        console.log(this.queryKeeper);
     }
+
+    selectQueryOb(queryIndex: int){
+     
+        let array = this.queryKeeper.slice(0);
+        console.log(array);
+        console.log(this.queryKeeper[0])
+        let node = this.queryKeeper[queryIndex]
+        return node;
+    }
+
 }
 
-export let selected = new QuerySelected();
+export let selected = new QueryStore();
+
+export let allQueries = new QueryStore();
 
 
 export async function structGene(g: object){
+    
+    let ob = await Promise.resolve(g);//.properties;
 
-    let geneOb = g.properties;
+    let geneOb = ob.properties;
+    let node = new GeneObject(ob.name, 'Gene');
+    node.label = ob.label? ob.label : ob.type;
 
-    let node = new QueryObject(g.name);
+    node.type = ob.type? ob.type: ob.label[0];
+    /*
     node.properties.Ids.ncbi = geneOb.ncbi;
     node.properties.Ids.sequenceID =  geneOb.sequenceID;
     node.properties.Ids.taxid = geneOb.taxid;
@@ -122,7 +134,9 @@ export async function structGene(g: object){
     node.properties.Ids.UniProt = geneOb.UniProt;
     node.properties.Ids['NCBI-GeneID'] = geneOb['NCBI-GeneID']; //"2706"
     node.properties.Ids['NCBI-ProteinID'] = geneOb['NCBI-ProteinID'];
-    node.properties.Description = geneOb.description;
+    */
+    node.properties.Ids = typeof geneOb.Ids === 'string' ? JSON.parse(geneOb.Ids): geneOb.Ids;
+    node.properties.Description = geneOb.Description;
     node.properties.Brite = typeof geneOb.Brite == 'string'? JSON.parse(geneOb.Brite) : geneOb.Brite;//: "{"kegg":[["KEGG","Orthology","(KO)","[BR:hsa00001]"],["09180","Brite","Hierarchies"],["09183","Protein","families:","signaling","and","cellular","processes"],["02000","Transporters","[BR:hsa02000]"],["2706","(GJB2)"],["Transporters","[BR:hsa02000]"],["Other","Transporters"],["Pores","ion","channels","[TC:1]"],["2706","(GJB2)"]]}"
     //: "gap junction protein beta 2"
     node.properties.Location = typeof geneOb.Location == 'string' ? JSON.parse(geneOb.Location) : geneOb.Location;//: "{"chromosome":13,"chromosomeStart":20187462,"chromosomeEnd":20192974,"chromosomeSort":15,"computedCytoLocation":"13q12.11","cytoLocation":"13q11-q12"}"
@@ -135,7 +149,8 @@ export async function structGene(g: object){
     node.properties.Text = typeof geneOb.Text == 'string'? JSON.parse(geneOb.Text) : geneOb.Text;// "[{"textSectionName":"description","textSectionTitl"
     node.properties.Titles = typeof geneOb.Titles == 'string'? JSON.parse(geneOb.Titles): geneOb.Titles; //"{"preferredTitle":"GAP JUNCTION PROTEIN, BETA-2; GJB2","alternativeTitles":"GAP JUNCTION PROTEIN, 26-KD;;\nCONNEXIN 26; CX26"}"
     node.properties.Transcript = geneOb.Transcript; //"ENST00000645189.1"
-    node.properties.Variants = geneOb.Variants; //(120) [VariantObject,
+    node.properties.Variants = typeof geneOb.Variants === 'string'? JSON.parse(geneOb.Variants) : geneOb.Variants; //(120) [VariantObject,
+    node.properties.InteractionPartners = typeof geneOb.InteractionPartners === 'string'? JSON.parse(geneOb.InteractionPartners) : geneOb.InteractionPartners;
 
     return node;
 }
@@ -144,11 +159,11 @@ export async function structVariants(varArray: object){
 
     let variants = typeof varArray === 'string' ? JSON.parse(varArray) : varArray;
    // if(!nodeOb.properties){ nodeOb.properties = nodeOb.data}
-
-    let obs = variants.map(async (v)=> {
+    console.log('initial varr', variants);
+    let obs = variants.filter(f=> f.name != undefined).map(async (v)=> {
       
         let props = v.properties.properties? JSON.parse(v.properties.properties): v.properties;
-       // console.log('props', props);
+      
         let snpName = v.name? v.name : props.Ids.dbsnp;
         let variantOb = new VariantObject(snpName);
         variantOb.properties.associatedGene = props.associatedGene;
@@ -161,7 +176,7 @@ export async function structVariants(varArray: object){
        // let propOb = typeof props == "string"? JSON.parse(props):props;
       
         if(props.allelleAnnotations == undefined){
-        
+       
             let snp = await search.loadSNP(variantOb.name);
             variantOb.properties.Type = snp.variant_type;
             variantOb.properties.Location.anchor = snp.anchor? snp.anchor : 'null';
@@ -176,11 +191,11 @@ export async function structVariants(varArray: object){
             variantOb.properties.allelleAnnotations = props.allelleAnnotations;
             variantOb.properties.Phenotypes = props.Phenotypes;
         }
-        //console.log(variantOb);
+      
         return variantOb;
     });
 
- // console.log('obs',obs);
+ 
   return await Promise.all(obs);
 }
 
@@ -205,6 +220,7 @@ export async function structPheno(phenob: object, assocGene:string){
  
    return await Promise.resolve(nodes);
 }
+
 
 export async function drawSelectedPanel(query) {
     let panel = d3.select('#query-panel');

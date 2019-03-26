@@ -9,6 +9,25 @@ import ky from 'ky';
 import { SrvRecord } from 'dns';
 
 
+export async function addGene(d: object){
+
+    let geneOb = new qo.GeneObject(d.name, 'Gene');
+
+    let newNode = await initialSearch(geneOb);
+   
+    return newNode;
+}
+
+export async function initialSearch(queryOb: object){
+   
+    let idSearch = await searchBySymbol(queryOb);
+    let mimId = await geneIdtoMim(idSearch);
+    let omimOb = await searchOMIM(mimId);
+    let kegg = await getKegg(omimOb.properties.Ids.ncbi, omimOb);
+    let interact = await searchStringInteractors(kegg);
+    return interact;
+}
+
 export async function searchBySymbol(query:object) {
 
     const proxy = 'https://cors-anywhere.herokuapp.com/';
@@ -23,6 +42,7 @@ export async function searchBySymbol(query:object) {
     let ids = { 'symbol': idSearch.symbol, 'ncbi': idSearch._id, 'entrezgene': idSearch.entrezgene, 'taxid': idSearch.taxid, 'description': idSearch.name };
     query.properties.Ids = ids
     query.properties.Description = idSearch.name;
+
     return query;
   // return props;
     
@@ -37,9 +57,6 @@ export async function searchUniprot(value:string){
 
    // let req = await ky.get(url);
    let req =  await got(proxy+url);
-
-    console.log(req);
-    console.log(req);
 
 }
 
@@ -70,6 +87,8 @@ export async function searchOMIM(queryOb:any){
 
     let omim = json.omim.entryList[0].entry;
 
+    console.log('omim',omim);
+
     //add these more dynamically
     queryOb.properties.Variants = omim.allelicVariantList.map(p=> p['allelicVariant']);
     queryOb.properties.Titles = omim.titles;
@@ -94,19 +113,6 @@ export async function searchOMIM(queryOb:any){
     queryOb.properties.Transcript = omim.geneMap.transcript;
     queryOb.properties.mappingMethod = omim.geneMap.mappingMethod;
 
-    /*
-    geneName: "Gap junction protein, beta-2, 26kD (connexin 26)"
-    geneSymbols: "GJB2, CX26, DFNB1A, PPK, DFNA3A, KID, HID"
-    mappingMethod: "REa, A, Fd"
-    mimNumber: 121011
-    mouseGeneSymbol: "Gjb2"
-    mouseMgiID: "MGI:95720"
-    phenotypeMapList: (7) [{…}, {…}, {…}, {…}, {…}, {…}, {…}]
-    sequenceID: 10613
-    transcript: "ENST00000645189.1"
-*/
-  
-   //return props;
    return queryOb;
 }
 export async function geneIdtoMim(query:any){
@@ -125,13 +131,26 @@ export async function geneIdtoMim(query:any){
     //return props;
 }
 
-export async function searchStringInteractors(value:string){
+export async function searchStringInteractors(node:object){
 
     const proxy = 'https://cors-anywhere.herokuapp.com/';
-    let url = 'https://string-db.org/api/json/interaction_partners?identifiers='+ value +'&limit=20';
+    let url = 'https://string-db.org/api/json/interaction_partners?identifiers='+ node.name +'&limit=20';
     let req =  await ky.get(proxy+url).json();
 
-    return req;
+    node.properties.Ids.stringID = req[0].stringId_A;
+               
+    let interactionNodes = req.map(m => {
+        let ob = {'name' : m.preferredName_B, 'type': 'Interaction', 'properties': { 'Ids': {}, 'Metrics': {} } };
+        ob.properties.Ids.stringID = m.stringId_B;
+        ob.properties.Source = m.preferredName_A;
+        ob.properties.Metrics = d3.entries(m).filter(f=> f.key.includes('score'))
+        return ob;
+    });
+
+    node.properties.InteractionPartners = interactionNodes;
+
+
+    return node;
 }
 
 export async function searchStringEnrichment(value:string){
@@ -142,11 +161,8 @@ export async function searchStringEnrichment(value:string){
     let url2 = 'http://string-db.org/api/json/network?identifier=gjb2&limit=10&network_flavor=evidence%20Additional%20information%20about%20the%20API'
 
     let req =  await ky.get(proxy+url).json();
-    console.log(req);
+    let req2 = await ky.get(proxy+url2).json();                                                                                                                 
 
-    let req2 = await ky.get(proxy+url2).json();
-
-    console.log('req2', req2);
     return req;
 }
 
@@ -183,22 +199,29 @@ export async function getKegg(value: string, queryOb:object){
             return {key: keyz, values: val}
         });
 
-        console.log('brite?', newData.filter(n=> n.key != "///" && n.key != ""));
-
         return newData.filter(n=> n.key != "///" && n.key != "");
     }
-    //queryOb.properties.kegg = await testRec(0, data);
-    let keggData = await structureResponseData(0, data);
-    let diseases = keggData.filter(d=> d.key == "DISEASE").map(f=> f.values)[0];
 
-    let matchDis = diseases.map(d=> {
-        let keggId = d[0];
-        let stringId = [];
-        for(let i = 1; i < d.length; i++){
-            stringId.push(d[i]);
-        }
-        return {'keggId': keggId, 'stringId': stringId};
-    });
+    let keggData = await structureResponseData(0, data);
+
+    console.log('keggData',keggData);
+
+    if(keggData.filter(d=> d.key == "DISEASE").length > 0){
+
+        let diseases = keggData.filter(d=> d.key == "DISEASE").map(f=> f.values)[0];
+
+        let matchDis = diseases.map(d=> {
+            let keggId = d[0];
+            let stringId = [];
+            for(let i = 1; i < d.length; i++){
+                stringId.push(d[i]);
+            }
+            return {'keggId': keggId, 'stringId': stringId};
+        });
+
+        queryOb.properties.Phenotypes.keggIDs = matchDis;
+    }
+    
 
     let keggOrthoID = keggData.filter(d=> d.key == "ORTHOLOGY").map(f=> f.values)[0];
     let keggBrite = keggData.filter(d=> d.key == "BRITE").map(f=> f.values)[0];
@@ -216,13 +239,29 @@ export async function getKegg(value: string, queryOb:object){
         queryOb.properties.Ids[el.key] = el.value;
     });
 
-    queryOb.properties.Phenotypes.keggIDs = matchDis;
+    
     queryOb.properties.Orthology.keggID = keggOrthoID[0][0]
     queryOb.properties.Brite.kegg = keggBrite;
     queryOb.properties.Structure.AASEQ = AASEQ;
     queryOb.properties.Structure.NTSEQ = NTSEQ;
     queryOb.properties.Structure.ids = STRUCTURE;
     queryOb.properties.Structure.MOTIF = MOTIF;
+
+    queryOb.properties.Brite = queryOb.properties.Brite.kegg.map(b=>{
+        if(b[0].match(/\d/)){
+            let tag = b.slice(1, (b.length))
+            if(tag.length > 1){
+                return {'id': b[0], 'tag': tag.reduce((a, c)=> a.concat(' '+c)) }
+            }else{return {'id': b[0], 'tag': tag } }
+            
+        }else{
+            let tag = b.slice(0, (b.length - 1));
+            if(tag.length > 1){
+                return {'id': b[b.length - 1], 'tag': tag.reduce((a, c)=> a.concat(' '+c)) }
+            }else{return {'id': b[0], 'tag': tag } }
+        }
+    });
+
 
     return queryOb;
 }
