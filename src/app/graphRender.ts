@@ -24,7 +24,7 @@ export async function renderCalls(promis: Array<object>, selectedNode:Array<obje
       //  let selectedNames = qo.selected.queryKeeper.map(k=> k.name);
         let selectedNames = selectedNode.map(k=> k.name);
 
-        let data = await Promise.all(promis)
+        let data = await Promise.all(promis);
       
         let sidebar = d3.select('#left-nav');
         let callTable = sidebar.select('.call-table');
@@ -48,7 +48,7 @@ export async function renderCalls(promis: Array<object>, selectedNode:Array<obje
            
             let graph = await neoAPI.getGraph();
             renderGeneDetail([d], graph);
-            drawGraph(graph[0], [d]);
+            graphRenderMachine(graph[0], [d]);
             renderCalls(promis, [d]);
         });
     
@@ -116,7 +116,6 @@ export async function renderCalls(promis: Array<object>, selectedNode:Array<obje
            
         });
 }
-
 export async function renderGeneDetail(dataArray: Array<object>, graph:object){
     
     let data = dataArray[0];
@@ -222,29 +221,39 @@ export async function renderGeneDetail(dataArray: Array<object>, graph:object){
             neoAPI.buildSubGraph(n);
 
             let newGraph = await neoAPI.getGraph();
-            //drawGraph(newGraph);
+           
         });
     });
 
     propertyDivs = propEnter.merge(propertyDivs);
 
 }
-
 export function graphRenderMachine(graphArray:Object, selectedGene:Array<object>){
+
     let dropdown = d3.select('#topnav').select('.dropdown');
     let dropButton = dropdown.select('.dropdown-toggle');
-    console.log(dropButton.text());
-    let key = String(dropButton.text())
+   
+    let key = String(dropButton.text());
+
+    console.log('in graphrendermacine', key);
+
     const builder = {
-        'Align by Gene' : function(){ console.log('is this working align by gene')},
-        'Align by Pathway' : function(){ console.log('is this working align by Pathway')},
-        'Align by Phenotype' : function(){ console.log('is this working align by Phenotype')}
+        'Align by Gene' : phenoTest,
+        'Align by Pathway' : phenoTest,
+        'Align by Phenotype' : phenoTest,
+        'Whole Network' : drawGraph(graphArray, selectedGene)
     }
-   console.log(builder[key]);
+
    builder[key];
+
+   function phenoTest(){
+       console.log('is this working align by gene');
+   }
+
+
 }
 
-export function drawGraph(graphArray: Object, selectedGene: Array<object>) {
+function drawGraph(graphArray: Object, selectedGene: Array<object>) {
 
     //let selectedNames = qo.selected.queryKeeper.map(k=> k.name);
     let selectedNames = selectedGene.map(m=> m.name);

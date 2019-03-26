@@ -20,22 +20,13 @@ let queryPanel = d3.select('#wrapper').append('div').attr('id', 'query-panel');
 let dropData = ['Whole Network', 'Align by Gene', 'Align by Phenotype', 'Align by Pathway']
 let dropdown = d3.select('#topnav').select('.dropdown');
 let dropButton = dropdown.select('.dropdown-toggle');
-console.log(dropButton);
 dropButton.text(dropData[0]);
-//dropButton.value(dropData[0])
 let dropdownItems = dropdown.select('.dropdown-menu').selectAll('.dropdown-item').data(dropData);
 let dropEnter = dropdownItems.enter().append('a').classed('dropdown-item', true);
 dropEnter.attr('href', '#');
 dropEnter.text(d=> d);
 dropdownItems.merge(dropEnter);
 
-dropdownItems.on('click', (d, i, g)=> {
-    console.log(i);
-    console.log(g[i]);
-    console.log(d);
-    dropButton.text(d);
-    gCanvas.graphRenderMachine(null, null);
-})
 
 dataLoad.loadFile().then(async (d)=> {
 
@@ -85,8 +76,12 @@ dataLoad.loadFile().then(async (d)=> {
         });
 
       //  neoAPI.buildSubGraph(selectedGene);
+        dropEnter.on('click', (d, i, g)=> {
+            dropButton.text(d);
+            gCanvas.graphRenderMachine(graph, [selectedGene]);
+        })
 
-        gCanvas.drawGraph(graph, [selectedGene]);
+        gCanvas.graphRenderMachine(graph, [selectedGene]);
         gCanvas.renderCalls(queryKeeper, [selectedGene]);
         gCanvas.renderGeneDetail([selectedGene], graph);
   
@@ -109,10 +104,9 @@ dataLoad.loadFile().then(async (d)=> {
                     neoAPI.getGraph().then(g=> {
 
                         let graph = g[0];
-                        gCanvas.drawGraph(graph, no);
+                        gCanvas.graphRenderMachine(graph, no);
                         gCanvas.renderCalls(no);
                         gCanvas.renderGeneDetail(no, graph);
-                        gCanvas.drawGraph(graph);
                     });
                 });
         });
