@@ -43,40 +43,7 @@ dataLoad.loadFile().then(async (d)=> {
         let selectedGene = await Promise.resolve(queryKeeper[0]);
         qo.selected.addQueryOb(selectedGene);
         
-
-        let uniqueNameArray = []
-        let uniquePheno = []
-        phenotypes.forEach(pheno => {
-            if(uniqueNameArray.indexOf(pheno.name) == -1){
-                uniqueNameArray.push(pheno.name);
-                uniquePheno.push(pheno);
-            }
-        });
- 
-        geneNode.properties.Variants = variantOb;
-        geneNode.properties.Phenotypes = uniquePheno;
-
-
-        let interactP = await search.searchStringInteractors(geneNode.name);
-        let enrighmentP = await search.searchStringEnrichment(geneNode.name);
-      // console.log('geneNode', geneNode);
-       if(geneNode.properties.Brite.kegg){
-
-        geneNode.properties.Brite = geneNode.properties.Brite.kegg.map(b=>{
-            if(b[0].match(/\d/)){
-                let tag = b.slice(1, (b.length))
-                return {'id': b[0], 'tag': tag.reduce((a, c)=> a.concat(' '+c)) }
-            }else{
-                let tag = b.slice(0, (b.length - 1))
-                return {'id': b[b.length - 1], 'tag': tag.reduce((a, c)=> a.concat(' '+c)) }
-            }
-        })
-        console.log(geneNode.properties.Brite);
-
-       }
-
         let variants = await updateVariants(fileVariants, graphVariants);
-
         
         let variantOb = await Promise.resolve(variants);
 
@@ -90,15 +57,11 @@ dataLoad.loadFile().then(async (d)=> {
 
       //  let enrighmentP = search.searchStringEnrichment(selectedGene.name);
 
-
-        interactionNodes.forEach(rel => {
-
         let graphInteraction = graph.nodes.filter(d=> d.label == 'Interaction');
       
         selectedGene.properties.InteractionPartners = graphInteraction.map(int=> {
             int.properties = int.properties.properties? JSON.parse(int.properties.properties) : int.properties;
             return int;
-
         });
 
       //  neoAPI.buildSubGraph(selectedGene);
