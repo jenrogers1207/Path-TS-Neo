@@ -6,6 +6,13 @@ body {
     font-size: 12px;
 }
 
+#topnav .dropdown {
+    display: inline-block;
+    float: left;
+    width: 200px;
+    margin-top: 5px;
+}
+
 .gene-detail h4 {
     font-size: 16px;
     display: inline;
@@ -44,7 +51,7 @@ body {
 
 #topnav {
     width: 100%;
-    height: 50px;
+    height: 60px;
     position: fixed;
     top: 0px;
     left: 0px;
@@ -179,13 +186,14 @@ body {
 input#search-bar {
     margin: 0 auto;
     width: 100%;
-    height: 45px;
+    height: 40px;
     padding: 0 20px;
     font-size: 1rem;
     border: 1px solid #D0CFCE;
     outline: none;
     &:focus {
-        border: 1px solid #008ABF;
+        border: 1px solid rgb(43, 117, 255);
+        ;
         transition: 0.35s ease;
         color: #008ABF;
         &::-webkit-input-placeholder {
@@ -206,10 +214,10 @@ input#search-bar {
 .search-icon {
     position: relative;
     float: right;
-    width: 75px;
-    height: 75px;
-    top: -62px;
-    right: -45px;
+    width: 70px;
+    height: 70px;
+    top: -52px;
+    right: -55px;
 }
 
 div.tooltip {
