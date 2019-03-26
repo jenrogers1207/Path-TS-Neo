@@ -17,10 +17,24 @@ let toolDiv = d3.select('body').append("div")
     .style("opacity", 0);
 let queryPanel = d3.select('#wrapper').append('div').attr('id', 'query-panel');
 
+let dropData = ['Whole Network', 'Align by Gene', 'Align by Phenotype', 'Align by Pathway']
 let dropdown = d3.select('#topnav').select('.dropdown');
+let dropButton = dropdown.select('.dropdown-toggle');
+console.log(dropButton);
+dropButton.text(dropData[0]);
+//dropButton.value(dropData[0])
+let dropdownItems = dropdown.select('.dropdown-menu').selectAll('.dropdown-item').data(dropData);
+let dropEnter = dropdownItems.enter().append('a').classed('dropdown-item', true);
+dropEnter.attr('href', '#');
+dropEnter.text(d=> d);
+dropdownItems.merge(dropEnter);
 
-dropdown.on('click', (d, i, g)=> {
-    console.log(g);
+dropdownItems.on('click', (d, i, g)=> {
+    console.log(i);
+    console.log(g[i]);
+    console.log(d);
+    dropButton.text(d);
+    gCanvas.graphRenderMachine(null, null);
 })
 
 dataLoad.loadFile().then(async (d)=> {

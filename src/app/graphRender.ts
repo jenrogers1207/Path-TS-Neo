@@ -230,6 +230,20 @@ export async function renderGeneDetail(dataArray: Array<object>, graph:object){
 
 }
 
+export function graphRenderMachine(graphArray:Object, selectedGene:Array<object>){
+    let dropdown = d3.select('#topnav').select('.dropdown');
+    let dropButton = dropdown.select('.dropdown-toggle');
+    console.log(dropButton.text());
+    let key = String(dropButton.text())
+    const builder = {
+        'Align by Gene' : function(){ console.log('is this working align by gene')},
+        'Align by Pathway' : function(){ console.log('is this working align by Pathway')},
+        'Align by Phenotype' : function(){ console.log('is this working align by Phenotype')}
+    }
+   console.log(builder[key]);
+   builder[key];
+}
+
 export function drawGraph(graphArray: Object, selectedGene: Array<object>) {
 
     //let selectedNames = qo.selected.queryKeeper.map(k=> k.name);
