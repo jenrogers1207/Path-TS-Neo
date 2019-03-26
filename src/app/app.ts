@@ -17,6 +17,12 @@ let toolDiv = d3.select('body').append("div")
     .style("opacity", 0);
 let queryPanel = d3.select('#wrapper').append('div').attr('id', 'query-panel');
 
+let dropdown = d3.select('#topnav').select('.dropdown');
+
+dropdown.on('click', (d, i, g)=> {
+    console.log(g);
+})
+
 dataLoad.loadFile().then(async (d)=> {
 
     let geneOb = new qo.GeneObject(d[0].key, 'Gene');
