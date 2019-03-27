@@ -69,7 +69,9 @@ export async function renderCalls(promis: Array<object>, selectedNode:Array<obje
             console.log('dat',dat);
             if(dat.properties.Variants != undefined){
                 return dat.properties.Variants.map(d=>{ 
-                    d.tag = d.properties.Phenotypes[0][0].clinical_significances;
+                    console.log(d)
+                    d.tag = d.properties.Phenotypes[0][0].clinical_significances? d.properties.Phenotypes[0][0].clinical_significances: null;
+                    d.cons = d.properties.Consequence ? d.properties.Consequence : null;
                     return d;
                 });
                 
@@ -86,6 +88,12 @@ export async function renderCalls(promis: Array<object>, selectedNode:Array<obje
         spanType.classed('badge badge-info', true);
         let spanTag = varHead.append('span').text(d=> d.tag[0]);
         spanTag.classed('badge badge-warning', true);
+        let spanCons = varHead.append('span').text(d=> {
+            let cons = d.cons != null? d.cons : '';
+            return cons;
+        });
+        spanCons.classed('badge badge-info', true);
+   
       //  let varSpan = varEnter.append('span').classed('w3-tag w3-padding w3-round w3-red w3-center', true).text('path')
        
         varHead.on('click', function(d){
@@ -97,7 +105,7 @@ export async function renderCalls(promis: Array<object>, selectedNode:Array<obje
 
         let varDes = varEnter.append('div').classed('var-descript', true).classed('hidden', true);
         let blurbs = varDes.selectAll('.blurb').data(d=>d3.entries(d)
-                .filter(f=> f.key != 'allelicVariantList' && f.key != 'text' && f.key != 'name' && f.key != 'properties'))
+                .filter(f=> f.key != 'allelicVariantList' && f.key != 'text' && f.key != 'name' && f.key != 'properties' && f.key != 'Ids'))
                 .enter().append('div').classed('blurb', true);
 
         let properties = varDes.selectAll('.props').data(d=> d3.entries(d.properties));
@@ -250,8 +258,6 @@ export function graphRenderMachine(graphArray:Object, selectedGene:Array<object>
    function phenoTest(){
        console.log('is this working align by gene');
    }
-
-
 }
 
 let drawPhenotypes = function(graphArray:Object, selectedGene:Array<object>){
@@ -263,15 +269,12 @@ let drawPhenotypes = function(graphArray:Object, selectedGene:Array<object>){
     canvas.select('.links').selectAll('*').remove();
     canvas.select('.nodes').selectAll('*').remove();
 
-
-
     let phenoData = graphArray.nodes.filter(d=> d.label == 'Phenotype').map(p=> {
         let phen = p.properties;
         phen.properties = JSON.parse(p.properties.properties);
         return phen;
     });
 
-    //console.log(phenoData);
     let variants = graphArray.nodes.filter(d=> d.label == 'Variant').map(v=> {
         let varName = v.name;
         let pheno = JSON.parse(v.properties.properties).Phenotypes.flatMap(d=> d);
@@ -290,9 +293,6 @@ let drawPhenotypes = function(graphArray:Object, selectedGene:Array<object>){
     .entries(variants);
 
     let newVars = test.filter(d=> d.key != 'undefined');
-
-   // console.log(newVars);
-   // console.log(phenoData);
 
     let newPheno = phenoData.map(p=> {
         let pheno = p;
@@ -344,7 +344,6 @@ let drawPhenotypes = function(graphArray:Object, selectedGene:Array<object>){
         toolDiv.transition()
         .duration(200)
         .style("opacity", .8);
-  //  if(d.label == 'Phenotype'){
         toolDiv.html(d.vname + "<br/>")
         .style("left", (d3.event.pageX) + "px")
         .style("top", (d3.event.pageY - 28) + "px");
@@ -359,7 +358,6 @@ let drawPhenotypes = function(graphArray:Object, selectedGene:Array<object>){
 
 function drawGraph(graphArray: Object, selectedGene: Array<object>) {
 
-    //let selectedNames = qo.selected.queryKeeper.map(k=> k.name);
     let selectedNames = selectedGene.map(m=> m.name);
 
     let data = graphArray;
@@ -421,7 +419,8 @@ function drawGraph(graphArray: Object, selectedGene: Array<object>) {
     let geneNode = nodeEnter.filter(d => d.label.includes('Gene'));
 
     nodeEnter.filter(d=> selectedNames.includes(d.name)).classed('selected', true);
-
+    
+    geneNode.classed("fixed", true);
     geneNode.classed("fixed", d=> d.fixed = true);
 
     function dragstart(d) {

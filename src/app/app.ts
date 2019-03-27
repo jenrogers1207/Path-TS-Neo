@@ -33,7 +33,7 @@ dataLoad.loadFile().then(async (d)=> {
     let geneOb = new qo.GeneObject(d[0].key, 'Gene');
     geneOb.type = "Gene";
 
-    let fileVariants = await variantObjectMaker(d[0].values);
+    let fileVariants = await variantObjectMaker(d[0].values, geneOb.name);
     let graphArray = await neoAPI.getGraph();//.then(g => {
 
     if(graphArray[0].nodes.length != 0 && graphArray != undefined){
@@ -41,7 +41,7 @@ dataLoad.loadFile().then(async (d)=> {
         let graph = graphArray[0];
 
         let queryGenes = graph.nodes.filter(f=> f.label.includes('Gene'));
-
+    
         let queryKeeper = queryGenes.map(async (gene:object) => {
             let ob = isStored(graph, gene);
             qo.allQueries.addQueryOb(ob);
@@ -49,6 +49,12 @@ dataLoad.loadFile().then(async (d)=> {
         });
 
         let graphVariants = graph.nodes.filter(d=> d.label == 'Variant');
+
+        console.log('from load', graphVariants.map(v=> {
+           
+            v.properties = JSON.parse( v.properties.properties);
+            return v;
+        }));
 
         //adding selectednode as the file gene
         let selectedGene = await Promise.resolve(queryKeeper[0]);
@@ -88,8 +94,9 @@ dataLoad.loadFile().then(async (d)=> {
         }else{
        
             search.initialSearch(geneOb).then(async no=> {
-                
-                let varAlleles = await variantObjectMaker(no.properties.Variants);
+            
+          
+                let varAlleles = await variantObjectMaker(no.properties.Variants, no.name);
                 let variants = await updateVariants(fileVariants, varAlleles);
                 no.properties.Variants = await Promise.all(variants);
 
@@ -111,11 +118,13 @@ dataLoad.loadFile().then(async (d)=> {
                         gCanvas.renderGeneDetail(no, graph);
                     });
                 });
+
+
         });
     }
 });
 
-export async function variantObjectMaker(varArray: Array<object>){
+export async function variantObjectMaker(varArray: Array<object>, geneName:string){
   
     let varObs = typeof varArray == 'string'? JSON.parse(varArray): varArray;
     
@@ -131,7 +140,7 @@ export async function variantObjectMaker(varArray: Array<object>){
               variant.properties[key.toString()] = v[key];
           });
 
-          variant.properties.associatedGene = v.gene? v.gene : null;
+          variant.properties.associatedGene = geneName;
           variant.properties.description = variant.name;
           variant.properties.Ids.dbSnp = name;
           return variant

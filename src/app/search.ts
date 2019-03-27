@@ -69,12 +69,19 @@ export async function loadSNP(value: string){
    // 'https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esummary.fcgi?db=clinvar&id=328931&retmode=json&apiKey=mUYjhLsCRVOuShEhrHLG_w'
     let url = 'https://api.ncbi.nlm.nih.gov/variation/v0/beta/refsnp/' + digits;
 
-    let req = await ky.get(url).json();
+    let response = (async () => {
+        try {
+            let req = await ky.get(url).json();
+            let resp = req.primary_snapshot_data;
+            resp.refsnp_id = req.refsnp_id;
+            return resp;
+        } catch (error) {
+            let req = null;
+            return req;
+        }
+    });
 
-    //Maybe add a try catch here
-    //neoAPI.setNodeProperty('Variant', value, 'snpProps', JSON.stringify(req.primary_snapshot_data))
-    //console.log('dbsnp', req)
-    return req.primary_snapshot_data;
+    return await response();
 }
 
 export async function loadEnsemble(value:string){

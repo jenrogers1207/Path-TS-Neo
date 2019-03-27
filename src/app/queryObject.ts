@@ -158,38 +158,36 @@ export async function structGene(g: object){
 export async function structVariants(varArray: object){
 
     let variants = typeof varArray === 'string' ? JSON.parse(varArray) : varArray;
-   // if(!nodeOb.properties){ nodeOb.properties = nodeOb.data}
-   // console.log('initial varr', variants);
+    console.log('vars in struct vars', variants);
+
     let obs = variants.filter(f=> f.name != undefined).map(async (v)=> {
-      
         let props = v.properties.properties? JSON.parse(v.properties.properties): v.properties;
-      
         let snpName = v.name? v.name : props.Ids.dbsnp;
         let variantOb = new VariantObject(snpName);
         variantOb.properties.associatedGene = props.associatedGene;
         variantOb.properties.OMIM = props.mimNumber? props.mimNumber : v.mimNumber;
         variantOb.properties.mutations = props.mutations? props.mutations : v.mutations;
         variantOb.properties.description = props.description? props.description : v.name;
-        variantOb.properties.clinvarAccessions = props.clinvarAccessions? props.clinvarAccessions : 'null';
+        variantOb.properties.Ids.clinvarAccessions = props.clinvarAccessions? props.clinvarAccessions : 'null';
         variantOb.properties.Text = props.Text? props.Text : props.text;
+        variantOb.properties.Ids = props.Ids;
         //let props = variantOb.properties.properties? variantOb.properties.properties : variantOb.properties;
        // let propOb = typeof props == "string"? JSON.parse(props):props;
       
         if(props.allelleAnnotations == undefined){
        
             let snp = await search.loadSNP(variantOb.name);
-            let ens = await search.loadEnsemble(variantOb.name);
-            //console.log('ens', ens);
-            variantOb.properties.Type = snp.variant_type;
-            variantOb.properties.Consequence = ens.most_severe_consequence;
-            variantOb.properties.Frequency = ens.MAF;
-            variantOb.properties.ens = ens;
-            variantOb.properties.Location.anchor = snp.anchor? snp.anchor : 'null';
-            variantOb.properties.Location.placements_with_allele = snp.placements_with_allele;
-            variantOb.properties.allelleAnnotations = snp.allele_annotations;
-            let clinicalSNP = snp.allele_annotations.filter(a=> a.clinical.length > 0);
-            
-            variantOb.properties.Phenotypes = clinicalSNP.map(f=> f.clinical);
+ 
+            if(snp != null){
+                variantOb.properties.Type = snp.variant_type;
+                variantOb.properties.Location.anchor = snp.anchor? snp.anchor : 'null';
+                variantOb.properties.Location.placements_with_allele = snp.placements_with_allele;
+                variantOb.properties.allelleAnnotations = snp.allele_annotations;
+                let clinicalSNP = snp.allele_annotations.filter(a=> a.clinical.length > 0);
+                variantOb.properties.Phenotypes = clinicalSNP.map(f=> f.clinical);
+                variantOb.properties.Ids.refsnp_id = snp.refsnp_id;
+            }else{console.log('snp null')}
+          
         }else{
             variantOb.properties.Type = props.Type;
             variantOb.properties.Location = props.Location;
@@ -197,12 +195,31 @@ export async function structVariants(varArray: object){
             variantOb.properties.Phenotypes = props.Phenotypes;
         }
 
-        if(props.Consequence == undefined){
+        if(props.Consequence == undefined || props.Consequence == null){
             let ens = await search.loadEnsemble(variantOb.name);
             console.log('ens in qo',ens)
-            variantOb.properties.Consequence = ens.most_severe_consequence;
-            variantOb.properties.Frequency = ens.MAF;
-            variantOb.properties.ens = ens;
+            if(ens != null){
+                variantOb.properties.Consequence = ens.most_severe_consequence ? ens.most_severe_consequence: null;
+                variantOb.properties.Frequency = ens.MAF ? ens.MAF :  null;
+             //   variantOb.properties.ens = ens? ens : null;
+                variantOb.properties.synonyms = ens.synonyms? ens.synonyms: null;
+                variantOb.properties.ambiguity = ens.ambiguity? ens.ambiguity: null;
+                variantOb.properties.minor_allele = ens.minor_allele? ens.minor_allele : null;
+                variantOb.properties.mappings = ens.mappings? ens.mappings[0]: null;
+                variantOb.properties.class = ens.var_class? ens.var_class:null;
+                variantOb.properties.ancestral_allele = ens.ancestral_allele? ens.ancestral_allele : null;
+            }else{
+                variantOb.properties.Consequence = props.Consequence;// ? ens.most_severe_consequence: null;
+                variantOb.properties.Frequency = props.Frequency;
+               // variantOb.properties.ens = props.ens;
+                variantOb.properties.synonyms = props.synonyms;
+                variantOb.properties.ambiguity = props.ambiguity;
+                variantOb.properties.minor_allele = props.minor_allele;
+                variantOb.properties.mappings = props.mappings;
+                variantOb.properties.class = props.class;
+                variantOb.properties.ancestral_allele = props.ancestral_allele;
+
+            }
         }
       
         return await variantOb;
