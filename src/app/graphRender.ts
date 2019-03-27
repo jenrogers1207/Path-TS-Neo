@@ -267,11 +267,45 @@ let drawPhenotypes = function(graphArray:Object, selectedGene:Array<object>){
         return phen;
     });
 
-    console.log(phenoData);
+    //console.log(phenoData);
+    let variants = graphArray.nodes.filter(d=> d.label == 'Variant').map(v=> {
+        let varName = v.name;
+        let pheno = JSON.parse(v.properties.properties).Phenotypes.flatMap(d=> d);
+       // console.log(pheno);
+        let clin = pheno.map(p=> p.disease_ids);
+        let test = clin.map(c=> {
+           return c.filter(d=> d.organization == "OMIM")
+        })
+        let props = JSON.parse(v.properties.properties);
+        let gene = String(props.mutations).split(',');
+
+        return {'name': v.name, 'props': props, 'pheno': test.flatMap(t=> t), 'gene': gene[0]};
+    });
+  
+    let test = d3.nest().key(function(d) { return d.gene; })
+    .entries(variants);
+
+    let newVars = test.filter(d=> d.key != 'undefined');
+
+   // console.log(newVars);
+   // console.log(phenoData);
+
+    let newPheno = phenoData.map(p=> {
+        let pheno = p;
+        pheno.name = p.name;
+        pheno.allvars = newVars.filter(v=> v.key == p.properties.associatedGene).map(m=> m.values)[0];
+        let vars = pheno.allvars.map(v=> {
+            return { 'vname': v.name, 'phenoid': v.pheno.filter(f=> f.accession == p.properties.phenotypeMimNumber) }
+        });
+        pheno.vars = vars.flatMap(f=> f).filter(m=> m.phenoid.length != 0);
+        return pheno;
+    })
+
+    console.log(newPheno);
 
     canvas.style('height', (150*phenoData.length) + 'px');
 
-    let node = canvas.select('.nodes').append('g').classed('pheno-wrap', true).selectAll('.pheno-tab').data(phenoData);
+    let node = canvas.select('.nodes').append('g').classed('pheno-wrap', true).selectAll('.pheno-tab').data(newPheno);
    // node.attr('transform', (d, i)=> 'translate(100, '+(30*i)+')')
   //  node.exit().remove();
 
