@@ -15,18 +15,38 @@ let nodeGroup = canvas.append('g').classed('nodes', true);
 let toolDiv = d3.select('body').append("div")
     .attr("class", "tooltip")
     .style("opacity", 0);
-let queryPanel = d3.select('#wrapper').append('div').attr('id', 'query-panel');
+//let queryPanel = d3.select('#wrapper').append('div').attr('id', 'query-panel');
 
-let dropData = ['Whole Network', 'Align by Gene', 'Align by Phenotype', 'Align by Pathway']
-let dropdown = d3.select('#topnav').select('.dropdown');
-let dropButton = dropdown.select('.dropdown-toggle');
-dropButton.text(dropData[0]);
-let dropdownItems = dropdown.select('.dropdown-menu').selectAll('.dropdown-item').data(dropData);
-let dropEnter = dropdownItems.enter().append('a').classed('dropdown-item', true);
-dropEnter.attr('href', '#');
-dropEnter.text(d=> d);
-dropdownItems.merge(dropEnter);
+gCanvas.viewToggleInput();
 
+
+export function searchToggleInput(){
+   let data = ['Search Gene', 'Search Function', 'Search Pathway', 'Search Models'];
+
+   let searchbar = d3.select('#topnav').select('.input-group.search');
+
+   searchbar.select('.input-group-append').select('button').text(data[0]);
+
+   let searchItems = searchbar.select('.dropdown-menu').selectAll('.dropdown-item').data(data);
+   let searchEnter = searchItems.enter().append('a').classed('dropdown-item', true)
+   searchEnter.text(d=> d);
+   searchEnter.attr('href', '#');
+
+   searchItems.merge(searchEnter);
+
+   searchEnter.on('click', (d, i, g)=> {
+    
+    searchbar.select('.input-group-append').select('button').text(d);
+    });
+
+    searchbar.select('.input-group-append').select('.btn.btn-outline-secondary').on('click', (d, i, g)=>{
+        let value = searchbar.select('input.form-control').node().value;
+        search.searchMachine(d3.select(g[0]).text(), value);
+    });
+
+}
+
+searchToggleInput();
 
 dataLoad.loadFile().then(async (d)=> {
 
@@ -76,8 +96,10 @@ dataLoad.loadFile().then(async (d)=> {
             return int;
         });
 
+        let dropdown = d3.select('#topnav').select('.dropdown');
+        let dropButton = dropdown.select('.dropdown-toggle');
       //  neoAPI.buildSubGraph(selectedGene);
-        dropEnter.on('click', (d, i, g)=> {
+        dropdown.select('.dropdown-menu').selectAll('.dropdown-item').on('click', (d, i, g)=> {
             dropButton.text(d);
             gCanvas.graphRenderMachine(graph, [selectedGene]);
         })

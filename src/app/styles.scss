@@ -132,7 +132,7 @@ body {
     width: 100%;
     height: 1000px;
     margin: auto;
-    margin-left: 300px;
+    // margin-left: 300px;
 }
 
 .node text {
@@ -344,4 +344,17 @@ i {
 
 .call-table {
     width: 370px;
+}
+
+.input-group {
+    position: relative;
+    // display: -ms-flexbox;
+    display: inline-flex;
+    -ms-flex-wrap: wrap;
+    flex-wrap: wrap;
+    float: right;
+    -ms-flex-align: stretch;
+    align-items: stretch;
+    width: 50%;
+    margin-top: 5px;
 }
