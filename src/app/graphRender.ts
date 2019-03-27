@@ -257,9 +257,13 @@ export function graphRenderMachine(graphArray:Object, selectedGene:Array<object>
 let drawPhenotypes = function(graphArray:Object, selectedGene:Array<object>){
 
     let canvas = d3.select('#graph-render').select('.graph-canvas');
+
+    var toolDiv = d3.select('.tooltip');
     
     canvas.select('.links').selectAll('*').remove();
     canvas.select('.nodes').selectAll('*').remove();
+
+
 
     let phenoData = graphArray.nodes.filter(d=> d.label == 'Phenotype').map(p=> {
         let phen = p.properties;
@@ -305,7 +309,9 @@ let drawPhenotypes = function(graphArray:Object, selectedGene:Array<object>){
 
     canvas.style('height', (150*phenoData.length) + 'px');
 
-    let node = canvas.select('.nodes').append('g').classed('pheno-wrap', true).selectAll('.pheno-tab').data(newPheno);
+    
+   // node.append('text').text('Phenotype').attr('x', 320).attr('y', 70);
+   let node = canvas.select('.nodes').append('g').classed('pheno-wrap', true).selectAll('.pheno-tab').data(newPheno);
    // node.attr('transform', (d, i)=> 'translate(100, '+(30*i)+')')
   //  node.exit().remove();
 
@@ -332,8 +338,22 @@ let drawPhenotypes = function(graphArray:Object, selectedGene:Array<object>){
 
     nodeEnter.append('text').text(d=> d.properties.associatedGene).attr('x', 446).attr('y', 86);
 
-    let circleVar = nodeEnter.append('circle').attr('cx', 550).attr('cy', 100);
-    circleVar.classed('pheno-v', true);
+    let circleVar = nodeEnter.append('g').selectAll('.pheno-v').data(d=>d.vars);
+    let circ = circleVar.enter().append('circle').classed('pheno-v', true).attr('cx', (d, i)=> 500 + (i*11)).attr('cy', 100);
+    circ.on('mouseover', function(d){
+        toolDiv.transition()
+        .duration(200)
+        .style("opacity", .8);
+  //  if(d.label == 'Phenotype'){
+        toolDiv.html(d.vname + "<br/>")
+        .style("left", (d3.event.pageX) + "px")
+        .style("top", (d3.event.pageY - 28) + "px");
+     })
+     .on("mouseout", function(d) {
+        toolDiv.transition()
+            .duration(500)
+            .style("opacity", 0);
+});
 
 }
 
@@ -394,7 +414,7 @@ function drawGraph(graphArray: Object, selectedGene: Array<object>) {
     let circles = nodeEnter.append('circle')
         .call(d3.drag()
             .on("start", dragstarted)
-           .on("drag", dragged)
+            .on("drag", dragged)
             .on("end", dragended))
          //   .on('dblclick', connectedNodes); 
 
