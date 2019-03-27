@@ -19,6 +19,20 @@ export async function changeSelectedClasses(dataArray: Array<object>){
     d3.select('.call-table')
 }
 
+export function viewToggleInput(){
+    let dropData = ['Whole Network', 'Align by Gene', 'Align by Phenotype', 'Align by Pathway']
+    let dropdown = d3.select('#topnav').select('.dropdown');
+    let dropButton = dropdown.select('.dropdown-toggle');
+    dropButton.text(dropData[0]);
+    let dropdownItems = dropdown.select('.dropdown-menu').selectAll('.dropdown-item').data(dropData);
+    let dropEnter = dropdownItems.enter().append('a').classed('dropdown-item', true);
+    dropEnter.attr('href', '#');
+    dropEnter.text(d=> d);
+    dropdownItems.merge(dropEnter);
+
+    return dropdown;
+}
+
 export async function renderCalls(promis: Array<object>, selectedNode:Array<object>){
 
       //  let selectedNames = qo.selected.queryKeeper.map(k=> k.name);
@@ -212,7 +226,7 @@ export async function renderGeneDetail(dataArray: Array<object>, graph:object){
 
         //THIS IS ADDING THE INTERRACTORAS A NEW GENE
 
-        let newNode = await search.addGene(d);
+        let newNode = await search.addGene(d.name);
       
         app.isStored(graph, newNode).then(async(n)=>{
 
@@ -243,7 +257,7 @@ export function graphRenderMachine(graphArray:Object, selectedGene:Array<object>
    
     let key = String(dropButton.text());
 
-    console.log('in graphrendermacine', key);
+    console.log('in graphrendermachine', key);
 
     const builder = {
         'Align by Gene' : phenoTest,

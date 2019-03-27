@@ -8,13 +8,33 @@ const got = require('got');
 import ky from 'ky';
 import { SrvRecord } from 'dns';
 
+export async function searchMachine(command:string, value:string){
 
-export async function addGene(d: object){
+    const builder = {
+        'Search Gene' : addGene,
+        'Search Function' : testingSpace,//phenoTest,
+        'Search Pathway' : testingSpace,//drawPhenotypes,
+        'Search Models' : testingSpace,
+    }
 
-    let geneOb = new qo.GeneObject(d.name, 'Gene');
+    let fun = builder[command];
+    
+    let response = await fun(value);
 
+    d3.select('#topnav').select('.input-group.search').select('input.form-control').node().value = 'search the web'
+
+    console.log('response',response);
+}
+
+export async function testingSpace(value:string){
+
+    console.log('testing space ',value);
+
+}
+
+export async function addGene(d: string){
+    let geneOb = new qo.GeneObject(d, 'Gene');
     let newNode = await initialSearch(geneOb);
-   
     return newNode;
 }
 
@@ -44,8 +64,6 @@ export async function searchBySymbol(query:object) {
     query.properties.Description = idSearch.name;
 
     return query;
-  // return props;
-    
 }
 
 export async function searchUniprot(value:string){
