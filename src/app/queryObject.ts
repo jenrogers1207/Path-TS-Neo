@@ -209,17 +209,20 @@ export async function structVariants(varArray: object){
                 variantOb.properties.class = ens.var_class? ens.var_class:null;
                 variantOb.properties.ancestral_allele = ens.ancestral_allele? ens.ancestral_allele : null;
             }else{
-                variantOb.properties.Consequence = props.Consequence;// ? ens.most_severe_consequence: null;
-                variantOb.properties.Frequency = props.Frequency;
-               // variantOb.properties.ens = props.ens;
-                variantOb.properties.synonyms = props.synonyms;
-                variantOb.properties.ambiguity = props.ambiguity;
-                variantOb.properties.minor_allele = props.minor_allele;
-                variantOb.properties.mappings = props.mappings;
-                variantOb.properties.class = props.class;
-                variantOb.properties.ancestral_allele = props.ancestral_allele;
+              console.log('ens null')
 
             }
+        }else{
+            variantOb.properties.Consequence = props.Consequence;// ? ens.most_severe_consequence: null;
+            variantOb.properties.Frequency = props.Frequency;
+           // variantOb.properties.ens = props.ens;
+            variantOb.properties.synonyms = props.synonyms;
+            variantOb.properties.ambiguity = props.ambiguity;
+            variantOb.properties.minor_allele = props.minor_allele;
+            variantOb.properties.mappings = props.mappings;
+            variantOb.properties.class = props.class;
+            variantOb.properties.ancestral_allele = props.ancestral_allele;
+
         }
       
         return await variantOb;

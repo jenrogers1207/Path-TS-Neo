@@ -113,9 +113,17 @@ dataLoad.loadFile().then(async (d)=> {
                     neoAPI.getGraph().then(g=> {
 
                         let graph = g[0];
-                        gCanvas.graphRenderMachine(graph, no);
-                        gCanvas.renderCalls(no);
-                        gCanvas.renderGeneDetail(no, graph);
+                        let graphVariants = graph.nodes.filter(d=> d.label == 'Variant');
+
+                        console.log('from load', graphVariants.map(v=> {
+                           
+                            v.properties = JSON.parse( v.properties.properties);
+                            return v;
+                        }));
+
+                     //   gCanvas.graphRenderMachine(graph, no);
+                      //  gCanvas.renderCalls(no);
+                      //  gCanvas.renderGeneDetail(no, graph);
                     });
                 });
 
