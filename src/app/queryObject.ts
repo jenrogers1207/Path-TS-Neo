@@ -159,7 +159,7 @@ export async function structVariants(varArray: object){
 
     let variants = typeof varArray === 'string' ? JSON.parse(varArray) : varArray;
    // if(!nodeOb.properties){ nodeOb.properties = nodeOb.data}
-    console.log('initial varr', variants);
+   // console.log('initial varr', variants);
     let obs = variants.filter(f=> f.name != undefined).map(async (v)=> {
       
         let props = v.properties.properties? JSON.parse(v.properties.properties): v.properties;
@@ -178,7 +178,12 @@ export async function structVariants(varArray: object){
         if(props.allelleAnnotations == undefined){
        
             let snp = await search.loadSNP(variantOb.name);
+            let ens = await search.loadEnsemble(variantOb.name);
+            //console.log('ens', ens);
             variantOb.properties.Type = snp.variant_type;
+            variantOb.properties.Consequence = ens.most_severe_consequence;
+            variantOb.properties.Frequency = ens.MAF;
+            variantOb.properties.ens = ens;
             variantOb.properties.Location.anchor = snp.anchor? snp.anchor : 'null';
             variantOb.properties.Location.placements_with_allele = snp.placements_with_allele;
             variantOb.properties.allelleAnnotations = snp.allele_annotations;
@@ -191,12 +196,21 @@ export async function structVariants(varArray: object){
             variantOb.properties.allelleAnnotations = props.allelleAnnotations;
             variantOb.properties.Phenotypes = props.Phenotypes;
         }
-      
-        return variantOb;
-    });
 
+        if(props.Consequence == undefined){
+            let ens = await search.loadEnsemble(variantOb.name);
+            console.log('ens in qo',ens)
+            variantOb.properties.Consequence = ens.most_severe_consequence;
+            variantOb.properties.Frequency = ens.MAF;
+            variantOb.properties.ens = ens;
+        }
+      
+        return await variantOb;
+    });
+    console.log('obs', obs)
  
   return await Promise.all(obs);
+  //  return await obs;
 }
 
 export async function structPheno(phenob: object, assocGene:string){
