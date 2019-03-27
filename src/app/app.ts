@@ -91,7 +91,9 @@ dataLoad.loadFile().then(async (d)=> {
                 
                 let varAlleles = await variantObjectMaker(no.properties.Variants);
                 let variants = await updateVariants(fileVariants, varAlleles);
-                no.properties.Variants = variants;
+                no.properties.Variants = await Promise.all(variants);
+
+                console.log('in app', variants);
 
                 let structuredPheno = await qo.structPheno(no.properties.Phenotypes, no.name);
                 no.properties.Phenotypes.nodes = structuredPheno;
@@ -161,7 +163,13 @@ async function updateVariants(fileVarArr:Array<Object>, graphVarArr: Array<any>)
     let variantNames = graphVars.map(v=> v.name);
     let newVars = fileVarArr.filter(v=> variantNames.indexOf(v.name) == -1);
 
-    return addIn(newVars, await findCopies(graphVars));
+   // let unique = await findCopies(graphVars);
+
+    let toStruct = await addIn(newVars, await findCopies(graphVars));
+  //  let structured = await Promise.all(qo.structVariants(toStruct))
+
+    return await Promise.resolve(qo.structVariants(toStruct));
+
 
     async function findCopies(nodeArray){
         let uniqueNameArray = []
@@ -179,7 +187,8 @@ async function updateVariants(fileVarArr:Array<Object>, graphVarArr: Array<any>)
     async function addIn(newArray:Array<Object>, oldArray:Array<Object>){
         if(newArray.length > 0){ newArray.forEach(v=> oldArray.push(v)) }
   
-        return qo.structVariants(oldArray);
+       // return qo.structVariants(oldArray);
+       return oldArray;
     }
 
 }

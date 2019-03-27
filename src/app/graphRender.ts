@@ -240,11 +240,12 @@ export function graphRenderMachine(graphArray:Object, selectedGene:Array<object>
     const builder = {
         'Align by Gene' : phenoTest,
         'Align by Pathway' : phenoTest,
-        'Align by Phenotype' : phenoTest,
-        'Whole Network' : drawGraph(graphArray, selectedGene)
+        'Align by Phenotype' : drawPhenotypes,
+        'Whole Network' : drawGraph,
     }
-
-   builder[key];
+   
+    let fun = builder[key];
+    fun(graphArray, selectedGene);
 
    function phenoTest(){
        console.log('is this working align by gene');
@@ -253,14 +254,114 @@ export function graphRenderMachine(graphArray:Object, selectedGene:Array<object>
 
 }
 
+let drawPhenotypes = function(graphArray:Object, selectedGene:Array<object>){
+
+    let canvas = d3.select('#graph-render').select('.graph-canvas');
+
+    var toolDiv = d3.select('.tooltip');
+    
+    canvas.select('.links').selectAll('*').remove();
+    canvas.select('.nodes').selectAll('*').remove();
+
+
+
+    let phenoData = graphArray.nodes.filter(d=> d.label == 'Phenotype').map(p=> {
+        let phen = p.properties;
+        phen.properties = JSON.parse(p.properties.properties);
+        return phen;
+    });
+
+    //console.log(phenoData);
+    let variants = graphArray.nodes.filter(d=> d.label == 'Variant').map(v=> {
+        let varName = v.name;
+        let pheno = JSON.parse(v.properties.properties).Phenotypes.flatMap(d=> d);
+       // console.log(pheno);
+        let clin = pheno.map(p=> p.disease_ids);
+        let test = clin.map(c=> {
+           return c.filter(d=> d.organization == "OMIM")
+        })
+        let props = JSON.parse(v.properties.properties);
+        let gene = String(props.mutations).split(',');
+
+        return {'name': v.name, 'props': props, 'pheno': test.flatMap(t=> t), 'gene': gene[0]};
+    });
+  
+    let test = d3.nest().key(function(d) { return d.gene; })
+    .entries(variants);
+
+    let newVars = test.filter(d=> d.key != 'undefined');
+
+   // console.log(newVars);
+   // console.log(phenoData);
+
+    let newPheno = phenoData.map(p=> {
+        let pheno = p;
+        pheno.name = p.name;
+        pheno.allvars = newVars.filter(v=> v.key == p.properties.associatedGene).map(m=> m.values)[0];
+        let vars = pheno.allvars.map(v=> {
+            return { 'vname': v.name, 'phenoid': v.pheno.filter(f=> f.accession == p.properties.phenotypeMimNumber) }
+        });
+        pheno.vars = vars.flatMap(f=> f).filter(m=> m.phenoid.length != 0);
+        return pheno;
+    })
+
+    console.log(newPheno);
+
+    canvas.style('height', (150*phenoData.length) + 'px');
+
+    
+   // node.append('text').text('Phenotype').attr('x', 320).attr('y', 70);
+   let node = canvas.select('.nodes').append('g').classed('pheno-wrap', true).selectAll('.pheno-tab').data(newPheno);
+   // node.attr('transform', (d, i)=> 'translate(100, '+(30*i)+')')
+  //  node.exit().remove();
+
+    let nodeEnter = node
+        .enter().append('g')
+        .attr("class", (d)=> 'pheno-tab '+d.name);
+
+    nodeEnter.attr('transform', (d, i)=> 'translate(100, '+(130*i)+')')
+
+    let circleP = nodeEnter.append('circle').attr('cx', 320).attr('cy', 100);
+    circleP.classed('pheno-c', true);
+
+    let textBlurb = nodeEnter.append('g').selectAll('text').data(d=> d3.entries(d.properties).filter(k=> k.key != 'associatedGene' && k.key != 'OMIM'));
+    textBlurb.enter().append('text').text(d=> {
+        if(d.key == 'description'){return d.value
+        }else{
+        return  d.key+': '+ d.value;
+        }
+       
+    }).attr('x', 0).attr('y', (d, i)=> 90 + (i* 15));
+
+    let circleG = nodeEnter.append('circle').attr('cx', 460).attr('cy', 100);
+    circleG.classed('pheno-g', true);
+
+    nodeEnter.append('text').text(d=> d.properties.associatedGene).attr('x', 446).attr('y', 86);
+
+    let circleVar = nodeEnter.append('g').selectAll('.pheno-v').data(d=>d.vars);
+    let circ = circleVar.enter().append('circle').classed('pheno-v', true).attr('cx', (d, i)=> 500 + (i*11)).attr('cy', 100);
+    circ.on('mouseover', function(d){
+        toolDiv.transition()
+        .duration(200)
+        .style("opacity", .8);
+  //  if(d.label == 'Phenotype'){
+        toolDiv.html(d.vname + "<br/>")
+        .style("left", (d3.event.pageX) + "px")
+        .style("top", (d3.event.pageY - 28) + "px");
+     })
+     .on("mouseout", function(d) {
+        toolDiv.transition()
+            .duration(500)
+            .style("opacity", 0);
+});
+
+}
+
 function drawGraph(graphArray: Object, selectedGene: Array<object>) {
 
     //let selectedNames = qo.selected.queryKeeper.map(k=> k.name);
     let selectedNames = selectedGene.map(m=> m.name);
 
-    console.log('in draw graph',selectedNames);
-   
- 
     let data = graphArray;
 
     let canvas = d3.select('#graph-render').select('.graph-canvas'),
@@ -313,7 +414,7 @@ function drawGraph(graphArray: Object, selectedGene: Array<object>) {
     let circles = nodeEnter.append('circle')
         .call(d3.drag()
             .on("start", dragstarted)
-           .on("drag", dragged)
+            .on("drag", dragged)
             .on("end", dragended))
          //   .on('dblclick', connectedNodes); 
 

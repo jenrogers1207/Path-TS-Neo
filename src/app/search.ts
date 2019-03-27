@@ -73,8 +73,28 @@ export async function loadSNP(value: string){
 
     //Maybe add a try catch here
     //neoAPI.setNodeProperty('Variant', value, 'snpProps', JSON.stringify(req.primary_snapshot_data))
-
+    //console.log('dbsnp', req)
     return req.primary_snapshot_data;
+}
+
+export async function loadEnsemble(value:string){
+    let query = value.includes(',') ? value.split(',')[0] : value;
+    let proxy = 'https://cors-anywhere.herokuapp.com/';
+    let url = 'https://rest.ensembl.org/variation/human/'+query+'?content-type=application/json';
+    let response = (async () => {
+        try {
+            let req = await ky.get(url).json();
+            return req;
+        } catch (error) {
+            let req = null;
+            return req;
+        }
+    });
+
+    return await response();
+  //  let req = await ky.get(url).json();
+  //  console.log('ensem', req)
+    
 }
 
 export async function searchOMIM(queryOb:any){
