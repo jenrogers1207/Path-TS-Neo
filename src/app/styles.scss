@@ -39,7 +39,7 @@ body {
 }
 
 #left-nav {
-    width: 350px;
+    width: 380px;
     background-color: #f1f1f1;
     height: 100%;
     top: 0px;
@@ -93,19 +93,21 @@ body {
     font-style: bold;
     background-color: #F5F5F5;
     height: 30px;
-    width: 100%;
+    // width: 100%;
+    width: inherit;
     padding: 5px;
     border-radius: 5px;
+    overflow: hidden;
     cursor: pointer;
 }
 
 .var-head span {
-    padding: 5px;
-    margin-left: 8px;
+    padding: 3px;
+    margin-left: 5px;
 }
 
 .variant-wrapper {
-    width: 330px;
+    width: 350px;
     max-height: 300px;
     margin: auto;
     overflow: auto;
@@ -339,4 +341,8 @@ i {
     fill: #66CDAA;
     r: 5px;
     opacity: .7;
+}
+
+.call-table {
+    width: 370px;
 }
