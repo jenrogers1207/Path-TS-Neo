@@ -24,6 +24,18 @@ export async function searchMachine(command:string, value:string){
     d3.select('#topnav').select('.input-group.search').select('input.form-control').node().value = 'search the web'
 
     console.log('response',response);
+
+    let queryBox = d3.select('#graph-render').append('div').classed('query-box', true);
+    let text = queryBox.append('div');
+    text.append('h3').text('Found for '+ value);
+    text.append('h4').text('Symbol: '+ response.name);
+    text.append('h4').text('Type: '+ response.type);
+
+    let blurb = text.selectAll('.found-blurb').data(response.properties.Text);
+    let blurbEnter = blurb.enter().append('div').classed('found-blurb', true);
+    blurbEnter.append('h5').text(d=> d.textSectionTitle);
+    blurbEnter.append('text').text(d=> d.textSectionContent);
+
 }
 
 export async function testingSpace(value:string){
@@ -283,14 +295,14 @@ export async function getKegg(value: string, queryOb:object){
     });
 
     
-    queryOb.properties.Orthology.keggID = keggOrthoID[0][0]
-    queryOb.properties.Brite.kegg = keggBrite;
+    queryOb.properties.Orthology.keggID = keggOrthoID? keggOrthoID[0][0]: null;
+    queryOb.properties.Brite.kegg = keggBrite? keggBrite: null;
     queryOb.properties.Structure.AASEQ = AASEQ;
     queryOb.properties.Structure.NTSEQ = NTSEQ;
     queryOb.properties.Structure.ids = STRUCTURE;
     queryOb.properties.Structure.MOTIF = MOTIF;
 
-    queryOb.properties.Brite = queryOb.properties.Brite.kegg.map(b=>{
+    queryOb.properties.Brite = queryOb.properties.Brite.kegg != null? queryOb.properties.Brite.kegg.map(b=>{
         if(b[0].match(/\d/)){
             let tag = b.slice(1, (b.length))
             if(tag.length > 1){
@@ -303,7 +315,7 @@ export async function getKegg(value: string, queryOb:object){
                 return {'id': b[b.length - 1], 'tag': tag.reduce((a, c)=> a.concat(' '+c)) }
             }else{return {'id': b[0], 'tag': tag } }
         }
-    });
+    }) : null;
 
 
     return queryOb;
