@@ -50,11 +50,6 @@ dataLoad.loadFile().then(async (d)=> {
 
         let graphVariants = graph.nodes.filter(d=> d.label == 'Variant');
 
-        console.log('from load', graphVariants.map(v=> {
-           
-            v.properties = JSON.parse( v.properties.properties);
-            return v;
-        }));
 
         //adding selectednode as the file gene
         let selectedGene = await Promise.resolve(queryKeeper[0]);
@@ -95,36 +90,49 @@ dataLoad.loadFile().then(async (d)=> {
        
             search.initialSearch(geneOb).then(async no=> {
             
-          
                 let varAlleles = await variantObjectMaker(no.properties.Variants, no.name);
+          
                 let variants = await updateVariants(fileVariants, varAlleles);
                 no.properties.Variants = await Promise.all(variants);
 
-                console.log('in app', variants);
+               // console.log('in app', variants);
 
                 let structuredPheno = await qo.structPheno(no.properties.Phenotypes, no.name);
                 no.properties.Phenotypes.nodes = structuredPheno;
 
                 let enrighmentP = await search.searchStringEnrichment(no.name);
     
-
                 neoAPI.buildSubGraph(no).then(()=> {
 
-                    neoAPI.getGraph().then(g=> {
+
+/*
+                    neoAPI.getGraph().then(async (g)=> {
 
                         let graph = g[0];
                         let graphVariants = graph.nodes.filter(d=> d.label == 'Variant');
 
-                        console.log('from load', graphVariants.map(v=> {
-                           
-                            v.properties = JSON.parse( v.properties.properties);
-                            return v;
-                        }));
+                        let queryGenes = graph.nodes.filter(f=> f.label.includes('Gene'));
+    
+                        let queryKeeper = queryGenes.map(async (gene:object) => {
+                            let ob = isStored(graph, gene);
+                            qo.allQueries.addQueryOb(ob);
+                            return ob;
+                        });
 
-                     //   gCanvas.graphRenderMachine(graph, no);
-                      //  gCanvas.renderCalls(no);
-                      //  gCanvas.renderGeneDetail(no, graph);
+                          //adding selectednode as the file gene
+                        let selectedGene = await Promise.resolve(queryKeeper[0]);
+
+                        console.log('selectedGene',selectedGene);
+                        qo.selected.addQueryOb(selectedGene);
+
+                        gCanvas.graphRenderMachine(graph, [selectedGene]);
+                        gCanvas.renderCalls(queryKeeper, [selectedGene]);
+                        gCanvas.renderGeneDetail([selectedGene], graph);
+
                     });
+*/
+
+
                 });
 
 

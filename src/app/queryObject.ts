@@ -158,18 +158,18 @@ export async function structGene(g: object){
 export async function structVariants(varArray: object){
 
     let variants = typeof varArray === 'string' ? JSON.parse(varArray) : varArray;
-    console.log('vars in struct vars', variants);
+  //  console.log('vars in struct vars', variants);
 
     let obs = variants.filter(f=> f.name != undefined).map(async (v)=> {
         let props = v.properties.properties? JSON.parse(v.properties.properties): v.properties;
         let snpName = v.name? v.name : props.Ids.dbsnp;
         let variantOb = new VariantObject(snpName);
         variantOb.properties.associatedGene = props.associatedGene;
-        variantOb.properties.OMIM = props.mimNumber? props.mimNumber : v.mimNumber;
+        variantOb.properties.OMIM = props.mimNumber? props.mimNumber : props.OMIM;
         variantOb.properties.mutations = props.mutations? props.mutations : v.mutations;
         variantOb.properties.description = props.description? props.description : v.name;
         variantOb.properties.Ids.clinvarAccessions = props.clinvarAccessions? props.clinvarAccessions : 'null';
-        variantOb.properties.Text = props.Text? props.Text : props.text;
+        variantOb.properties.Text = props.text? props.text : props.Text;
         variantOb.properties.Ids = props.Ids;
         //let props = variantOb.properties.properties? variantOb.properties.properties : variantOb.properties;
        // let propOb = typeof props == "string"? JSON.parse(props):props;
@@ -197,7 +197,7 @@ export async function structVariants(varArray: object){
 
         if(props.Consequence == undefined || props.Consequence == null){
             let ens = await search.loadEnsemble(variantOb.name);
-            console.log('ens in qo',ens)
+           // console.log('ens in qo',ens)
             if(ens != null){
                 variantOb.properties.Consequence = ens.most_severe_consequence ? ens.most_severe_consequence: null;
                 variantOb.properties.Frequency = ens.MAF ? ens.MAF :  null;
@@ -227,7 +227,7 @@ export async function structVariants(varArray: object){
       
         return await variantOb;
     });
-    console.log('obs', obs)
+    //console.log('obs', obs)
  
   return await Promise.all(obs);
   //  return await obs;
