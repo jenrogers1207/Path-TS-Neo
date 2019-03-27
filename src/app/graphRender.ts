@@ -271,14 +271,14 @@ let drawPhenotypes = function(graphArray:Object, selectedGene:Array<object>){
 
     let phenoData = graphArray.nodes.filter(d=> d.label == 'Phenotype').map(p=> {
         let phen = p.properties;
-        phen.properties = JSON.parse(p.properties.properties);
+        phen.properties = typeof p.properties.properties == 'string' ? JSON.parse(p.properties.properties) : p.properties.properties;
         return phen;
     });
 
     let variants = graphArray.nodes.filter(d=> d.label == 'Variant').map(v=> {
         let varName = v.name;
-        let pheno = JSON.parse(v.properties.properties).Phenotypes.flatMap(d=> d);
-       // console.log(pheno);
+        let pheno = typeof v.properties.properties == 'string' ? JSON.parse(v.properties.properties).Phenotypes.flatMap(d=> d): v.properties.properties.Phenotypes.flatMap(d=> d);
+    
         let clin = pheno.map(p=> p.disease_ids);
         let test = clin.map(c=> {
            return c.filter(d=> d.organization == "OMIM")

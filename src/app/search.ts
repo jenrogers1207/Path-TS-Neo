@@ -99,8 +99,6 @@ export async function loadEnsemble(value:string){
     });
 
     return await response();
-  //  let req = await ky.get(url).json();
-  //  console.log('ensem', req)
     
 }
 
