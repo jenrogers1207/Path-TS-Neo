@@ -39,6 +39,8 @@ export async function renderCalls(promis: Array<object>, selectedNode:Array<obje
         let selectedNames = selectedNode.map(k=> k.name);
 
         let data = await Promise.all(promis);
+
+      
       
         let sidebar = d3.select('#left-nav');
         let callTable = sidebar.select('.call-table');
@@ -80,11 +82,16 @@ export async function renderCalls(promis: Array<object>, selectedNode:Array<obje
         let variantBox = geneDiv.append('div').classed('variant-wrapper', true);
     
         let variants = variantBox.selectAll('.variant').data((dat)=> {
-            console.log('dat',dat);
+           
             if(dat.properties.Variants != undefined){
                 return dat.properties.Variants.map(d=>{ 
-                    console.log(d)
-                    d.tag = d.properties.Phenotypes[0][0].clinical_significances? d.properties.Phenotypes[0][0].clinical_significances: null;
+                   
+                    if(d.properties.Phenotypes[0] != undefined){
+                        d.tag = d.properties.Phenotypes[0][0].clinical_significances? d.properties.Phenotypes[0][0].clinical_significances: null;
+                    }else{
+                        d.tag = [''];
+                    }
+                   
                     d.cons = d.properties.Consequence ? d.properties.Consequence : null;
                     return d;
                 });
@@ -257,8 +264,6 @@ export function graphRenderMachine(graphArray:Object, selectedGene:Array<object>
    
     let key = String(dropButton.text());
 
-    console.log('in graphrendermachine', key);
-
     const builder = {
         'Align by Gene' : phenoTest,
         'Align by Pathway' : phenoTest,
@@ -282,25 +287,34 @@ let drawPhenotypes = function(graphArray:Object, selectedGene:Array<object>){
     
     canvas.select('.links').selectAll('*').remove();
     canvas.select('.nodes').selectAll('*').remove();
+    let geneData = graphArray.nodes.filter(d=> d.label == 'Gene');
 
+ 
+    
     let phenoData = graphArray.nodes.filter(d=> d.label == 'Phenotype').map(p=> {
         let phen = p.properties;
         phen.properties = typeof p.properties.properties == 'string' ? JSON.parse(p.properties.properties) : p.properties.properties;
         return phen;
     });
 
+ 
+
     let variants = graphArray.nodes.filter(d=> d.label == 'Variant').map(v=> {
         let varName = v.name;
-        let pheno = typeof v.properties.properties == 'string' ? JSON.parse(v.properties.properties).Phenotypes.flatMap(d=> d): v.properties.properties.Phenotypes.flatMap(d=> d);
-    
-        let clin = pheno.map(p=> p.disease_ids);
-        let test = clin.map(c=> {
-           return c.filter(d=> d.organization == "OMIM")
-        })
-        let props = JSON.parse(v.properties.properties);
-        let gene = String(props.mutations).split(',');
 
-        return {'name': v.name, 'props': props, 'pheno': test.flatMap(t=> t), 'gene': gene[0]};
+
+        let props = typeof v.properties.properties == 'string' ? JSON.parse(v.properties.properties) : v.properties.properties;
+     
+        let pheno = props.Phenotypes[0]? props.Phenotypes.flatMap(d=> d): null;
+        let clin = pheno != null? pheno.map(p=> p.disease_ids): null;
+        let test = clin != null? clin.map(c=> c.filter(d=> d.organization == "OMIM")): null;
+
+
+        //let props = JSON.parse(v.properties.properties);
+        let gene = String(props.mutations).split(',');
+        let fin = test != null? test.flatMap(t=> t): null;
+
+        return {'name': v.name, 'props': props, 'pheno': fin, 'gene': gene[0]};
     });
   
     let test = d3.nest().key(function(d) { return d.gene; })
@@ -319,7 +333,7 @@ let drawPhenotypes = function(graphArray:Object, selectedGene:Array<object>){
         return pheno;
     })
 
-    console.log(newPheno);
+  
 
     canvas.style('height', (150*phenoData.length) + 'px');
 

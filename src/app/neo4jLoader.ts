@@ -3,7 +3,7 @@ import * as d3 from 'D3';
 import { readdirSync } from "fs";
 
 var neo4j = require('neo4j-driver').v1;
-var driver = neo4j.driver("bolt://localhost:7687", neo4j.auth.basic("neo4j", "123"));
+var driver = neo4j.driver("bolt://localhost:11011", neo4j.auth.basic("neo4j", "123"));
 var _ = require('lodash');
 
 export async function addLabel(node:object){
@@ -157,26 +157,30 @@ export async function structureRelation(node1: Array<object>, node2: Array<objec
     let phenoNames = node1.map(p=> p.name.toString());
     let relationArr = []
     let relatedPhenotypes = node2.map(p=>{
+
+            console.log('var', p);
         
             let varProps = typeof p.properties == 'string'? JSON.parse(p.properties) : p.properties;
             varProps = varProps.properties? varProps.properties : varProps;
             varProps = typeof varProps == 'string'? JSON.parse(varProps) : varProps;
        
-            let phenoFromVars = varProps.Phenotypes.map(p=> {
+            let phenoFromVars = varProps.Phenotypes[0]? varProps.Phenotypes.map(p=> {
                 let omimCheck = p.map(dis=> dis.disease_ids.filter(d=> d.organization == "OMIM"));
                 return omimCheck;
-            });
+            }) : null;
 
-            let filtered = phenoFromVars.flatMap(fil=>{ 
+            let filtered = phenoFromVars != null? phenoFromVars.flatMap(fil=>{ 
                 return fil.filter(test=> test.length > 0);
-            }).flatMap(d=> d);
+            }).flatMap(d=> d) : null;
 
-        
-            filtered.forEach(fil=> {
-                let index = phenoNames.indexOf(fil.accession)
-               
-                if(index > -1){ relationArr.push({'pheno': fil.accession, 'variant': p.name}) }
-            })
+            if(filtered != null){
+                filtered.forEach(fil=> {
+                    let index = phenoNames.indexOf(fil.accession)
+                
+                    if(index > -1){ relationArr.push({'pheno': fil.accession, 'variant': p.name}) }
+                })
+            }
+    
     });
     relationArr.forEach(rel => {
     addRelation(rel.pheno, 'Phenotype', rel.variant, 'Variant', relation);
