@@ -21,20 +21,48 @@ export async function searchMachine(command:string, value:string){
     
     let response = await fun(value);
 
-    d3.select('#topnav').select('.input-group.search').select('input.form-control').node().value = 'search the web'
+    d3.select('#topnav').select('.input-group.search').select('input.form-control').node().value = '';
 
     console.log('response',response);
 
     let queryBox = d3.select('#graph-render').append('div').classed('query-box', true);
-    let text = queryBox.append('div');
-    text.append('h3').text('Found for '+ value);
-    text.append('h4').text('Symbol: '+ response.name);
-    text.append('h4').text('Type: '+ response.type);
+    let head = queryBox.append('div').classed('header', true);
 
-    let blurb = text.selectAll('.found-blurb').data(response.properties.Text);
-    let blurbEnter = blurb.enter().append('div').classed('found-blurb', true);
-    blurbEnter.append('h5').text(d=> d.textSectionTitle);
-    blurbEnter.append('text').text(d=> d.textSectionContent);
+    if(response != undefined){
+
+        let addbutton = head.append('button').classed('btn btn-outline-primary', true);
+        addbutton.append('text').text('Add to Graph');
+    
+        let closebutton = head.append('button').classed('close', true).attr('aria-label', "Close");
+        closebutton.append('span').attr('aria-hidden', "true").append('text').text('x');
+    
+        closebutton.on('click', ()=> {
+            //queryBox.selectAll('*').remove();
+            d3.select('#graph-render').select('.query-box').remove();
+        })
+        let text = queryBox.append('div');
+        text.append('h3').text('Found for '+ value);
+        text.append('h4').text('Symbol: '+ response.name);
+        text.append('h4').text('Type: '+ response.type);
+    
+        let blurb = text.selectAll('.found-blurb').data(response.properties.Text);
+        let blurbEnter = blurb.enter().append('div').classed('found-blurb', true);
+        blurbEnter.append('h5').text(d=> d.textSectionTitle);
+        blurbEnter.append('text').text(d=> d.textSectionContent);
+
+    }else{
+
+        let closebutton = head.append('button').classed('close', true).attr('aria-label', "Close");
+        closebutton.append('span').attr('aria-hidden', "true").append('text').text('x');
+    
+        closebutton.on('click', ()=> {
+            d3.select('#graph-render').select('.query-box').remove();
+        })
+        let text = queryBox.append('div');
+        text.append('h3').text('Not Found');
+    }
+
+   
 
 }
 
