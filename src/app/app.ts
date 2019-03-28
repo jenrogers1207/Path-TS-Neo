@@ -68,6 +68,8 @@ dataLoad.loadFile().then(async (d)=> {
             return ob;
         });
 
+        console.log('gueryGenes', queryKeeper);
+
         let graphVariants = graph.nodes.filter(d=> d.label == 'Variant');
 
 
@@ -82,6 +84,27 @@ dataLoad.loadFile().then(async (d)=> {
         selectedGene.properties.Variants = variantOb;
 
         let graphPhenotypes = graph.nodes.filter(d=> d.label == 'Phenotype');
+
+        queryKeeper.forEach(query => {
+            checkPhenoTypes(graphPhenotypes, query);
+        });
+
+        async function checkPhenoTypes(graphPheno, queryOb){
+
+            let  gene = await Promise.resolve(queryOb);
+            let nodePheno = gene.properties.Phenotypes.nodes? gene.properties.Phenotypes.nodes : gene.properties.Phenotypes;
+
+            let graphNames = graphPheno.map(m=> m.name);
+            let newNodes = nodePheno.filter(f=> graphNames.indexOf(f.name) == -1);
+
+            if(newNodes.length > 0){
+                neoAPI.addNodeArray(newNodes).then(()=> { 
+                neoAPI.structureRelation(newNodes, gene.properties.Variants, "Pheno");
+             })
+            }
+        }
+
+        
      
         let phenotypes = graphPhenotypes.length > 0? graphPhenotypes : await qo.structPheno(selectedGene.properties.Phenotypes, selectedGene.name);
       

@@ -39,7 +39,7 @@ export async function renderCalls(promis: Array<object>, selectedNode:Array<obje
         let selectedNames = selectedNode.map(k=> k.name);
 
         let data = await Promise.all(promis);
-      
+
         let sidebar = d3.select('#left-nav');
         let callTable = sidebar.select('.call-table');
 
@@ -72,7 +72,7 @@ export async function renderCalls(promis: Array<object>, selectedNode:Array<obje
           let icon =  d3.select(this.parentElement).select('i.'+d.name);
           icon.classed('fa-chevron-circle-down') ? icon.attr('class', d.name+' fas fa-chevron-circle-up') : icon.attr('class', d.name+' fas fa-chevron-circle-down');
         });
-      
+
         geneDiv = geneEnterDiv.merge(geneDiv);
 
         geneDiv.filter(d=> selectedNames.includes(d.name)).classed('selected', true);
@@ -80,11 +80,16 @@ export async function renderCalls(promis: Array<object>, selectedNode:Array<obje
         let variantBox = geneDiv.append('div').classed('variant-wrapper', true);
     
         let variants = variantBox.selectAll('.variant').data((dat)=> {
-            console.log('dat',dat);
+           
             if(dat.properties.Variants != undefined){
                 return dat.properties.Variants.map(d=>{ 
-                    console.log(d)
-                    d.tag = d.properties.Phenotypes[0][0].clinical_significances? d.properties.Phenotypes[0][0].clinical_significances: null;
+                   
+                    if(d.properties.Phenotypes[0] != undefined){
+                        d.tag = d.properties.Phenotypes[0][0].clinical_significances? d.properties.Phenotypes[0][0].clinical_significances: null;
+                    }else{
+                        d.tag = [''];
+                    }
+                   
                     d.cons = d.properties.Consequence ? d.properties.Consequence : null;
                     return d;
                 });
@@ -137,6 +142,18 @@ export async function renderCalls(promis: Array<object>, selectedNode:Array<obje
         variants.on('mouseover', function(d){
            
         });
+
+
+        
+        console.log('geneHeader', geneHeader.data());
+        console.log('geneHeader', geneHeader.filter(d=> selectedNames.indexOf(d.name) == -1));
+
+     
+        let unselectedGenes = geneDiv.filter(d=> selectedNames.indexOf(d.name) == -1);
+
+        console.log(unselectedGenes);
+
+        unselectedGenes.select('.variant-wrapper').classed('hidden', true);
 }
 export async function renderGeneDetail(dataArray: Array<object>, graph:object){
     
@@ -257,8 +274,6 @@ export function graphRenderMachine(graphArray:Object, selectedGene:Array<object>
    
     let key = String(dropButton.text());
 
-    console.log('in graphrendermachine', key);
-
     const builder = {
         'Align by Gene' : phenoTest,
         'Align by Pathway' : phenoTest,
@@ -274,7 +289,7 @@ export function graphRenderMachine(graphArray:Object, selectedGene:Array<object>
    }
 }
 
-let drawPhenotypes = function(graphArray:Object, selectedGene:Array<object>){
+let drawPhenotypes = async function(graphArray:Object, selectedGene:Array<object>){
 
     let canvas = d3.select('#graph-render').select('.graph-canvas');
 
@@ -282,6 +297,7 @@ let drawPhenotypes = function(graphArray:Object, selectedGene:Array<object>){
     
     canvas.select('.links').selectAll('*').remove();
     canvas.select('.nodes').selectAll('*').remove();
+    let geneData = graphArray.nodes.filter(d=> d.label == 'Gene');
 
     let phenoData = graphArray.nodes.filter(d=> d.label == 'Phenotype').map(p=> {
         let phen = p.properties;
@@ -291,41 +307,45 @@ let drawPhenotypes = function(graphArray:Object, selectedGene:Array<object>){
 
     let variants = graphArray.nodes.filter(d=> d.label == 'Variant').map(v=> {
         let varName = v.name;
-        let pheno = typeof v.properties.properties == 'string' ? JSON.parse(v.properties.properties).Phenotypes.flatMap(d=> d): v.properties.properties.Phenotypes.flatMap(d=> d);
+      
+        let props = typeof v.properties.properties == 'string' ? JSON.parse(v.properties.properties) : v.properties.properties;
+      
+        let pheno = props.Phenotypes[0] != undefined? props.Phenotypes.flatMap(d=> d): null;
+   
+        let clin = pheno != null? pheno.map(p=> p.disease_ids.filter(d=> d.organization == "OMIM")).flatMap(d=> d): null;
     
-        let clin = pheno.map(p=> p.disease_ids);
-        let test = clin.map(c=> {
-           return c.filter(d=> d.organization == "OMIM")
-        })
-        let props = JSON.parse(v.properties.properties);
         let gene = String(props.mutations).split(',');
-
-        return {'name': v.name, 'props': props, 'pheno': test.flatMap(t=> t), 'gene': gene[0]};
+       
+        return {'name': v.name, 'props': props, 'pheno': clin, 'gene': gene[0]};
     });
-  
-    let test = d3.nest().key(function(d) { return d.gene; })
+
+    variants = variants.filter(v=> v.gene != 'undefined');
+
+    let newVars = d3.nest().key(function(d) { return d.gene; })
     .entries(variants);
 
-    let newVars = test.filter(d=> d.key != 'undefined');
-
-    let newPheno = phenoData.map(p=> {
+    let newPheno = await phenoData.map(async p=> {
         let pheno = p;
         pheno.name = p.name;
-        pheno.allvars = newVars.filter(v=> v.key == p.properties.associatedGene).map(m=> m.values)[0];
-        let vars = pheno.allvars.map(v=> {
-            return { 'vname': v.name, 'phenoid': v.pheno.filter(f=> f.accession == p.properties.phenotypeMimNumber) }
-        });
-        pheno.vars = vars.flatMap(f=> f).filter(m=> m.phenoid.length != 0);
+      
+        pheno.allvars = await newVars.filter(v=> v.key == p.properties.associatedGene).map(m=> m.values)[0];
+ 
+        if(pheno.allvars[0]!= undefined){
+            let vars = pheno.allvars.map(v=> {
+                let vPheno = v.pheno != null? v.pheno.filter(f=> f.accession == String(p.properties.phenotypeMimNumber)) : null;
+                return { 'vname': v.name, 'phenoid': vPheno }
+            });
+            pheno.vars = vars.filter(f=> f.phenoid != null && f.phenoid.length > 0);
+        }else{
+            pheno.vars = null;
+        }
         return pheno;
-    })
-
-    console.log(newPheno);
+    });
 
     canvas.style('height', (150*phenoData.length) + 'px');
 
-    
    // node.append('text').text('Phenotype').attr('x', 320).attr('y', 70);
-   let node = canvas.select('.nodes').append('g').classed('pheno-wrap', true).selectAll('.pheno-tab').data(newPheno);
+   let node = canvas.select('.nodes').append('g').classed('pheno-wrap', true).selectAll('.pheno-tab').data(await Promise.all(newPheno));
    // node.attr('transform', (d, i)=> 'translate(100, '+(30*i)+')')
   //  node.exit().remove();
 
@@ -366,7 +386,7 @@ let drawPhenotypes = function(graphArray:Object, selectedGene:Array<object>){
         toolDiv.transition()
             .duration(500)
             .style("opacity", 0);
-});
+    });
 
 }
 
