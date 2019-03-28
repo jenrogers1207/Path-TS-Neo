@@ -91,26 +91,17 @@ dataLoad.loadFile().then(async (d)=> {
 
         async function checkPhenoTypes(graphPheno, queryOb){
 
-            console.log(graphPheno);
             let  gene = await Promise.resolve(queryOb);
             let nodePheno = gene.properties.Phenotypes.nodes? gene.properties.Phenotypes.nodes : gene.properties.Phenotypes;
 
-            console.log(nodePheno);
-
             let graphNames = graphPheno.map(m=> m.name);
             let newNodes = nodePheno.filter(f=> graphNames.indexOf(f.name) == -1);
-
-            console.log(newNodes);
 
             if(newNodes.length > 0){
                 neoAPI.addNodeArray(newNodes).then(()=> { 
                 neoAPI.structureRelation(newNodes, gene.properties.Variants, "Pheno");
              })
             }
-
-            
-
-
         }
 
         

@@ -172,11 +172,10 @@ export async function structureRelation(node1: Array<object>, node2: Array<objec
             let filtered = phenoFromVars != null? phenoFromVars.flatMap(fil=>{ 
                 return fil.filter(test=> test.length > 0);
             }).flatMap(d=> d) : null;
-
+            console.log(filtered);
             if(filtered != null){
                 filtered.forEach(fil=> {
                     let index = phenoNames.indexOf(fil.accession)
-                
                     if(index > -1){ relationArr.push({'pheno': fil.accession, 'variant': p.name}) }
                 })
             }
