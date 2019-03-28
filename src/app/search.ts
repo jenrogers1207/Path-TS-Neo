@@ -1,4 +1,5 @@
 import * as d3 from 'D3';
+import * as app from './app'
 
 const qo = require('./queryObject');
 const neoAPI = require('./neo4jLoader');
@@ -30,8 +31,23 @@ export async function searchMachine(command:string, value:string){
 
     if(response != undefined){
 
+        //this is the same for initial load - maybe brerak this up
+        let varAlleles = await app.variantObjectMaker(response.properties.Variants, response.name);
+        let vars = qo.structVariants(await varAlleles);
+        response.properties.Variants = await Promise.resolve(vars);
+
+         let structuredPheno = await qo.structPheno(response.properties.Phenotypes, response.name);
+         response.properties.Phenotypes.nodes = structuredPheno;
+
+         console.log('response', response);
+
+        // let enrighmentP = await search.searchStringEnrichment(no.name);
+
         let addbutton = head.append('button').classed('btn btn-outline-primary', true);
         addbutton.append('text').text('Add to Graph');
+        addbutton.on('click', ()=> {
+            neoAPI.buildSubGraph(response);
+        });
     
         let closebutton = head.append('button').classed('close', true).attr('aria-label', "Close");
         closebutton.append('span').attr('aria-hidden', "true").append('text').text('x');
