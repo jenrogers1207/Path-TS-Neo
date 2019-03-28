@@ -359,3 +359,23 @@ i {
     width: 50%;
     margin-top: 5px;
 }
+
+.query-box {
+    background-color: white;
+    position: fixed;
+    top: 60px;
+    right: 0px;
+    width: 200px;
+    height: 100%;
+    padding: auto;
+    overflow: auto;
+}
+
+.query-box div {
+    overflow: auto;
+}
+
+.header {
+    height: 50px;
+    width: 100%;
+}
