@@ -81,7 +81,9 @@ dataLoad.loadFile().then(async (d)=> {
         
         let variantOb = await Promise.resolve(variants);
 
-        selectedGene.properties.Variants = variantOb;
+        console.log('varrii',variantOb)
+
+        selectedGene.properties.Variants = variantOb.filter(v=> v.properties.associatedGene == selectedGene.name);
 
         let graphPhenotypes = graph.nodes.filter(d=> d.label == 'Phenotype');
 
