@@ -268,7 +268,6 @@ export function graphRenderMachine(graphArray:Object, selectedGene:Array<object>
 
     const builder = {
         'Align by Gene' : drawGene,
-      //  'Align by Variants' : phenoTest,
         'Align by Phenotype' : drawPhenotypes,
         'Whole Network' : drawGraph,
     }
@@ -288,6 +287,8 @@ let drawGene = async function(graphArray:Object, selectedGene:Array<object>){
     canvas.select('.links').selectAll('*').remove();
     canvas.select('.nodes').selectAll('*').remove();
 
+    canvas.attr('height', 1500);
+
     console.log(graphArray);
 
     let data = selectedGene.map(m=> {
@@ -299,66 +300,140 @@ let drawGene = async function(graphArray:Object, selectedGene:Array<object>){
             clin.flatMap(c=> c.accession).forEach(element => {
                 phenoList.push(element);
             });
-            v.level = 1;
+           // v.level = 1;
             let childz = clin.flatMap(c=> c.accession).map(m=> {
-               return {'data': {'name': m, 'level': 2 }  } 
+               return {'data': {'name': m, }, 'level': 2, 'ypos':0, 'children': []  } ;
             });
-            let vars = {'data': v, 'children': childz }
+            let vars = {'data': v, 'level':1, 'ypos': 0, 'children': childz }
             return vars;
         });
 
         let filteredPheno = m.properties.Phenotypes.filter(p=> phenoList.indexOf(p.name) == -1).map(f=> { 
-            f.level = 2;
-            return {'data': f }});
+        
+            return {'data': f , 'level': 2, 'ypos':0, 'children': [] }});
 
         let concatChil = varPhenoList.concat(filteredPheno).map((t, i)=> {
-            t.data.ypos = i+1;
+           // let ypos = i+1;
             return t;
         })
-        let mom = {'data': m, 'children': concatChil}
+        let mom = {'data': m, 'ypos': 0, 'level': 0, 'children': concatChil}
     
         return mom;
     });
 
-    let root = d3.hierarchy(data);
+    function assignPosition(node, position) {
+        console.log(node);
+        node.ypos = position;
+        if (node.children.length === 0) return ++position;
 
-    console.log(data);
+        node.children.forEach((child) => {
+            position = assignPosition(child, position);
+        });
 
-    console.log(root.links())
+        return position;
+    }
 
+    assignPosition(data[0], 1);
 
     let geneNodes = canvas.select('.nodes').selectAll('.geneNode').data(data);
-    let geneEnter = geneNodes.enter().append('g').classed('geneNode', true).attr('transform', (d, i)=> 'translate(70, 0)');
+    let geneEnter = geneNodes.enter().append('g').classed('geneNode', true).attr('transform', (d, i)=> 'translate(50, 130)');
 
     let circleG = geneEnter.append('circle').attr('cx', 0).attr('cy', (d, i)=> i*10);
     circleG.classed('gene-c', true);
+
+    let flatArray = [];
     
-    let varNodes = geneEnter.selectAll('.varNode').data(d=> d.children);
-    let varEnter = varNodes.enter().append('g').classed('varNode', true).attr('transform', (d)=> 'translate(50, 0)');
-    let circlev = varEnter.append('circle').attr('cx', (d)=> (d.data.level * 50)).attr('cy', (d)=> (d.data.ypos*15));
-    circlev.classed('gene-c', true);
+    data[0].children.forEach(child => {
+        child.parentNode = data[0];
+        flatArray.push(child);
+        if(child.children.length > 0){
+            child.children.forEach(c=> {
+                c.parentNode = child;
+                flatArray.push(c);
+            })
+        }
+    });
 
-    let chilz = data.map(d=> d.children.flatMap(f=> f.children));
+    let custom_vars = {
+        x_scale: 160,
+        y_scale: 80,
+        x_offset: 50,
+        y_offset: 50,
+        radius: 20
+    };
 
-    console.log('chilz', chilz)
+    let allEdges =  canvas.select('.links').selectAll('.line')
+    .data(flatArray.filter(n => {
+        return n.parentNode;
+    }));
 
-    let sec = varNodes.selectAll('.secondary').data(d=> d.children);
-    let secenter = sec.enter().append('g').classed('secondary', true);
-    secenter.append('circle').attr('r', 5).attr('cx', (d)=> (d.data.level * 50)).attr('cy', (d)=> (d.data.ypos*15));
-    circleG.classed('gene-c', true);
+// New (Enter) Selection
+let newEdges = allEdges.enter()
+    .append('line').classed('line', true);
+
+// Get rid of extra elements
+// allEdges.exit().remove();
+
+// Merge existing and new selections
+allEdges = newEdges.merge(newEdges);
+
+// Compare to:
+// 		let allEdges = newEdges.enter().append("line").merge(allEdges););
+
+// Update properties according to data
+allEdges.attr('x1', n => {
+    return n.level * custom_vars.x_scale + custom_vars.x_offset;
+})
+    .attr('x2', n => {
+        return n.parentNode.level * custom_vars.x_scale + custom_vars.x_offset;
+    })
+    .attr('y1', n => {
+        return n.ypos * custom_vars.y_scale + custom_vars.y_offset;
+    })
+    .attr('y2', n => {
+        return n.parentNode.ypos * custom_vars.y_scale + custom_vars.y_offset;
+    });
 
 
+       //Existing(Update) Selection
+       let allNodeGroups = canvas.select('.nodes').selectAll('.nodeGroup')
+       .data(flatArray);
 
-/*
-    let phenNodes = geneEnter.selectAll('.phenNode').data(d=> d.children.filter(c=> c.data.type == 'Phenotype'));
-    let phenEnter = phenNodes.enter().append('g').classed('varNode', true).attr('transform', 'translate(50, 0)');
-    phenEnter.append('circle').attr('cx', (d)=> (d.data.level * 10)).attr('cy', (d)=> (d.data.ypos*15));
-    circleG.classed('gene-c', true);
+   //New (Enter) Selection
+   let newNodeGroups = allNodeGroups.enter()
+       .append('g');
 
-    let links = canvas.select('.links').selectAll('.link').data(graphArray.links);
-    links.enter().append('line')
-*/
+   //Get rid of extra nodes
+   // allNodeGroups.exit().remove();
 
+   // Merge existing and new selections
+   allNodeGroups = newNodeGroups.merge(allNodeGroups);
+
+   // Update properties according to data											
+   allNodeGroups.attr("class", "nodeGroup")
+       .attr("transform", d => {
+               return "translate("
+                   + (d.level * custom_vars.x_scale + custom_vars.x_offset) // x position
+                   + ","
+                   + (d.ypos * custom_vars.y_scale + custom_vars.y_offset) // y position
+                   + ")"
+           }
+       );
+
+   // -- Add circles to each group
+   allNodeGroups.append("circle")
+       .attr("r", custom_vars.radius);
+
+   // -- Add text to each group
+   allNodeGroups.append("text")
+       .attr("class", "label")
+       .text(d => {
+           return d.data.name.toUpperCase()
+       }); //d.level+","+d.position
+
+    let vars = allNodeGroups.filter(d=> d.data.type == 'Variant');
+    console.log(vars);
+    vars.classed('var-nodes', true);
 }
 
 let drawPhenotypes = async function(graphArray:Object, selectedGene:Array<object>){
