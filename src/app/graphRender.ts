@@ -207,7 +207,7 @@ export async function renderGeneDetail(dataArray: Array<object>, graph:object){
     let textText = textDiv.append('text').text(d=> d.textSectionContent);
 
     headText.on('click', function(d) {
-        let text = this.parentNode.nextSibling
+        let text = this.parent.nextSibling
         d3.select(text).classed('hidden')? d3.select(text).classed('hidden', false) : d3.select(text).classed('hidden', true);
     });
 
@@ -287,7 +287,6 @@ let drawGene = async function(graphArray:Object, selectedGene:Array<object>){
     canvas.select('.links').selectAll('*').remove();
     canvas.select('.nodes').selectAll('*').remove();
 
-    canvas.attr('height', 1500);
 
     let custom_vars = {
         x_scale: 160,
@@ -297,7 +296,7 @@ let drawGene = async function(graphArray:Object, selectedGene:Array<object>){
         radius: 20
     };
 
-    var y = d3.scaleLinear().range([1500, 0]);
+    var y = d3.scaleLinear().range([2000, 0]);
 
     let data = selectedGene.map(m=> {
 
@@ -352,24 +351,55 @@ let drawGene = async function(graphArray:Object, selectedGene:Array<object>){
 
     let flatArray = [];
     
+    data[0].parent = null;
     data[0].children.forEach(child => {
-        child.parentNode = data[0];
+        child.parent = data[0];
         flatArray.push(child);
         if(child.children.length > 0){
             child.children.forEach(c=> {
-                c.parentNode = child;
+                c.parent = child;
                 flatArray.push(c);
             })
         }
     });
 
-    console.log('data', data);
-    console.log('flatarray', flatArray);
-
     //console.log(d3.max(flatArray.map(m=> m.ypos)));
     y.domain([0, d3.max(flatArray.map(m=> m.ypos))]);
 
+    d3.select('#graph-render').style('height', (d3.max(flatArray.map(m=> m.ypos))* 20) + 'px')
+    canvas.style('height', '2000px');
 
+    var tree = d3.cluster()
+    .size([1500, 1000]);
+
+    var stratify = d3.stratify()
+    .parentId(function(d) { return d.parent.data.name });
+
+    var root = d3.hierarchy(data[0]);
+    tree(root);
+
+    var link = canvas.selectAll(".line")
+    .data(root.descendants().slice(1))
+        .enter().append("path")
+        .attr("class", "line")
+        .attr("d", function(d) {
+        return "M" + d.y + "," + d.x
+            + "C" + (d.parent.y + 100) + "," + d.x
+            + " " + (d.parent.y + 100) + "," + d.parent.x
+            + " " + d.parent.y + "," + d.parent.x;
+    });
+  /*
+   var link = canvas.selectAll(".line")
+   .data(root.descendants().slice(1))
+       .enter().append("path")
+       .attr("class", "line")
+       .attr("d", function(d) {
+       return "M" + d.y + "," + d.x
+           + "C" + (d.parent.ypos + 100) + "," + d.level
+           + " " + (d.parent.ypos + 100) + "," + d.parent.level
+           + " " + d.parent.ypos + "," + d.parent.level;
+   });
+  */
 
 
 // Update properties according to data
@@ -388,6 +418,7 @@ allEdges.attr('x1', n => {
     });*/
 
   // define the line
+  /*
   var diagonal = d3.svg.diagonal()
   .projection(function(d) { return [d.y, d.x]; });
 
@@ -395,14 +426,14 @@ allEdges.attr('x1', n => {
 
 let allEdges =  canvas.select('.links').selectAll('.line')
 .data(flatArray.filter(n => {
-    return n.parentNode;
+    return n.parent;
 }));
 
 allEdges.enter().append('path')
       .attr("class", "line")
       .attr("d", lineGen);
 
-      
+      */
 
 // New (Enter) Selection
 //let newEdges = allEdges.enter()
@@ -412,10 +443,10 @@ allEdges.enter().append('path')
 //allEdges = newEdges.merge(newEdges);
 
 
-
+/*
        //Existing(Update) Selection
-       let allNodeGroups = canvas.select('.nodes').selectAll('.nodeGroup')
-       .data(flatArray);
+    let allNodeGroups = canvas.select('.nodes').selectAll('.nodeGroup')
+    .data(flatArray);
 
    //New (Enter) Selection
    let newNodeGroups = allNodeGroups.enter()
@@ -452,6 +483,31 @@ allEdges.enter().append('path')
     let vars = allNodeGroups.filter(d=> d.data.type == 'Variant');
     console.log(vars);
     vars.classed('var-nodes', true);
+
+    */
+
+   var node = canvas.selectAll(".node")
+   .data(root.descendants())
+    .enter().append("g")
+   .attr("class", function(d) { return "node" + (d.children ? " node--internal" : " node--leaf"); })
+   .attr("transform", function(d) { 
+     return "translate(" + d.y + "," + d.x + ")"; 
+   })
+
+node.append("circle")
+   .attr("r", 2.5);
+
+node.append("text")
+   .attr("dy", 3)
+   .attr("x", function(d) { return d.children ? -8 : 8; })
+   .style("text-anchor", function(d) { return d.children ? "end" : "start"; })
+   .text(function(d) { 
+       console.log(d);
+     return d.data.name;
+   });
+//});
+
+console.log(node);
 }
 
 let drawPhenotypes = async function(graphArray:Object, selectedGene:Array<object>){
