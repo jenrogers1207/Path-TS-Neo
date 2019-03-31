@@ -15,8 +15,8 @@ body {
 
 #graph-render {
     overflow: auto;
-    margin-left: 200px;
-    width: 100%;
+    margin-left: 380px;
+    width: calc('100% - 380px');
 }
 
 .gene-detail h4 {
@@ -38,7 +38,7 @@ body {
 #query-panel {
     float: right;
     width: 245px;
-    height: 300px;
+    height: 380px;
     position: absolute;
     right: 5px;
     top: 100px;
@@ -394,7 +394,7 @@ i {
     width: 100%;
 }
 
-line.line {
+path.line {
     stroke: darkGrey;
     stroke-width: .6;
 }

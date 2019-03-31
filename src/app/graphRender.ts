@@ -289,7 +289,15 @@ let drawGene = async function(graphArray:Object, selectedGene:Array<object>){
 
     canvas.attr('height', 1500);
 
-    console.log(graphArray);
+    let custom_vars = {
+        x_scale: 160,
+        y_scale: 60,
+        x_offset: 50,
+        y_offset: 50,
+        radius: 20
+    };
+
+    var y = d3.scaleLinear().range([1500, 0]);
 
     let data = selectedGene.map(m=> {
 
@@ -322,8 +330,9 @@ let drawGene = async function(graphArray:Object, selectedGene:Array<object>){
     });
 
     function assignPosition(node, position) {
-        console.log(node);
+      
         node.ypos = position;
+        
         if (node.children.length === 0) return ++position;
 
         node.children.forEach((child) => {
@@ -354,33 +363,17 @@ let drawGene = async function(graphArray:Object, selectedGene:Array<object>){
         }
     });
 
-    let custom_vars = {
-        x_scale: 160,
-        y_scale: 80,
-        x_offset: 50,
-        y_offset: 50,
-        radius: 20
-    };
+    console.log('data', data);
+    console.log('flatarray', flatArray);
 
-    let allEdges =  canvas.select('.links').selectAll('.line')
-    .data(flatArray.filter(n => {
-        return n.parentNode;
-    }));
+    //console.log(d3.max(flatArray.map(m=> m.ypos)));
+    y.domain([0, d3.max(flatArray.map(m=> m.ypos))]);
 
-// New (Enter) Selection
-let newEdges = allEdges.enter()
-    .append('line').classed('line', true);
 
-// Get rid of extra elements
-// allEdges.exit().remove();
 
-// Merge existing and new selections
-allEdges = newEdges.merge(newEdges);
-
-// Compare to:
-// 		let allEdges = newEdges.enter().append("line").merge(allEdges););
 
 // Update properties according to data
+/*
 allEdges.attr('x1', n => {
     return n.level * custom_vars.x_scale + custom_vars.x_offset;
 })
@@ -392,7 +385,32 @@ allEdges.attr('x1', n => {
     })
     .attr('y2', n => {
         return n.parentNode.ypos * custom_vars.y_scale + custom_vars.y_offset;
-    });
+    });*/
+
+  // define the line
+  var diagonal = d3.svg.diagonal()
+  .projection(function(d) { return [d.y, d.x]; });
+
+
+
+let allEdges =  canvas.select('.links').selectAll('.line')
+.data(flatArray.filter(n => {
+    return n.parentNode;
+}));
+
+allEdges.enter().append('path')
+      .attr("class", "line")
+      .attr("d", lineGen);
+
+      
+
+// New (Enter) Selection
+//let newEdges = allEdges.enter()
+//.append('line').classed('line', true);
+
+// Merge existing and new selections
+//allEdges = newEdges.merge(newEdges);
+
 
 
        //Existing(Update) Selection
