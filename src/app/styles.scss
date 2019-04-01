@@ -16,6 +16,7 @@ body {
 #graph-render {
     overflow: auto;
     margin-left: 380px;
+    margin-top: 60px;
     width: calc('100% - 380px');
 }
 
@@ -331,7 +332,8 @@ i {
 }
 
 .pheno-tab circle.pheno-g,
-.geneNode circle {
+.geneNode circle,
+.gene-node circle {
     fill: coral;
     r: 10px;
     opacity: .7;
@@ -344,8 +346,9 @@ i {
 }
 
 .pheno-tab circle.pheno-v,
-.geneNode .varNode circle,
-.nodeGroup circle {
+.geneNode .var-node circle,
+.nodeGroup circle,
+.var-node circle {
     fill: #66CDAA;
     r: 5px;
     opacity: .7;
@@ -398,4 +401,10 @@ path.line {
     stroke: darkGrey;
     stroke-width: .6;
     fill: none;
+}
+
+.pheno-node circle {
+    fill: #9ACD32;
+    r: 3px;
+    opacity: .7;
 }

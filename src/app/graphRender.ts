@@ -343,11 +343,11 @@ let drawGene = async function(graphArray:Object, selectedGene:Array<object>){
 
     assignPosition(data[0], 1);
 
-    let geneNodes = canvas.select('.nodes').selectAll('.geneNode').data(data);
-    let geneEnter = geneNodes.enter().append('g').classed('geneNode', true).attr('transform', (d, i)=> 'translate(50, 130)');
+ //   let geneNodes = canvas.select('.nodes').selectAll('.geneNode').data(data);
+ //   let geneEnter = geneNodes.enter().append('g').classed('geneNode', true).attr('transform', (d, i)=> 'translate(50, 130)');
 
-    let circleG = geneEnter.append('circle').attr('cx', 0).attr('cy', (d, i)=> i*10);
-    circleG.classed('gene-c', true);
+ //   let circleG = geneEnter.append('circle').attr('cx', 0).attr('cy', (d, i)=> i*10);
+ //   circleG.classed('gene-c', true);
 
     let flatArray = [];
     
@@ -366,8 +366,8 @@ let drawGene = async function(graphArray:Object, selectedGene:Array<object>){
     //console.log(d3.max(flatArray.map(m=> m.ypos)));
     y.domain([0, d3.max(flatArray.map(m=> m.ypos))]);
 
-    d3.select('#graph-render').style('height', (d3.max(flatArray.map(m=> m.ypos))* 20) + 'px')
-    canvas.style('height', '2000px');
+    d3.select('#graph-render').style('height', (d3.max(flatArray.map(m=> m.ypos))* 15) + 'px')
+    canvas.style('height', (d3.max(flatArray.map(m=> m.ypos))* 15) + 'px');
 
     var tree = d3.cluster()
     .size([1500, 1000]);
@@ -378,7 +378,11 @@ let drawGene = async function(graphArray:Object, selectedGene:Array<object>){
     var root = d3.hierarchy(data[0]);
     tree(root);
 
-    var link = canvas.selectAll(".line")
+    var linkGroup = canvas.select('.links');
+
+    linkGroup.attr('transform', 'translate(50, 20)')
+    
+    linkGroup.selectAll(".line")
     .data(root.descendants().slice(1))
         .enter().append("path")
         .attr("class", "line")
@@ -485,14 +489,21 @@ allEdges.enter().append('path')
     vars.classed('var-nodes', true);
 
     */
-
-   var node = canvas.selectAll(".node")
+   let nodeGroup = canvas.selectAll('.nodes');
+   nodeGroup.attr('transform', 'translate(50, 20)');
+   
+   var node = nodeGroup.selectAll(".node")
    .data(root.descendants())
     .enter().append("g")
    .attr("class", function(d) { return "node" + (d.children ? " node--internal" : " node--leaf"); })
    .attr("transform", function(d) { 
      return "translate(" + d.y + "," + d.x + ")"; 
    })
+
+   node.filter(d=> d.data.data.type == 'Gene').classed('gene-node', true);
+   node.filter(d=> d.data.data.type == 'Variant').classed('var-node', true);
+   node.filter(d=> d.data.data.type == undefined).classed('pheno-node', true);
+
 
 node.append("circle")
    .attr("r", 2.5);
@@ -503,7 +514,7 @@ node.append("text")
    .style("text-anchor", function(d) { return d.children ? "end" : "start"; })
    .text(function(d) { 
        console.log(d);
-     return d.data.name;
+     return d.data.data.name;
    });
 //});
 
