@@ -14,7 +14,7 @@ export async function searchMachine(command:string, value:string){
     const builder = {
         'Search Gene' : addGene,
         'Search Function' : testingSpace,//phenoTest,
-        'Search Pathway' : testingSpace,//drawPhenotypes,
+        'Search Pathway' : addPathway,//drawPhenotypes,
         'Search Models' : testingSpace,
     }
 
@@ -53,7 +53,6 @@ export async function searchMachine(command:string, value:string){
         closebutton.append('span').attr('aria-hidden', "true").append('text').text('x');
     
         closebutton.on('click', ()=> {
-            //queryBox.selectAll('*').remove();
             d3.select('#graph-render').select('.query-box').remove();
         })
         let text = queryBox.append('div');
@@ -92,6 +91,19 @@ export async function addGene(d: string){
     let geneOb = new qo.GeneObject(d, 'Gene');
     let newNode = await initialSearch(geneOb);
     return newNode;
+}
+
+export async function addPathway(d:string){
+    let pathOb = new qo.PathwayObject(d);
+
+    const proxy = 'https://cors-anywhere.herokuapp.com/';
+
+    let url2 = 'http://rest.kegg.jp/link/pathway/' + d;
+
+    let req2 =  await ky.get(proxy+ url2).text();
+
+    console.log('pathway response', req2);
+
 }
 
 export async function initialSearch(queryOb: object){
@@ -189,7 +201,7 @@ export async function searchOMIM(queryOb:any){
     console.log('omim',omim);
 
     //add these more dynamically
-    queryOb.properties.Variants = omim.allelicVariantList.map(p=> p['allelicVariant']);
+    queryOb.properties.Variants = omim.allelicVariantList ? omim.allelicVariantList.map(p=> p['allelicVariant']): null;
     queryOb.properties.Titles = omim.titles;
 
     queryOb.properties.Location = 
@@ -395,3 +407,5 @@ export async function getPathways(queryOb) {
     let req2 =  await ky.get(proxy+ url2).text();
 
 }
+
+

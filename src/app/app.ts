@@ -68,10 +68,7 @@ dataLoad.loadFile().then(async (d)=> {
             return ob;
         });
 
-        console.log('gueryGenes', queryKeeper);
-
         let graphVariants = graph.nodes.filter(d=> d.label == 'Variant');
-
 
         //adding selectednode as the file gene
         let selectedGene = await Promise.resolve(queryKeeper[0]);
@@ -80,8 +77,6 @@ dataLoad.loadFile().then(async (d)=> {
         let variants = await updateVariants(fileVariants, graphVariants);
         
         let variantOb = await Promise.resolve(variants);
-
-        console.log('varrii',variantOb)
 
         selectedGene.properties.Variants = variantOb.filter(v=> v.properties.associatedGene == selectedGene.name);
 
@@ -126,6 +121,8 @@ dataLoad.loadFile().then(async (d)=> {
       //  neoAPI.buildSubGraph(selectedGene);
         dropdown.select('.dropdown-menu').selectAll('.dropdown-item').on('click', (d, i, g)=> {
             dropButton.text(d);
+            let selected = qo.selected.queryKeeper.map(d=> d);
+            console.log('selected', selected[selected.length - 1]);
             gCanvas.graphRenderMachine(graph, [selectedGene]);
         })
 
@@ -191,7 +188,7 @@ export async function variantObjectMaker(varArray: Array<object>, geneName:strin
   
     let varObs = typeof varArray == 'string'? JSON.parse(varArray): varArray;
     
-      return varObs.map(v=> {
+      return varObs != null ? varObs.map(v=> {
        
           let name = v.id? v.id : v.dbSnps;
           let variant = new qo.VariantObject(name);
@@ -207,7 +204,7 @@ export async function variantObjectMaker(varArray: Array<object>, geneName:strin
           variant.properties.description = variant.name;
           variant.properties.Ids.dbSnp = name;
           return variant
-      });
+      }) : null;
   }
 
 export async function isStored(graph: object, data:object){

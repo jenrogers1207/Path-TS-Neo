@@ -61,6 +61,9 @@ export async function renderCalls(promis: Array<object>, selectedNode:Array<obje
         selectIcon.on('click', async function(d){
            
             let graph = await neoAPI.getGraph();
+            qo.selected.addQueryOb(d);
+            let selected = qo.selected.queryKeeper.map(d=> d); //[qo.selected.queryKeeper.length - 1]
+            console.log('selected',selected[qo.selected.queryKeeper.length - 1]);
             renderGeneDetail([d], graph);
             graphRenderMachine(graph[0], [d]);
             renderCalls(promis, [d]);
@@ -283,6 +286,8 @@ export function graphRenderMachine(graphArray:Object, selectedGene:Array<object>
 let drawGene = async function(graphArray:Object, selectedGene:Array<object>){
     let canvas = d3.select('#graph-render').select('.graph-canvas');
     var toolDiv = d3.select('.tooltip');
+
+    console.log('selected',selectedGene);
     
     canvas.select('.links').selectAll('*').remove();
     canvas.select('.nodes').selectAll('*').remove();
@@ -304,25 +309,31 @@ let drawGene = async function(graphArray:Object, selectedGene:Array<object>){
         let varPhenoList = m.properties.Variants.map(v=> {
             let varpheno = v.properties.Phenotypes[0] != undefined? v.properties.Phenotypes.flatMap(d=> d): null;
             let clin = varpheno != null? varpheno.map(p=> p.disease_ids.filter(d=> d.organization == "OMIM")).flatMap(d=> d): null;
-            clin.flatMap(c=> c.accession).forEach(element => {
+            
+            if(clin != null){
+                clin.flatMap(c=> c.accession).forEach(element => {
                 phenoList.push(element);
             });
+            }
            // v.level = 1;
-            let childz = clin.flatMap(c=> c.accession).map(m=> {
+            let childz = clin != null? clin.flatMap(c=> c.accession).map(m=> {
                return {'data': {'name': m, }, 'level': 2, 'ypos':0, 'children': []  } ;
-            });
+            }): null;
             let vars = {'data': v, 'level':1, 'ypos': 0, 'children': childz }
             return vars;
         });
 
-        let filteredPheno = m.properties.Phenotypes.filter(p=> phenoList.indexOf(p.name) == -1).map(f=> { 
-        
-            return {'data': f , 'level': 2, 'ypos':0, 'children': [] }});
+     
 
-        let concatChil = varPhenoList.concat(filteredPheno).map((t, i)=> {
-           // let ypos = i+1;
-            return t;
-        })
+            let filteredPheno = m.properties.Phenotypes[0]!= undefined? m.properties.Phenotypes.filter(p=> phenoList.indexOf(p.name) == -1).map(f=> { 
+                return {'data': f , 'level': 2, 'ypos':0, 'children': [] }}): null;
+        
+
+        let concatChil = filteredPheno != null? varPhenoList.concat(filteredPheno).map((t, i)=> {
+            // let ypos = i+1;
+                return t;
+            }) : varPhenoList;
+        
         let mom = {'data': m, 'ypos': 0, 'level': 0, 'children': concatChil}
     
         return mom;
@@ -343,12 +354,6 @@ let drawGene = async function(graphArray:Object, selectedGene:Array<object>){
 
     assignPosition(data[0], 1);
 
- //   let geneNodes = canvas.select('.nodes').selectAll('.geneNode').data(data);
- //   let geneEnter = geneNodes.enter().append('g').classed('geneNode', true).attr('transform', (d, i)=> 'translate(50, 130)');
-
- //   let circleG = geneEnter.append('circle').attr('cx', 0).attr('cy', (d, i)=> i*10);
- //   circleG.classed('gene-c', true);
-
     let flatArray = [];
     
     data[0].parent = null;
@@ -364,13 +369,16 @@ let drawGene = async function(graphArray:Object, selectedGene:Array<object>){
     });
 
     //console.log(d3.max(flatArray.map(m=> m.ypos)));
-    y.domain([0, d3.max(flatArray.map(m=> m.ypos))]);
+   // y.domain([0, d3.max(flatArray.map(m=> m.ypos))]);
 
-    d3.select('#graph-render').style('height', (d3.max(flatArray.map(m=> m.ypos))* 15) + 'px')
-    canvas.style('height', (d3.max(flatArray.map(m=> m.ypos))* 15) + 'px');
+   // d3.select('#graph-render').style('height', (d3.max(flatArray.map(m=> m.ypos))* 50) + 'px');
+    //canvas.style('height', (d3.max(flatArray.map(m=> m.ypos))* 50) + 'px');
+
+    d3.select('#graph-render').style('height', (flatArray.length * 50) + 'px');
+    canvas.style('height', (flatArray.length* 50) + 'px');
 
     var tree = d3.cluster()
-    .size([1500, 1000]);
+    .size([flatArray.length* 20, 1000]);
 
     var stratify = d3.stratify()
     .parentId(function(d) { return d.parent.data.name });
@@ -392,103 +400,7 @@ let drawGene = async function(graphArray:Object, selectedGene:Array<object>){
             + " " + (d.parent.y + 100) + "," + d.parent.x
             + " " + d.parent.y + "," + d.parent.x;
     });
-  /*
-   var link = canvas.selectAll(".line")
-   .data(root.descendants().slice(1))
-       .enter().append("path")
-       .attr("class", "line")
-       .attr("d", function(d) {
-       return "M" + d.y + "," + d.x
-           + "C" + (d.parent.ypos + 100) + "," + d.level
-           + " " + (d.parent.ypos + 100) + "," + d.parent.level
-           + " " + d.parent.ypos + "," + d.parent.level;
-   });
-  */
-
-
-// Update properties according to data
-/*
-allEdges.attr('x1', n => {
-    return n.level * custom_vars.x_scale + custom_vars.x_offset;
-})
-    .attr('x2', n => {
-        return n.parentNode.level * custom_vars.x_scale + custom_vars.x_offset;
-    })
-    .attr('y1', n => {
-        return n.ypos * custom_vars.y_scale + custom_vars.y_offset;
-    })
-    .attr('y2', n => {
-        return n.parentNode.ypos * custom_vars.y_scale + custom_vars.y_offset;
-    });*/
-
-  // define the line
-  /*
-  var diagonal = d3.svg.diagonal()
-  .projection(function(d) { return [d.y, d.x]; });
-
-
-
-let allEdges =  canvas.select('.links').selectAll('.line')
-.data(flatArray.filter(n => {
-    return n.parent;
-}));
-
-allEdges.enter().append('path')
-      .attr("class", "line")
-      .attr("d", lineGen);
-
-      */
-
-// New (Enter) Selection
-//let newEdges = allEdges.enter()
-//.append('line').classed('line', true);
-
-// Merge existing and new selections
-//allEdges = newEdges.merge(newEdges);
-
-
-/*
-       //Existing(Update) Selection
-    let allNodeGroups = canvas.select('.nodes').selectAll('.nodeGroup')
-    .data(flatArray);
-
-   //New (Enter) Selection
-   let newNodeGroups = allNodeGroups.enter()
-       .append('g');
-
-   //Get rid of extra nodes
-   // allNodeGroups.exit().remove();
-
-   // Merge existing and new selections
-   allNodeGroups = newNodeGroups.merge(allNodeGroups);
-
-   // Update properties according to data											
-   allNodeGroups.attr("class", "nodeGroup")
-       .attr("transform", d => {
-               return "translate("
-                   + (d.level * custom_vars.x_scale + custom_vars.x_offset) // x position
-                   + ","
-                   + (d.ypos * custom_vars.y_scale + custom_vars.y_offset) // y position
-                   + ")"
-           }
-       );
-
-   // -- Add circles to each group
-   allNodeGroups.append("circle")
-       .attr("r", custom_vars.radius);
-
-   // -- Add text to each group
-   allNodeGroups.append("text")
-       .attr("class", "label")
-       .text(d => {
-           return d.data.name.toUpperCase()
-       }); //d.level+","+d.position
-
-    let vars = allNodeGroups.filter(d=> d.data.type == 'Variant');
-    console.log(vars);
-    vars.classed('var-nodes', true);
-
-    */
+  
    let nodeGroup = canvas.selectAll('.nodes');
    nodeGroup.attr('transform', 'translate(50, 20)');
    
@@ -516,9 +428,7 @@ node.append("text")
        console.log(d);
      return d.data.data.name;
    });
-//});
 
-console.log(node);
 }
 
 let drawPhenotypes = async function(graphArray:Object, selectedGene:Array<object>){
@@ -529,6 +439,7 @@ let drawPhenotypes = async function(graphArray:Object, selectedGene:Array<object
     canvas.select('.links').selectAll('*').remove();
     canvas.select('.nodes').selectAll('*').remove();
 
+
     let geneData = graphArray.nodes.filter(d=> d.label == 'Gene');
 
     let phenoData = graphArray.nodes.filter(d=> d.label == 'Phenotype').map(p=> {
@@ -536,6 +447,9 @@ let drawPhenotypes = async function(graphArray:Object, selectedGene:Array<object
         phen.properties = typeof p.properties.properties == 'string' ? JSON.parse(p.properties.properties) : p.properties.properties;
         return phen;
     });
+
+    d3.select('#graph-render').style('height', (phenoData.length * 90) + 'px');
+    canvas.style('height', (phenoData.length * 90) + 'px');
 
     let variants = graphArray.nodes.filter(d=> d.label == 'Variant').map(v=> {
         let varName = v.name;

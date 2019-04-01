@@ -171,8 +171,7 @@ export async function structVariants(varArray: object){
         variantOb.properties.Ids.clinvarAccessions = props.clinvarAccessions? props.clinvarAccessions : 'null';
         variantOb.properties.Text = props.text? props.text : props.Text;
         variantOb.properties.Ids = props.Ids;
-        //let props = variantOb.properties.properties? variantOb.properties.properties : variantOb.properties;
-       // let propOb = typeof props == "string"? JSON.parse(props):props;
+    
       
         if(props.allelleAnnotations == undefined){
        
@@ -236,6 +235,8 @@ export async function structVariants(varArray: object){
 export async function structPheno(phenob: object, assocGene:string){
     let inner = phenob.nodes? phenob.nodes : phenob;
     let parsed = typeof inner == 'string'? JSON.parse(inner) : inner;
+
+    console.log('parsed',parsed);
     
     let nodes = parsed.map(p=> {
        
