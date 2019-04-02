@@ -101,8 +101,6 @@ dataLoad.loadFile().then(async (d)=> {
             }
         }
 
-        
-     
         let phenotypes = graphPhenotypes.length > 0? graphPhenotypes : await qo.structPheno(selectedGene.properties.Phenotypes, selectedGene.name);
       
         selectedGene.properties.Phenotypes = phenotypes;
@@ -122,7 +120,7 @@ dataLoad.loadFile().then(async (d)=> {
         dropdown.select('.dropdown-menu').selectAll('.dropdown-item').on('click', (d, i, g)=> {
             dropButton.text(d);
             let selected = qo.selected.queryKeeper.map(d=> d);
-            console.log('selected', selected[selected.length - 1]);
+           // console.log('selected', selected[selected.length - 1]);
             gCanvas.graphRenderMachine(graph, [selectedGene]);
         })
 

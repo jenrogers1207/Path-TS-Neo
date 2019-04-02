@@ -408,3 +408,43 @@ path.line {
     r: 3px;
     opacity: .7;
 }
+
+.pheno-tab circle.pheno-v.missense_variant {
+    fill: maroon;
+    r: 5px;
+    opacity: .7;
+}
+
+.pheno-tab circle.pheno-v.frameshift_variant {
+    fill: blue;
+    r: 5px;
+    opacity: .7;
+}
+
+.pheno-tab circle.pheno-v.stop_gained {
+    fill: yellow;
+    r: 5px;
+    opacity: .7;
+}
+
+.pheno-tab circle.pheno-v.inframe_deletion {
+    fill: orange;
+    r: 5px;
+    opacity: .7;
+}
+
+.pheno-tab circle.pheno-v.regulatory_region_variant {
+    fill: purple;
+    r: 5px;
+    opacity: .7;
+}
+
+.pheno-tab circle.pheno-v.stop_lost {
+    fill: green;
+    r: 5px;
+    opacity: .7;
+}
+
+//inframe_deletion
+//regulatory_region_variant
+//stop_lost

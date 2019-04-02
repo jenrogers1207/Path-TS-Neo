@@ -292,17 +292,6 @@ let drawGene = async function(graphArray:Object, selectedGene:Array<object>){
     canvas.select('.links').selectAll('*').remove();
     canvas.select('.nodes').selectAll('*').remove();
 
-
-    let custom_vars = {
-        x_scale: 160,
-        y_scale: 60,
-        x_offset: 50,
-        y_offset: 50,
-        radius: 20
-    };
-
-    var y = d3.scaleLinear().range([2000, 0]);
-
     let data = selectedGene.map(m=> {
 
         let phenoList = []
@@ -368,11 +357,6 @@ let drawGene = async function(graphArray:Object, selectedGene:Array<object>){
         }
     });
 
-    //console.log(d3.max(flatArray.map(m=> m.ypos)));
-   // y.domain([0, d3.max(flatArray.map(m=> m.ypos))]);
-
-   // d3.select('#graph-render').style('height', (d3.max(flatArray.map(m=> m.ypos))* 50) + 'px');
-    //canvas.style('height', (d3.max(flatArray.map(m=> m.ypos))* 50) + 'px');
 
     d3.select('#graph-render').style('height', (flatArray.length * 50) + 'px');
     canvas.style('height', (flatArray.length* 50) + 'px');
@@ -448,6 +432,9 @@ let drawPhenotypes = async function(graphArray:Object, selectedGene:Array<object
         return phen;
     });
 
+
+    console.log('phenooo', phenoData);
+
     d3.select('#graph-render').style('height', (phenoData.length * 90) + 'px');
     canvas.style('height', (phenoData.length * 90) + 'px');
 
@@ -479,7 +466,7 @@ let drawPhenotypes = async function(graphArray:Object, selectedGene:Array<object
         if(pheno.allvars[0]!= undefined){
             let vars = pheno.allvars.map(v=> {
                 let vPheno = v.pheno != null? v.pheno.filter(f=> f.accession == String(p.properties.phenotypeMimNumber)) : null;
-                return { 'vname': v.name, 'phenoid': vPheno }
+                return { 'vname': v.name, 'phenoid': vPheno, 'props':v.props }
             });
             pheno.vars = vars.filter(f=> f.phenoid != null && f.phenoid.length > 0);
         }else{
@@ -519,7 +506,8 @@ let drawPhenotypes = async function(graphArray:Object, selectedGene:Array<object
     nodeEnter.append('text').text(d=> d.properties.associatedGene).attr('x', 446).attr('y', 86);
 
     let circleVar = nodeEnter.append('g').selectAll('.pheno-v').data(d=>d.vars);
-    let circ = circleVar.enter().append('circle').classed('pheno-v', true).attr('cx', (d, i)=> 500 + (i*11)).attr('cy', 100);
+    let circ = circleVar.enter().append('circle').attr('class', d=> d.props.Consequence).classed('pheno-v', true)
+    circ.attr('cx', (d, i)=> 500 + (i*11)).attr('cy', 100);
     circ.on('mouseover', function(d){
         toolDiv.transition()
         .duration(200)
