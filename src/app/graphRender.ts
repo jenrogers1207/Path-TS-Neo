@@ -20,7 +20,7 @@ export async function changeSelectedClasses(dataArray: Array<object>){
 }
 
 export function viewToggleInput(){
-    let dropData = ['Whole Network', 'Align by Gene', 'Align by Phenotype', 'Align by Pathway']
+    let dropData = ['Whole Network', 'Align by Gene', 'Align by Phenotype']
     let dropdown = d3.select('#topnav').select('.dropdown');
     let dropButton = dropdown.select('.dropdown-toggle');
     dropButton.text(dropData[0]);
@@ -61,6 +61,9 @@ export async function renderCalls(promis: Array<object>, selectedNode:Array<obje
         selectIcon.on('click', async function(d){
            
             let graph = await neoAPI.getGraph();
+            qo.selected.addQueryOb(d);
+            let selected = qo.selected.queryKeeper.map(d=> d); //[qo.selected.queryKeeper.length - 1]
+            console.log('selected',selected[qo.selected.queryKeeper.length - 1]);
             renderGeneDetail([d], graph);
             graphRenderMachine(graph[0], [d]);
             renderCalls(promis, [d]);
@@ -111,6 +114,7 @@ export async function renderCalls(promis: Array<object>, selectedNode:Array<obje
             let cons = d.cons != null? d.cons : '';
             return cons;
         });
+        spanCons.attr('class', d=> d.cons);
         spanCons.classed('badge badge-info', true);
    
       //  let varSpan = varEnter.append('span').classed('w3-tag w3-padding w3-round w3-red w3-center', true).text('path')
@@ -143,15 +147,7 @@ export async function renderCalls(promis: Array<object>, selectedNode:Array<obje
            
         });
 
-
-        
-        console.log('geneHeader', geneHeader.data());
-        console.log('geneHeader', geneHeader.filter(d=> selectedNames.indexOf(d.name) == -1));
-
-     
         let unselectedGenes = geneDiv.filter(d=> selectedNames.indexOf(d.name) == -1);
-
-        console.log(unselectedGenes);
 
         unselectedGenes.select('.variant-wrapper').classed('hidden', true);
 }
@@ -215,7 +211,7 @@ export async function renderGeneDetail(dataArray: Array<object>, graph:object){
     let textText = textDiv.append('text').text(d=> d.textSectionContent);
 
     headText.on('click', function(d) {
-        let text = this.parentNode.nextSibling
+        let text = this.parent.nextSibling
         d3.select(text).classed('hidden')? d3.select(text).classed('hidden', false) : d3.select(text).classed('hidden', true);
     });
 
@@ -275,8 +271,7 @@ export function graphRenderMachine(graphArray:Object, selectedGene:Array<object>
     let key = String(dropButton.text());
 
     const builder = {
-        'Align by Gene' : phenoTest,
-        'Align by Pathway' : phenoTest,
+        'Align by Gene' : drawGene,
         'Align by Phenotype' : drawPhenotypes,
         'Whole Network' : drawGraph,
     }
@@ -289,14 +284,147 @@ export function graphRenderMachine(graphArray:Object, selectedGene:Array<object>
    }
 }
 
+let drawGene = async function(graphArray:Object, selectedGene:Array<object>){
+    let canvas = d3.select('#graph-render').select('.graph-canvas');
+    var toolDiv = d3.select('.tooltip');
+
+    console.log('selected',selectedGene);
+    
+    canvas.select('.links').selectAll('*').remove();
+    canvas.select('.nodes').selectAll('*').remove();
+
+    let data = selectedGene.map(m=> {
+
+        let phenoList = []
+        let varPhenoList = m.properties.Variants.map(v=> {
+            let varpheno = v.properties.Phenotypes[0] != undefined? v.properties.Phenotypes.flatMap(d=> d): null;
+            let clin = varpheno != null? varpheno.map(p=> p.disease_ids.filter(d=> d.organization == "OMIM")).flatMap(d=> d): null;
+            
+            if(clin != null){
+                clin.flatMap(c=> c.accession).forEach(element => {
+                phenoList.push(element);
+            });
+            }
+           // v.level = 1;
+            let childz = clin != null? clin.flatMap(c=> c.accession).map(m=> {
+               return {'data': {'name': m, }, 'level': 2, 'ypos':0, 'children': []  } ;
+            }): null;
+            let vars = {'data': v, 'level':1, 'ypos': 0, 'children': childz }
+            return vars;
+        });
+
+     
+
+            let filteredPheno = m.properties.Phenotypes[0]!= undefined? m.properties.Phenotypes.filter(p=> phenoList.indexOf(p.name) == -1).map(f=> { 
+                return {'data': f , 'level': 2, 'ypos':0, 'children': [] }}): null;
+        
+
+        let concatChil = filteredPheno != null? varPhenoList.concat(filteredPheno).map((t, i)=> {
+            // let ypos = i+1;
+                return t;
+            }) : varPhenoList;
+        
+        let mom = {'data': m, 'ypos': 0, 'level': 0, 'children': concatChil}
+    
+        return mom;
+    });
+
+    function assignPosition(node, position) {
+      
+        node.ypos = position;
+        
+        if (node.children.length === 0) return ++position;
+
+        node.children.forEach((child) => {
+            position = assignPosition(child, position);
+        });
+
+        return position;
+    }
+
+    assignPosition(data[0], 1);
+
+    let flatArray = [];
+    
+    data[0].parent = null;
+    data[0].children.forEach(child => {
+        child.parent = data[0];
+        flatArray.push(child);
+        if(child.children.length > 0){
+            child.children.forEach(c=> {
+                c.parent = child;
+                flatArray.push(c);
+            })
+        }
+    });
+
+
+    d3.select('#graph-render').style('height', (flatArray.length * 50) + 'px');
+    canvas.style('height', (flatArray.length* 50) + 'px');
+
+    var tree = d3.cluster()
+    .size([flatArray.length* 20, 1000]);
+
+    var stratify = d3.stratify()
+    .parentId(function(d) { return d.parent.data.name });
+
+    var root = d3.hierarchy(data[0]);
+    tree(root);
+
+    var linkGroup = canvas.select('.links');
+
+    linkGroup.attr('transform', 'translate(50, 20)')
+    
+    linkGroup.selectAll(".line")
+    .data(root.descendants().slice(1))
+        .enter().append("path")
+        .attr("class", "line")
+        .attr("d", function(d) {
+        return "M" + d.y + "," + d.x
+            + "C" + (d.parent.y + 100) + "," + d.x
+            + " " + (d.parent.y + 100) + "," + d.parent.x
+            + " " + d.parent.y + "," + d.parent.x;
+    });
+  
+   let nodeGroup = canvas.selectAll('.nodes');
+   nodeGroup.attr('transform', 'translate(50, 20)');
+   
+   var node = nodeGroup.selectAll(".node")
+   .data(root.descendants())
+    .enter().append("g")
+   .attr("class", function(d) { return "node" + (d.children ? " node--internal" : " node--leaf"); })
+   .attr("transform", function(d) { 
+     return "translate(" + d.y + "," + d.x + ")"; 
+   })
+
+   node.filter(d=> d.data.data.type == 'Gene').classed('gene-node', true);
+   node.filter(d=> d.data.data.type == 'Variant').classed('var-node', true);
+   node.filter(d=> d.data.data.type == undefined).classed('pheno-node', true);
+
+
+node.append("circle")
+   .attr("r", 2.5);
+
+node.append("text")
+   .attr("dy", 3)
+   .attr("x", function(d) { return d.children ? -8 : 8; })
+   .style("text-anchor", function(d) { return d.children ? "end" : "start"; })
+   .text(function(d) { 
+       console.log(d);
+     return d.data.data.name;
+   });
+
+}
+
 let drawPhenotypes = async function(graphArray:Object, selectedGene:Array<object>){
 
     let canvas = d3.select('#graph-render').select('.graph-canvas');
-
     var toolDiv = d3.select('.tooltip');
     
     canvas.select('.links').selectAll('*').remove();
     canvas.select('.nodes').selectAll('*').remove();
+
+
     let geneData = graphArray.nodes.filter(d=> d.label == 'Gene');
 
     let phenoData = graphArray.nodes.filter(d=> d.label == 'Phenotype').map(p=> {
@@ -304,6 +432,12 @@ let drawPhenotypes = async function(graphArray:Object, selectedGene:Array<object
         phen.properties = typeof p.properties.properties == 'string' ? JSON.parse(p.properties.properties) : p.properties.properties;
         return phen;
     });
+
+
+    console.log('phenooo', phenoData);
+
+    d3.select('#graph-render').style('height', (phenoData.length * 90) + 'px');
+    canvas.style('height', (phenoData.length * 90) + 'px');
 
     let variants = graphArray.nodes.filter(d=> d.label == 'Variant').map(v=> {
         let varName = v.name;
@@ -333,7 +467,7 @@ let drawPhenotypes = async function(graphArray:Object, selectedGene:Array<object
         if(pheno.allvars[0]!= undefined){
             let vars = pheno.allvars.map(v=> {
                 let vPheno = v.pheno != null? v.pheno.filter(f=> f.accession == String(p.properties.phenotypeMimNumber)) : null;
-                return { 'vname': v.name, 'phenoid': vPheno }
+                return { 'vname': v.name, 'phenoid': vPheno, 'props':v.props }
             });
             pheno.vars = vars.filter(f=> f.phenoid != null && f.phenoid.length > 0);
         }else{
@@ -373,7 +507,8 @@ let drawPhenotypes = async function(graphArray:Object, selectedGene:Array<object
     nodeEnter.append('text').text(d=> d.properties.associatedGene).attr('x', 446).attr('y', 86);
 
     let circleVar = nodeEnter.append('g').selectAll('.pheno-v').data(d=>d.vars);
-    let circ = circleVar.enter().append('circle').classed('pheno-v', true).attr('cx', (d, i)=> 500 + (i*11)).attr('cy', 100);
+    let circ = circleVar.enter().append('circle').attr('class', d=> d.props.Consequence).classed('pheno-v', true)
+    circ.attr('cx', (d, i)=> 500 + (i*11)).attr('cy', 100);
     circ.on('mouseover', function(d){
         toolDiv.transition()
         .duration(200)
