@@ -114,6 +114,7 @@ export async function renderCalls(promis: Array<object>, selectedNode:Array<obje
             let cons = d.cons != null? d.cons : '';
             return cons;
         });
+        spanCons.attr('class', d=> d.cons);
         spanCons.classed('badge badge-info', true);
    
       //  let varSpan = varEnter.append('span').classed('w3-tag w3-padding w3-round w3-red w3-center', true).text('path')
