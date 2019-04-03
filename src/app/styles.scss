@@ -538,3 +538,8 @@ path.line {
     font-weight: bold;
     fill: black;
 }
+
+.highlight circle {
+    fill: red !important;
+    transform: scale(1.3) !important;
+}

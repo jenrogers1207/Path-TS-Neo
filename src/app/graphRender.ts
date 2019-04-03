@@ -63,10 +63,9 @@ export async function renderCalls(promis: Array<object>, selectedNode:Array<obje
             let graph = await neoAPI.getGraph();
             qo.selected.addQueryOb(d);
             let selected = qo.selected.queryKeeper.map(d=> d)[qo.selected.queryKeeper.length - 1];qo.selected.queryKeeper.map(d=> d);
-            console.log('selected', selected);
-            renderGeneDetail([d], graph);
-            graphRenderMachine(graph[0], [d]);
-            renderCalls(promis, [d]);
+            renderGeneDetail([selected], graph);
+            graphRenderMachine(graph[0], [selected]);
+            renderCalls(promis, [selected]);
         });
     
         geneIcon.on('click', function(d){
@@ -86,7 +85,6 @@ export async function renderCalls(promis: Array<object>, selectedNode:Array<obje
            
             if(dat.properties.Variants != undefined){
                 return dat.properties.Variants.map(d=>{ 
-                   
                     if(d.properties.Phenotypes[0] != undefined){
                         d.tag = d.properties.Phenotypes[0][0].clinical_significances? d.properties.Phenotypes[0][0].clinical_significances: null;
                     }else{
@@ -117,8 +115,6 @@ export async function renderCalls(promis: Array<object>, selectedNode:Array<obje
         spanCons.attr('class', d=> d.cons);
         spanCons.classed('badge badge-info', true);
    
-      //  let varSpan = varEnter.append('span').classed('w3-tag w3-padding w3-round w3-red w3-center', true).text('path')
-       
         varHead.on('click', function(d){
             let text = this.nextSibling;
             d3.select(text).classed('hidden')? d3.select(text).classed('hidden', false) : d3.select(text).classed('hidden', true);
@@ -144,8 +140,14 @@ export async function renderCalls(promis: Array<object>, selectedNode:Array<obje
         variants = varEnter.merge(variants);
   
         variants.on('mouseover', function(d){
-           
+           let matches = d3.selectAll('.'+d.name);
+           matches.classed('highlight', true);
         });
+          
+        variants.on('mouseout', function(d){
+            let matches = d3.selectAll('.highlight');
+            matches.classed('highlight', false);
+         });
 
         let unselectedGenes = geneDiv.filter(d=> selectedNames.indexOf(d.name) == -1);
 
@@ -536,7 +538,7 @@ let drawGene = async function(graphArray:Object, selectedGene:Array<object>){
    })
 
    let geneNodes = node.filter(d=> d.data.data.type == 'Gene').classed('gene-node', true);
-   let varNodes = node.filter(d=> d.data.data.type == 'Variant').attr('class', d=> d.data.data.properties.Consequence).classed('var-node', true);
+   let varNodes = node.filter(d=> d.data.data.type == 'Variant').attr('class', d=> d.data.data.properties.Consequence+' '+d.data.data.name).classed('var-node', true);
    let phenoNodes = node.filter(d=> d.data.data.type == undefined).classed('pheno-node', true);
 
 
@@ -725,7 +727,7 @@ let drawPhenotypes = async function(graphArray:Object, selectedGene:Array<object
 
             circleVar.exit().remove();
 
-            let circEnter = circleVar.enter().append('g').attr('class', d=> d.props.Consequence).classed('pheno-v', true);
+            let circEnter = circleVar.enter().append('g').attr('class', d=> d.props.Consequence+' '+d.vname).classed('pheno-v', true);
             circEnter.attr('transform', (d,i)=> 'translate('+(col.vars + (i*11))+', 100)');
             let circ = circEnter.append('circle').attr('r', 5).attr('cx', 5).attr('cy', 0);
 
@@ -850,7 +852,7 @@ function drawGraph(graphArray: Object, selectedGene: Array<object>) {
             if(d.label.includes('Gene')){
                 return "node Gene"
             }else{
-                return "node " + d.label[0];
+                return 'node ' + d.label[0] + ' ' + d.name;
             }
            
         });
