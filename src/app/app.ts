@@ -1,13 +1,11 @@
 import "./styles.scss";
 import * as d3 from 'D3';
-
-import { searchOMIM } from "./search";
 const gCanvas = require('./graphRender');
 var neoAPI = require('./neo4jLoader');
 var search = require('./search');
 var dataLoad = require('./fileDataLoad');
 const qo = require('./queryObject');
-import ky from 'ky';
+const toolbar = require('./toolbarRender');
 
 let canvas = d3.select('#graph-render').append('svg').classed('graph-canvas', true);
 let linkGroup = canvas.append('g').classed('links', true);
@@ -17,7 +15,7 @@ let toolDiv = d3.select('body').append("div")
     .style("opacity", 0);
 //let queryPanel = d3.select('#wrapper').append('div').attr('id', 'query-panel');
 
-gCanvas.viewToggleInput();
+toolbar.viewToggleInput();
 
 
 export function searchToggleInput(){
@@ -124,8 +122,8 @@ dataLoad.loadFile().then(async (d)=> {
         })
 
         gCanvas.graphRenderMachine(graph, [selectedGene]);
-        gCanvas.renderCalls(queryKeeper, [selectedGene]);
-        gCanvas.renderGeneDetail([selectedGene], graph);
+        toolbar.renderCalls(queryKeeper, [selectedGene]);
+        toolbar.renderGeneDetail([selectedGene], graph);
   
         }else{
        
@@ -167,8 +165,8 @@ dataLoad.loadFile().then(async (d)=> {
                         qo.selected.addQueryOb(selectedGene);
 
                         gCanvas.graphRenderMachine(graph, [selectedGene]);
-                        gCanvas.renderCalls(queryKeeper, [selectedGene]);
-                        gCanvas.renderGeneDetail([selectedGene], graph);
+                        toolbar.renderCalls(queryKeeper, [selectedGene]);
+                        toolbar.renderGeneDetail([selectedGene], graph);
 
                     });
 */
