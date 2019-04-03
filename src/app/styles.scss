@@ -58,12 +58,14 @@ body {
 }
 
 #topnav {
-    width: 100%;
+    width: calc('100% - 380px');
+    // width: 100%;
     height: 60px;
     position: fixed;
     top: 0px;
-    left: 0px;
-    padding-left: 400px;
+    left: 380px;
+    right: 0px;
+    padding-left: 20px;
     padding-right: 20px;
     padding-top: 10px;
     background-color: #f1f1f1;
@@ -488,11 +490,19 @@ path.line {
     font-weight: bold;
 }
 
-.render-label div {
+.render-label.pheno-label div {
     height: 50px;
     //  min-width: 150px;
     display: inline-block;
     padding-left: 70px;
+    padding-right: 50px;
+}
+
+.render-label.gene-label div {
+    height: 50px;
+    //  min-width: 150px;
+    display: inline-block;
+    padding-left: 20px;
     padding-right: 50px;
 }
 
