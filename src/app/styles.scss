@@ -1,545 +1,547 @@
-html,
-body {
-    height: 100%;
-    padding-bottom: 75px;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    font-size: 12px;
-}
-
-#topnav .dropdown {
-    display: inline-block;
-    float: left;
-    width: 200px;
-    margin-top: 5px;
-    z-index: 10000;
-}
-
-#graph-render {
-    overflow: auto;
-    margin-left: 380px;
-    margin-top: 60px;
-    width: calc('100% - 380px');
-}
-
-.gene-detail h4 {
-    font-size: 16px;
-    display: inline;
-    padding-right: 15px;
-}
-
-.hidden {
-    opacity: 0;
-    height: 0px;
-    width: 0px;
-}
-
-#wrapper {
-    margin: 0px;
-}
-
-#query-panel {
-    float: right;
-    width: 245px;
-    height: 380px;
-    position: absolute;
-    right: 5px;
-    top: 100px;
-}
-
-#left-nav {
-    width: 380px;
-    background-color: #f1f1f1;
-    height: 100%;
-    top: 0px;
-    left: 0px;
-    position: fixed;
-    overflow: auto;
-    padding-top: 10px;
-}
-
-#topnav {
-    width: calc('100% - 380px');
-    // width: 100%;
-    height: 60px;
-    position: fixed;
-    top: 0px;
-    left: 380px;
-    right: 0px;
-    padding-left: 20px;
-    padding-right: 20px;
-    padding-top: 10px;
-    background-color: #f1f1f1;
-    z-index: 10000;
-}
-
-.button-holder {
-    float: right;
-}
-
-.button {
-    border-radius: 12px;
-    background-color: white;
-    color: rgb(43, 117, 255);
-    border: 1px solid rgb(43, 117, 255);
-    padding: 10px 24px;
-    cursor: pointer;
-    display: inline-block;
-    /* Green */
-}
-
-.gene-header {
-    font-size: 15px;
-    font-style: bold;
-    background-color: #C0C0C0;
-    height: 30px;
-    width: 100%;
-    padding: 5px;
-    // border-radius: 5px;
-    border: .5px solid #808080;
-    cursor: pointer;
-}
-
-.var-head {
-    font-size: 12px;
-    font-style: bold;
-    background-color: #F5F5F5;
-    height: 30px;
-    // width: 100%;
-    width: inherit;
-    padding: 5px;
-    border-radius: 5px;
-    overflow: hidden;
-    cursor: pointer;
-}
-
-.var-head span {
-    padding: 3px;
-    margin-left: 5px;
-}
-
-.variant-wrapper {
-    width: 350px;
-    max-height: 300px;
-    margin: auto;
-    overflow: auto;
-}
-
-.variant-wrapper .variant {
-    font-size: 12px;
-    font-style: oblique;
-    //min-height: 30px;
-    border-bottom: .5px solid rgb(43, 117, 255);
-    cursor: pointer;
-}
-
-.variant h5 {
-    margin-block-start: .83em;
-    margin-block-end: .83em;
-    display: inline;
-    font-size: 12px;
-}
-
-.graph-canvas {
-    width: 100%;
-    height: 1000px;
-    margin: auto;
-    // margin-left: 300px;
-}
-
-.node text {
-    font-size: 8px;
-}
-
-.node circle {
-    stroke: #fff;
-    stroke-width: 1.5px;
-}
-
-.node.Gene circle {
-    fill: coral;
-    r: 20px;
-    opacity: .7;
-}
-
-.node.Interaction circle {
-    fill: gray;
-    r: 20px;
-    opacity: .5;
-}
-
-.node.Gene.selected circle {
-    fill: red;
-    r: 25px;
-}
-
-.node.Variant circle {
-    fill: #66CDAA;
-    r: 10px;
-    opacity: .7;
-}
-
-.node.Phenotype circle {
-    fill: #9ACD32;
-    r: 10px;
-    opacity: .7;
-}
-
-.link {
-    stroke-opacity: 0.6;
-}
-
-.search-container {
-    width: 300px;
-    display: inline-block;
-    margin: 0 auto;
-    margin-right: 50px;
-    float: right;
-}
-
-input#search-bar {
-    margin: 0 auto;
-    width: 100%;
-    height: 40px;
-    padding: 0 20px;
-    font-size: 1rem;
-    border: 1px solid #D0CFCE;
-    outline: none;
-    &:focus {
+    html,
+    body {
+        height: 100%;
+        padding-bottom: 75px;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        font-size: 12px;
+    }
+    
+    #topnav .dropdown {
+        display: inline-block;
+        float: left;
+        width: 200px;
+        margin-top: 5px;
+        z-index: 10000;
+    }
+    
+    #graph-render {
+        overflow: auto;
+        margin-left: 380px;
+        margin-top: 60px;
+        width: calc('100% - 380px');
+    }
+    
+    .gene-detail h4 {
+        font-size: 16px;
+        display: inline;
+        padding-right: 15px;
+    }
+    
+    .hidden {
+        opacity: 0;
+        height: 0px;
+        width: 0px;
+    }
+    
+    #wrapper {
+        margin: 0px;
+    }
+    
+    #query-panel {
+        float: right;
+        width: 245px;
+        height: 380px;
+        position: absolute;
+        right: 5px;
+        top: 100px;
+    }
+    
+    #left-nav {
+        width: 380px;
+        background-color: #f1f1f1;
+        height: 100%;
+        top: 0px;
+        left: 0px;
+        position: fixed;
+        overflow: auto;
+        padding-top: 10px;
+    }
+    
+    #topnav {
+        width: calc('100% - 380px');
+        // width: 100%;
+        height: 60px;
+        position: fixed;
+        top: 0px;
+        left: 380px;
+        right: 0px;
+        padding-left: 20px;
+        padding-right: 20px;
+        padding-top: 10px;
+        background-color: #f1f1f1;
+        z-index: 10000;
+    }
+    
+    .button-holder {
+        float: right;
+    }
+    
+    .button {
+        border-radius: 12px;
+        background-color: white;
+        color: rgb(43, 117, 255);
         border: 1px solid rgb(43, 117, 255);
-        ;
-        transition: 0.35s ease;
-        color: #008ABF;
-        &::-webkit-input-placeholder {
-            transition: opacity 0.45s ease;
-            opacity: 0;
-        }
-        &::-moz-placeholder {
-            transition: opacity 0.45s ease;
-            opacity: 0;
-        }
-        &:-ms-placeholder {
-            transition: opacity 0.45s ease;
-            opacity: 0;
+        padding: 10px 24px;
+        cursor: pointer;
+        display: inline-block;
+        /* Green */
+    }
+    
+    .gene-header {
+        font-size: 15px;
+        font-style: bold;
+        background-color: #C0C0C0;
+        height: 30px;
+        width: 100%;
+        padding: 5px;
+        // border-radius: 5px;
+        border: .5px solid #808080;
+        cursor: pointer;
+    }
+    
+    .var-head {
+        font-size: 12px;
+        font-style: bold;
+        background-color: #F5F5F5;
+        height: 30px;
+        // width: 100%;
+        width: inherit;
+        padding: 5px;
+        border-radius: 5px;
+        overflow: hidden;
+        cursor: pointer;
+    }
+    
+    .var-head span {
+        padding: 3px;
+        margin-left: 5px;
+    }
+    
+    .variant-wrapper {
+        width: 350px;
+        max-height: 300px;
+        margin: auto;
+        overflow: auto;
+    }
+    
+    .variant-wrapper .variant {
+        font-size: 12px;
+        font-style: oblique;
+        //min-height: 30px;
+        border-bottom: .5px solid rgb(43, 117, 255);
+        cursor: pointer;
+    }
+    
+    .variant h5 {
+        margin-block-start: .83em;
+        margin-block-end: .83em;
+        display: inline;
+        font-size: 12px;
+    }
+    
+    .graph-canvas {
+        width: 100%;
+        height: 1000px;
+        margin: auto;
+        // margin-left: 300px;
+    }
+    
+    .node text {
+        font-size: 8px;
+    }
+    
+    .node circle {
+        stroke: #fff;
+        stroke-width: 1.5px;
+    }
+    
+    .node.Gene circle {
+        fill: coral;
+        r: 20px;
+        opacity: .7;
+    }
+    
+    .node.Interaction circle {
+        fill: gray;
+        r: 20px;
+        opacity: .5;
+    }
+    
+    .node.Gene.selected circle {
+        fill: red;
+        r: 25px;
+    }
+    
+    .node.Variant circle {
+        fill: #66CDAA;
+        r: 10px;
+        opacity: .7;
+    }
+    
+    .node.Phenotype circle {
+        fill: #9ACD32;
+        r: 10px;
+        opacity: .7;
+    }
+    
+    .link {
+        stroke-opacity: 0.6;
+    }
+    
+    .search-container {
+        width: 300px;
+        display: inline-block;
+        margin: 0 auto;
+        margin-right: 50px;
+        float: right;
+    }
+    
+    input#search-bar {
+        margin: 0 auto;
+        width: 100%;
+        height: 40px;
+        padding: 0 20px;
+        font-size: 1rem;
+        border: 1px solid #D0CFCE;
+        outline: none;
+        &:focus {
+            border: 1px solid rgb(43, 117, 255);
+            ;
+            transition: 0.35s ease;
+            color: #008ABF;
+            &::-webkit-input-placeholder {
+                transition: opacity 0.45s ease;
+                opacity: 0;
+            }
+            &::-moz-placeholder {
+                transition: opacity 0.45s ease;
+                opacity: 0;
+            }
+            &:-ms-placeholder {
+                transition: opacity 0.45s ease;
+                opacity: 0;
+            }
         }
     }
-}
-
-.search-icon {
-    position: relative;
-    float: right;
-    width: 70px;
-    height: 70px;
-    top: -52px;
-    right: -55px;
-}
-
-div.tooltip {
-    position: absolute;
-    text-align: center;
-    width: 100px;
-    min-height: 20px;
-    padding: 3px;
-    font: 12px sans-serif;
-    color: #fff;
-    background: rgb(43, 47, 51);
-    border: 0px;
-    border-radius: 8px;
-    pointer-events: none;
-}
-
-.file-header span {
-    float: left;
-    font-size: 14px;
-}
-
-.file-header button {
-    float: right;
-    font-size: 14px;
-    padding: 2px;
-}
-
-.file-header {
-    width: 95%;
-    height: 50px;
-    font-size: 14px;
-    padding: 2.5%;
-}
-
-.prop-headers {
-    border-top: .5px solid rgb(43, 117, 255);
-}
-
-.text-sections div {
-    cursor: pointer;
-    border-top: .5px solid rgb(43, 117, 255);
-}
-
-.text-sec-head {
-    cursor: pointer;
-    border-top: .5px solid rgb(43, 117, 255);
-    padding-top: 10px;
-    padding-bottom: 5px;
-}
-
-.gene-detail h5 {
-    font-size: 13px;
-    display: inline;
-    padding-right: 5px;
-}
-
-.detail-sec {
-    height: 30px;
-    background-color: #D3D3D3;
-    padding: 5px;
-    margin-top: 10px;
-    margin-bottom: 10px;
-    border: .5px solid #808080;
-}
-
-.head-wrapper {
-    background-color: #e6e6e6;
-    height: 25px;
-    padding-top: 10px;
-    padding-bottom: 10px;
-    cursor: pointer;
-}
-
-.gene.selected .gene-header {
-    background-color: orange;
-    height: 30px;
-    width: 100%;
-    padding: 5px;
-    // border-radius: 5px;
-    border: .5px solid #808080;
-}
-
-i {
-    float: right;
-    padding-right: 5px;
-    cursor: pointer;
-}
-
-.interact {
-    background-color: #e6e6e6;
-    height: 25px;
-    padding-top: 10px;
-    padding-bottom: 10px;
-    border-top: .5px solid rgb(43, 117, 255);
-    // cursor: pointer;
-}
-
-.graph-canvas .pheno-wrap {
-    padding-top: 75px;
-    padding-left: 250px;
-    width: inherit;
-    height: inherit;
-}
-
-.pheno-tab circle.pheno-g,
-.geneNode circle,
-.gene-node circle {
-    fill: coral;
-    r: 10px;
-    opacity: .7;
-}
-
-.pheno-tab circle.pheno-c {
-    fill: #9ACD32;
-    r: 20px;
-    opacity: .7;
-}
-
-.pheno-tab circle.pheno-v,
-.geneNode .var-node circle,
-.nodeGroup circle,
-.var-node circle {
-    fill: #66CDAA;
-    r: 5px;
-    opacity: .7;
-}
-
-.nodeGroup.var-nodes circle {
-    fill: red;
-    r: 5px;
-    opacity: .7;
-}
-
-.call-table {
-    width: 370px;
-}
-
-.input-group {
-    position: relative;
-    // display: -ms-flexbox;
-    display: inline-flex;
-    -ms-flex-wrap: wrap;
-    flex-wrap: wrap;
-    float: right;
-    -ms-flex-align: stretch;
-    align-items: stretch;
-    width: 50%;
-    margin-top: 5px;
-}
-
-.query-box {
-    background-color: white;
-    position: fixed;
-    top: 60px;
-    right: 0px;
-    width: 200px;
-    height: 100%;
-    padding: auto;
-    overflow: auto;
-}
-
-.query-box div {
-    overflow: auto;
-}
-
-.header {
-    height: 50px;
-    width: 100%;
-}
-
-path.line {
-    stroke: darkGrey;
-    stroke-width: .6;
-    fill: none;
-}
-
-.pheno-node circle {
-    fill: #9ACD32;
-    r: 3px;
-    opacity: .7;
-}
-
-.pheno-tab g.pheno-v circle {
-    fill: #66CDAA;
-    opacity: .7;
-}
-
-.pheno-tab g.pheno-v.missense_variant circle,
-.circle-label.missense_variant,
-.var-node.missense_variant circle {
-    fill: #DAF7A6;
-    opacity: .7;
-}
-
-.badge.badge-info.missense_variant {
-    background-color: #DAF7A6;
-    color: black;
-}
-
-.pheno-tab g.pheno-v.frameshift_variant circle,
-.circle-label.frameshift_variant,
-.var-node.frameshift_variant circle {
-    fill: #FFC300;
-    opacity: .7;
-}
-
-.badge.badge-info.frameshift_variant {
-    background-color: #FFC300;
-    color: black;
-}
-
-.pheno-tab g.pheno-v.stop_gained circle,
-.circle-label.stop_gained,
-.var-node.stop_gained circle {
-    fill: #FF5733;
-    opacity: .7;
-}
-
-.badge.badge-info.stop_gained {
-    background-color: #FF5733;
-}
-
-.pheno-tab g.pheno-v.inframe_deletion circle,
-.circle-label.inframe_deletion,
-.var-node.inframe_deletion circle {
-    fill: #C70039;
-    opacity: .7;
-}
-
-.badge.badge-info.inframe_deletion {
-    background-color: #C70039;
-}
-
-.pheno-tab g.pheno-v.regulatory_region_variant circle,
-.circle-label.regulatory_region_variant,
-.var-node.regulatory_region_variant circle {
-    fill: #900C3F;
-    opacity: .7;
-}
-
-.badge.badge-info.regulatory_region_variant {
-    background-color: #900C3F;
-}
-
-.pheno-tab g.pheno-v.stop_lost circle,
-.circle-label.stop_lost,
-.var-node.stop_lost circle {
-    fill: #581845;
-    opacity: .7;
-}
-
-.badge.badge-info.stop_lost {
-    background-color: #581845;
-}
-
-.render-label {
-    position: fixed;
-    top: 60px;
-    left: 380px;
-    height: 50px;
-    width: 100%;
-    background-color: #fff;
-    font-weight: bold;
-}
-
-.render-label.pheno-label div {
-    height: 50px;
-    //  min-width: 150px;
-    display: inline-block;
-    padding-left: 70px;
-    padding-right: 50px;
-}
-
-.render-label.gene-label div {
-    height: 50px;
-    //  min-width: 150px;
-    display: inline-block;
-    padding-left: 20px;
-    padding-right: 50px;
-}
-
-.render-label div svg {
-    height: 50px;
-    width: 150px;
-    display: inline;
-}
-
-.render-label div text,
-.render-label div span {
-    //  height: 50px;
-    //  width: 150px;
-    display: inline;
-}
-
-.render-label span {
-    cursor: pointer;
-}
-
-.pheno-v text {
-    font-weight: bold;
-    fill: #fff;
-}
-
-.missense_variant.pheno-v text {
-    font-weight: bold;
-    fill: black;
-}
-
-.highlight circle {
-    fill: red !important;
-    transform: scale(1.3) !important;
-}
+    
+    .search-icon {
+        position: relative;
+        float: right;
+        width: 70px;
+        height: 70px;
+        top: -52px;
+        right: -55px;
+    }
+    
+    div.tooltip {
+        position: absolute;
+        text-align: center;
+        width: 100px;
+        min-height: 20px;
+        padding: 3px;
+        font: 12px sans-serif;
+        color: #fff;
+        background: rgb(43, 47, 51);
+        border: 0px;
+        border-radius: 8px;
+        pointer-events: none;
+    }
+    
+    .file-header span {
+        float: left;
+        font-size: 14px;
+    }
+    
+    .file-header button {
+        float: right;
+        font-size: 14px;
+        padding: 2px;
+    }
+    
+    .file-header {
+        width: 95%;
+        height: 50px;
+        font-size: 14px;
+        padding: 2.5%;
+    }
+    
+    .prop-headers {
+        border-top: .5px solid rgb(43, 117, 255);
+    }
+    
+    .text-sections div {
+        cursor: pointer;
+        border-top: .5px solid rgb(43, 117, 255);
+    }
+    
+    .text-sec-head {
+        cursor: pointer;
+        border-top: .5px solid rgb(43, 117, 255);
+        padding-top: 10px;
+        padding-bottom: 5px;
+    }
+    
+    .gene-detail h5 {
+        font-size: 13px;
+        display: inline;
+        padding-right: 5px;
+    }
+    
+    .detail-sec {
+        height: 30px;
+        background-color: #D3D3D3;
+        padding: 5px;
+        margin-top: 10px;
+        margin-bottom: 10px;
+        border: .5px solid #808080;
+    }
+    
+    .head-wrapper {
+        background-color: #e6e6e6;
+        height: 25px;
+        padding-top: 10px;
+        padding-bottom: 10px;
+        cursor: pointer;
+    }
+    
+    .gene.selected .gene-header {
+        background-color: orange;
+        height: 30px;
+        width: 100%;
+        padding: 5px;
+        // border-radius: 5px;
+        border: .5px solid #808080;
+    }
+    
+    i {
+        float: right;
+        padding-right: 5px;
+        cursor: pointer;
+    }
+    
+    .interact {
+        background-color: #e6e6e6;
+        height: 25px;
+        padding-top: 10px;
+        padding-bottom: 10px;
+        border-top: .5px solid rgb(43, 117, 255);
+        // cursor: pointer;
+    }
+    
+    .graph-canvas .pheno-wrap {
+        padding-top: 75px;
+        padding-left: 250px;
+        width: inherit;
+        height: inherit;
+    }
+    
+    .pheno-tab circle.pheno-g,
+    .geneNode circle,
+    .gene-node circle {
+        fill: coral;
+        r: 10px;
+        opacity: .7;
+    }
+    
+    .pheno-tab circle.pheno-c {
+        fill: #9ACD32;
+        r: 20px;
+        opacity: .7;
+    }
+    
+    .pheno-tab circle.pheno-v,
+    .geneNode .var-node circle,
+    .nodeGroup circle,
+    .var-node circle {
+        fill: #66CDAA;
+        r: 5px;
+        opacity: .7;
+    }
+    
+    .nodeGroup.var-nodes circle {
+        fill: red;
+        r: 5px;
+        opacity: .7;
+    }
+    
+    .call-table {
+        width: 370px;
+    }
+    
+    .input-group {
+        position: relative;
+        // display: -ms-flexbox;
+        display: inline-flex;
+        -ms-flex-wrap: wrap;
+        flex-wrap: wrap;
+        float: right;
+        -ms-flex-align: stretch;
+        align-items: stretch;
+        width: 50%;
+        margin-top: 5px;
+    }
+    
+    .query-box {
+        background-color: white;
+        position: fixed;
+        top: 60px;
+        right: 0px;
+        width: 200px;
+        height: 100%;
+        padding: auto;
+        overflow: auto;
+    }
+    
+    .query-box div {
+        overflow: auto;
+    }
+    
+    .header {
+        height: 50px;
+        width: 100%;
+    }
+    
+    path.line {
+        stroke: darkGrey;
+        stroke-width: .6;
+        fill: none;
+    }
+    
+    .pheno-node circle {
+        fill: #9ACD32;
+        r: 3px;
+        opacity: .7;
+    }
+    
+    .pheno-tab g.pheno-v circle {
+        fill: #66CDAA;
+        opacity: .7;
+    }
+    
+    .pheno-tab g.pheno-v.missense_variant circle,
+    .circle-label.missense_variant,
+    .var-node.missense_variant circle {
+        fill: #DAF7A6;
+        opacity: .7;
+    }
+    
+    .badge.badge-info.missense_variant {
+        background-color: #DAF7A6;
+        color: black;
+    }
+    
+    .pheno-tab g.pheno-v.frameshift_variant circle,
+    .circle-label.frameshift_variant,
+    .var-node.frameshift_variant circle {
+        fill: #FFC300;
+        opacity: .7;
+    }
+    
+    .badge.badge-info.frameshift_variant {
+        background-color: #FFC300;
+        color: black;
+    }
+    
+    .pheno-tab g.pheno-v.stop_gained circle,
+    .circle-label.stop_gained,
+    .var-node.stop_gained circle {
+        fill: #FF5733;
+        opacity: .7;
+    }
+    
+    .badge.badge-info.stop_gained {
+        background-color: #FF5733;
+    }
+    
+    .pheno-tab g.pheno-v.inframe_deletion circle,
+    .circle-label.inframe_deletion,
+    .var-node.inframe_deletion circle {
+        fill: #C70039;
+        opacity: .7;
+    }
+    
+    .badge.badge-info.inframe_deletion {
+        background-color: #C70039;
+    }
+    
+    .pheno-tab g.pheno-v.regulatory_region_variant circle,
+    .circle-label.regulatory_region_variant,
+    .var-node.regulatory_region_variant circle {
+        fill: #900C3F;
+        opacity: .7;
+    }
+    
+    .badge.badge-info.regulatory_region_variant {
+        background-color: #900C3F;
+    }
+    
+    .pheno-tab g.pheno-v.stop_lost circle,
+    .circle-label.stop_lost,
+    .var-node.stop_lost circle {
+        fill: #581845;
+        opacity: .7;
+    }
+    
+    .badge.badge-info.stop_lost {
+        background-color: #581845;
+    }
+    
+    .render-label {
+        position: fixed;
+        top: 60px;
+        left: 380px;
+        height: 50px;
+        width: 100%;
+        background-color: #fff;
+        font-weight: bold;
+    }
+    
+    .render-label.pheno-label div {
+        height: 50px;
+        //  min-width: 150px;
+        display: inline-block;
+        padding-left: 70px;
+        padding-right: 50px;
+    }
+    
+    .render-label.gene-label div {
+        height: 50px;
+        //  min-width: 150px;
+        display: inline-block;
+        padding-left: 20px;
+        padding-right: 50px;
+    }
+    
+    .render-label div svg {
+        height: 50px;
+        width: 150px;
+        display: inline;
+    }
+    
+    .render-label div text,
+    .render-label div span {
+        display: inline;
+    }
+    
+    .render-label span {
+        cursor: pointer;
+    }
+    
+    .pheno-v text {
+        font-weight: bold;
+        fill: #fff;
+    }
+    
+    .missense_variant.pheno-v text {
+        font-weight: bold;
+        fill: black;
+    }
+    
+    .highlight circle {
+        fill: red !important;
+        transform: scale(1.3) !important;
+    }
+    
+    div.highlight {
+        background-color: red !important;
+    }

@@ -6,265 +6,8 @@ import { BaseType, select, geoIdentity } from "D3";
 const neoAPI = require('./neo4jLoader');
 const app = require('./app');
 
-export function removeThings(){
-    d3.select('#linked-pathways').selectAll('*').remove();
-    d3.select('#pathway-render').selectAll('*').remove();
-    d3.select('#assoc-genes').selectAll('*').remove();
-    d3.select('#gene-id').selectAll('*').remove();
-}
 
-export async function changeSelectedClasses(dataArray: Array<object>){
-    let selected = dataArray.map(m=> m.name);
-    d3.select('body').selectAll('.selected').classed('selected', false);
-    d3.select('.call-table')
-}
 
-export function viewToggleInput(){
-    let dropData = ['Whole Network', 'Align by Gene', 'Align by Gene Test', 'Align by Phenotype']
-    let dropdown = d3.select('#topnav').select('.dropdown');
-    let dropButton = dropdown.select('.dropdown-toggle');
-    dropButton.text(dropData[0]);
-    let dropdownItems = dropdown.select('.dropdown-menu').selectAll('.dropdown-item').data(dropData);
-    let dropEnter = dropdownItems.enter().append('a').classed('dropdown-item', true);
-    dropEnter.attr('href', '#');
-    dropEnter.text(d=> d);
-    dropdownItems.merge(dropEnter);
-
-    return dropdown;
-}
-
-export async function renderCalls(promis: Array<object>, selectedNode:Array<object>){
-
-      //  let selectedNames = qo.selected.queryKeeper.map(k=> k.name);
-        let selectedNames = selectedNode.map(k=> k.name);
-
-        let data = await Promise.all(promis);
-
-        let sidebar = d3.select('#left-nav');
-        let callTable = sidebar.select('.call-table');
-
-        callTable.selectAll('*').remove();
-
-        let geneDiv = callTable.selectAll('.gene').data(data);
-        geneDiv.exit().remove();
-
-        let geneEnterDiv = geneDiv.enter().append('div').attr('class', d=> d.value).classed('gene', true);
-        let geneHeader = geneEnterDiv.append('div').classed('gene-header', true);
-
-        geneHeader.append('text').text(d=> d.name);
-
-        let geneIcon = geneHeader.append('i').attr('class', d=> d.name);
-        geneIcon.classed('fas fa-chevron-circle-down', true);
-
-        let selectIcon = geneHeader.append('i').attr('class', "fas fa-binoculars");
-
-        selectIcon.on('click', async function(d){
-           
-            let graph = await neoAPI.getGraph();
-            qo.selected.addQueryOb(d);
-            let selected = qo.selected.queryKeeper.map(d=> d)[qo.selected.queryKeeper.length - 1];qo.selected.queryKeeper.map(d=> d);
-            renderGeneDetail([selected], graph);
-            graphRenderMachine(graph[0], [selected]);
-            renderCalls(promis, [selected]);
-        });
-    
-        geneIcon.on('click', function(d){
-          let header:any = this.parentElement.nextSibling;
-          d3.select(header).classed('hidden')? d3.select(header).classed('hidden', false) : d3.select(header).classed('hidden', true);
-          let icon =  d3.select(this.parentElement).select('i.'+d.name);
-          icon.classed('fa-chevron-circle-down') ? icon.attr('class', d.name+' fas fa-chevron-circle-up') : icon.attr('class', d.name+' fas fa-chevron-circle-down');
-        });
-
-        geneDiv = geneEnterDiv.merge(geneDiv);
-
-        geneDiv.filter(d=> selectedNames.includes(d.name)).classed('selected', true);
-
-        let variantBox = geneDiv.append('div').classed('variant-wrapper', true);
-    
-        let variants = variantBox.selectAll('.variant').data((dat)=> {
-           
-            if(dat.properties.Variants != undefined){
-                return dat.properties.Variants.map(d=>{ 
-                    if(d.properties.Phenotypes[0] != undefined){
-                        d.tag = d.properties.Phenotypes[0][0].clinical_significances? d.properties.Phenotypes[0][0].clinical_significances: null;
-                    }else{
-                        d.tag = [''];
-                    }
-                   
-                    d.cons = d.properties.Consequence ? d.properties.Consequence : null;
-                    return d;
-                });
-                
-            }else return [];
-    
-        });
-        variants.exit().remove();
-        let varEnter = variants.enter().append('div').classed('variant', true);
-        let varHead = varEnter.append('div').classed('var-head', true)//.append('h5').text(d=>d.name);
-        let varText = varHead.append('h5').text(d=>d.name);
-        let varIcon = varHead.append('i').attr('class', d=> d.name);
-        varIcon.classed('fas fa-chevron-circle-down', true);
-        let spanType = varHead.append('span').text(d=> d.properties.Type);
-        spanType.classed('badge badge-info', true);
-        let spanTag = varHead.append('span').text(d=> d.tag[0]);
-        spanTag.classed('badge badge-warning', true);
-        let spanCons = varHead.append('span').text(d=> {
-            let cons = d.cons != null? d.cons : '';
-            return cons;
-        });
-        spanCons.attr('class', d=> d.cons);
-        spanCons.classed('badge badge-info', true);
-   
-        varHead.on('click', function(d){
-            let text = this.nextSibling;
-            d3.select(text).classed('hidden')? d3.select(text).classed('hidden', false) : d3.select(text).classed('hidden', true);
-            let icon =  d3.select(this).select('i.'+d.name);
-            icon.classed('fa-chevron-circle-down') ? icon.attr('class', d.name+' fas fa-chevron-circle-up') : icon.attr('class', d.name+' fas fa-chevron-circle-down');
-        });
-
-        let varDes = varEnter.append('div').classed('var-descript', true).classed('hidden', true);
-        let blurbs = varDes.selectAll('.blurb').data(d=>d3.entries(d)
-                .filter(f=> f.key != 'allelicVariantList' && f.key != 'text' && f.key != 'name' && f.key != 'properties' && f.key != 'Ids'))
-                .enter().append('div').classed('blurb', true);
-
-        let properties = varDes.selectAll('.props').data(d=> d3.entries(d.properties));
-        let propEnter = properties.enter().append('div').classed('props', true);
-        let propText = propEnter.append('text').text(d=> d.key + ": "+ d.value);
-
-        let idBlurbs = blurbs.filter(b=> b.key != 'snpProps').append('text').text(d=> d.key + ": "+ d.value);
-        let snps = blurbs.filter(b=> b.key == 'snpProps').selectAll('.snp').data(d=> d3.entries(d.value));
-        let snpEnter = snps.enter().append('div').classed('snp', true);
-        snpEnter.append('text').text(d=> d.key + ": ");
-        snps = snpEnter.merge(snps)
-
-        variants = varEnter.merge(variants);
-  
-        variants.on('mouseover', function(d){
-           let matches = d3.selectAll('.'+d.name);
-           matches.classed('highlight', true);
-        });
-          
-        variants.on('mouseout', function(d){
-            let matches = d3.selectAll('.highlight');
-            matches.classed('highlight', false);
-         });
-
-        let unselectedGenes = geneDiv.filter(d=> selectedNames.indexOf(d.name) == -1);
-
-        unselectedGenes.select('.variant-wrapper').classed('hidden', true);
-}
-export async function renderGeneDetail(dataArray: Array<object>, graph:object){
-    
-    let data = dataArray[0];
-    let headers = d3.keys(data.properties).filter(d=> d != 'References' && d !='Variants'  && d != 'name');
-
-    let sidebar = d3.select('#left-nav');
-    let geneDet = sidebar.select('.gene-detail');
-    geneDet.selectAll('*').remove();
-    let geneHeader = geneDet.append('div').attr('class', 'detail-head').append('h4').text(data.name);
-  
-   // let symbolBand = geneDet.append('div').classed('symbols', true).data(JSON.parse(data.Symbols));
-    let propertyDivs = geneDet.selectAll('.prop-headers').data(headers);
-    let propEnter = propertyDivs.enter().append('div').classed('prop-headers', true);
-    let propHead = propEnter.append('div').attr('class', (d)=> d).classed('head-wrapper', true)
-    propHead.append('h5').text((d)=> d.toUpperCase());
-    propHead.append('i').attr('class', (d)=> d+' fas fa-chevron-circle-up');
-    propEnter.append('div').attr('class', (d)=> d+' detail-wrapper');
-
-    propHead.on('click', function(d){
-        d3.select(this.nextSibling).classed('hidden')? d3.select(this.nextSibling).classed('hidden', false) : d3.select(this.nextSibling).classed('hidden', true);
-        let icon =  d3.select(this).select('i.'+d);
-        icon.classed('fa-chevron-circle-down') ? icon.attr('class', d+' fas fa-chevron-circle-up') : icon.attr('class', d+' fas fa-chevron-circle-down');
-
-    });
-
-    let ids = propEnter.filter(d=> d == 'Ids').select('.detail-wrapper').selectAll('.ids').data(d=> d3.entries(data.properties[d]));
-    let idEnter = ids.enter().append('div').classed('ids', true);
-    let idsSec = idEnter.append('text').text(d=> d.key + ': ' + d.value);
-
-    let location = propEnter.filter(d=> d == "Location").select('.detail-wrapper').selectAll('.location').data(d=> d3.entries(data.properties[d]));
-    let locEnter = location.enter().append('div').classed('location', true);
-    let locSec = locEnter.append('text').text(d=> d.key + ': ' + d.value);
-  
-    if(data.properties.Phenotypes.length > 0){
-        let phenotype = propEnter.filter(d=> d == "Phenotypes").select('.detail-wrapper').selectAll('.pheno-wrap').data(d=> {
-                let phenoD = data.properties[d].map(p=> p.properties);
-                return phenoD;
-        });
-        let phenoEnter = phenotype.enter().append('div').classed('pheno-wrap', true);
-        let phenoSec = phenoEnter.append('text').text(d=> {   
-            let descript = typeof d.properties == 'string'? JSON.parse(d.properties) : d.properties;
-                return descript.description});
-    }
-   
-
-    let titles = propEnter.filter(d=> d == "Titles").select('.detail-wrapper').selectAll('.title').data(d=> {return d3.entries(data.properties[d])});
-    let titleEnter = titles.enter().append('div').classed('title sections', true);
-    titleEnter.append('text').text(d=> d.value);
-
-    let models = propEnter.filter(d=> d == "Models").select('.detail-wrapper').selectAll('.des').data(d=> {return d3.entries(data.properties[d])});
-    let modEnter = models.enter().append('div').classed('des', true);
-    modEnter.append('text').text(d=> d.key + ": " + JSON.stringify(d.value));
-
-    let textProp = propEnter.filter(d=> d == 'Text').select('.detail-wrapper').selectAll('.text').data(d=> {return data.properties[d]});
-    let textEnter = textProp.enter().append('div').classed('text', true);
-    let headText = textEnter.append('div').classed('text-sec-head', true).append('h5').text(d=> d.textSectionTitle + ': ');
-    let textDiv = textEnter.append('div').classed('textbody', true).classed('hidden', true);
-    let textText = textDiv.append('text').text(d=> d.textSectionContent);
-
-    headText.on('click', function(d) {
-        let text = this.parent.nextSibling
-        d3.select(text).classed('hidden')? d3.select(text).classed('hidden', false) : d3.select(text).classed('hidden', true);
-    });
-
-    let descript = propEnter.filter(d=> d == "Description").select('.detail-wrapper').append('div').append('text').text(d=> data.properties[d]);
-    let symbols = propEnter.filter(d=> d == "Symbols").select('.detail-wrapper').append('div').append('text').text(d=> data.properties[d]);
-
-    let structure = propEnter.filter(d=> d == "Structure").select('.detail-wrapper').selectAll('.structure').data(d=> {
-        return d3.entries(data.properties[d])});
-    let structEnter = structure.enter().append('div').classed('structure', true);
-    structEnter.append('text').text(d=> d.key+ ': ' + d.value);
-
-    let orthology = propEnter.filter(d=> d == "Orthology").select('.detail-wrapper').selectAll('.orthology').data(d=> {return d3.entries(data.properties[d])});
-    let orthoEnter = orthology.enter().append('div').classed('orthology', true);
-    orthoEnter.append('text').text(d=> d.key+ ': ' + d.value);
-
-    let brite = propEnter.filter(d=> d == "Brite").select('.detail-wrapper').selectAll('.brite').data(d=> {return data.properties[d]});
-    let briteEnter = brite.enter().append('div').classed('brite', true);
-    briteEnter.append('text').text(d=> d.id+ ': ' + d.tag );
-
-    let interactors = propEnter.filter(d=> d == "InteractionPartners").select('.detail-wrapper').selectAll('.interact').data(d=> {return data.properties[d]});
-    let intEnter = interactors.enter().append('div').classed('interact', true);
-    intEnter.append('text').text(d=> d.name);
-    let addIcon = intEnter.append('i').attr('class', "fas fa-search-plus");
-    addIcon.on('click', async function(d){
-
-        //THIS IS ADDING THE INTERRACTORAS A NEW GENE
-
-        let newNode = await search.addGene(d.name);
-      
-        app.isStored(graph, newNode).then(async(n)=>{
-
-            let varAlleles = await app.variantObjectMaker(n.properties.Variants);
-            let variants = await qo.structVariants(varAlleles);
-            n.properties.Variants = variants;
-
-            if(n.properties.Phenotypes.nodes != undefined){
-                let structuredPheno = await qo.structPheno(n.properties.Phenotypes, n.name);
-                n.properties.Phenotypes.nodes = structuredPheno;
-            }
-           
-          //  let enrighmentP = await search.searchStringEnrichment(n.name);
-            neoAPI.buildSubGraph(n);
-
-            let newGraph = await neoAPI.getGraph();
-           
-        });
-    });
-
-    propertyDivs = propEnter.merge(propertyDivs);
-
-}
 export function graphRenderMachine(graphArray:Object, selectedGene:Array<object>){
 
     let dropdown = d3.select('#topnav').select('.dropdown');
@@ -281,8 +24,6 @@ export function graphRenderMachine(graphArray:Object, selectedGene:Array<object>
    
     let fun = builder[key];
     fun(graphArray, selectedGene);
-
-
 }
 
 let drawGeneTest = async function(graphArray:Object, selectedGene:Array<object>){
@@ -449,7 +190,7 @@ let drawGene = async function(graphArray:Object, selectedGene:Array<object>){
             }
            // v.level = 1;
             let childz = clin != null? clin.flatMap(c=> c.accession).map(m=> {
-               return {'data': {'name': m, }, 'level': 2, 'ypos':0, 'children': []  } ;
+               return {'data': {'name': 'p'+m, }, 'level': 2, 'ypos':0, 'children': []  } ;
             }): null;
             let vars = {'data': v, 'level':1, 'ypos': 0, 'children': childz }
             return vars;
@@ -538,8 +279,23 @@ let drawGene = async function(graphArray:Object, selectedGene:Array<object>){
    })
 
    let geneNodes = node.filter(d=> d.data.data.type == 'Gene').classed('gene-node', true);
-   let varNodes = node.filter(d=> d.data.data.type == 'Variant').attr('class', d=> d.data.data.properties.Consequence+' '+d.data.data.name).classed('var-node', true);
-   let phenoNodes = node.filter(d=> d.data.data.type == undefined).classed('pheno-node', true);
+   let varNodes = node.filter(d=> d.data.data.type == 'Variant');
+   varNodes.attr('class', d=> d.data.data.properties.Consequence+' '+d.data.data.name).classed('var-node', true);
+   let phenoNodes = node.filter(d=> d.data.data.type == undefined);
+   phenoNodes.attr('class', d=> d.data.data.name).classed('pheno-node', true);
+
+    node.on('mouseover', function(d){
+        let matches = d3.selectAll('.'+d.data.data.name);
+        matches.classed('highlight', true);
+    });
+   
+    node.on('mouseout', function(d){
+        let matches = d3.selectAll('.highlight');
+        matches.classed('highlight', false);
+    });
+
+
+
 
 
 node.append("circle")
@@ -733,15 +489,21 @@ let drawPhenotypes = async function(graphArray:Object, selectedGene:Array<object
 
             circleVar = circEnter.merge(circleVar);
             circ.on('mouseover', function(d){
-              
+            
+                let matches = d3.selectAll('.'+d.vname);
+                matches.classed('highlight', true);
+
                 toolDiv.transition()
                 .duration(200)
                 .style("opacity", .8);
                 toolDiv.html(d.vname + "<br/>" + d.props.Consequence + "<br/>")
                 .style("left", (d3.event.pageX) + "px")
-                .style("top", (d3.event.pageY - 28) + "px");
+                .style("top", (d3.event.pageY - 50) + "px");
              })
              .on("mouseout", function(d) {
+                let matches = d3.selectAll('.highlight');
+                matches.classed('highlight', false);
+
                 toolDiv.transition()
                     .duration(500)
                     .style("opacity", 0);
