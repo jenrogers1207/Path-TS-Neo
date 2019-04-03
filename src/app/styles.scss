@@ -58,12 +58,14 @@ body {
 }
 
 #topnav {
-    width: 100%;
+    width: calc('100% - 380px');
+    // width: 100%;
     height: 60px;
     position: fixed;
     top: 0px;
-    left: 0px;
-    padding-left: 400px;
+    left: 380px;
+    right: 0px;
+    padding-left: 20px;
     padding-right: 20px;
     padding-top: 10px;
     background-color: #f1f1f1;
@@ -418,7 +420,8 @@ path.line {
 }
 
 .pheno-tab g.pheno-v.missense_variant circle,
-.circle-label.missense_variant {
+.circle-label.missense_variant,
+.var-node.missense_variant circle {
     fill: #DAF7A6;
     opacity: .7;
 }
@@ -429,7 +432,8 @@ path.line {
 }
 
 .pheno-tab g.pheno-v.frameshift_variant circle,
-.circle-label.frameshift_variant {
+.circle-label.frameshift_variant,
+.var-node.frameshift_variant circle {
     fill: #FFC300;
     opacity: .7;
 }
@@ -440,7 +444,8 @@ path.line {
 }
 
 .pheno-tab g.pheno-v.stop_gained circle,
-.circle-label.stop_gained {
+.circle-label.stop_gained,
+.var-node.stop_gained circle {
     fill: #FF5733;
     opacity: .7;
 }
@@ -450,7 +455,8 @@ path.line {
 }
 
 .pheno-tab g.pheno-v.inframe_deletion circle,
-.circle-label.inframe_deletion {
+.circle-label.inframe_deletion,
+.var-node.inframe_deletion circle {
     fill: #C70039;
     opacity: .7;
 }
@@ -460,7 +466,8 @@ path.line {
 }
 
 .pheno-tab g.pheno-v.regulatory_region_variant circle,
-.circle-label.regulatory_region_variant {
+.circle-label.regulatory_region_variant,
+.var-node.regulatory_region_variant circle {
     fill: #900C3F;
     opacity: .7;
 }
@@ -470,7 +477,8 @@ path.line {
 }
 
 .pheno-tab g.pheno-v.stop_lost circle,
-.circle-label.stop_lost {
+.circle-label.stop_lost,
+.var-node.stop_lost circle {
     fill: #581845;
     opacity: .7;
 }
@@ -489,16 +497,32 @@ path.line {
     font-weight: bold;
 }
 
-.render-label div {
+.render-label.pheno-label div {
+    height: 50px;
+    //  min-width: 150px;
+    display: inline-block;
+    padding-left: 70px;
+    padding-right: 50px;
+}
+
+.render-label.gene-label div {
+    height: 50px;
+    //  min-width: 150px;
+    display: inline-block;
+    padding-left: 20px;
+    padding-right: 50px;
+}
+
+.render-label div svg {
     height: 50px;
     width: 150px;
     display: inline;
-    padding-left: 70px;
 }
 
-.render-label svg {
-    height: 50px;
-    width: 150px;
+.render-label div text,
+.render-label div span {
+    //  height: 50px;
+    //  width: 150px;
     display: inline;
 }
 

@@ -20,7 +20,7 @@ export async function changeSelectedClasses(dataArray: Array<object>){
 }
 
 export function viewToggleInput(){
-    let dropData = ['Whole Network', 'Align by Gene', 'Align by Phenotype']
+    let dropData = ['Whole Network', 'Align by Gene', 'Align by Gene Test', 'Align by Phenotype']
     let dropdown = d3.select('#topnav').select('.dropdown');
     let dropButton = dropdown.select('.dropdown-toggle');
     dropButton.text(dropData[0]);
@@ -272,6 +272,7 @@ export function graphRenderMachine(graphArray:Object, selectedGene:Array<object>
 
     const builder = {
         'Align by Gene' : drawGene,
+        'Align by Gene Test' : drawGeneTest,
         'Align by Phenotype' : drawPhenotypes,
         'Whole Network' : drawGraph,
     }
@@ -279,12 +280,10 @@ export function graphRenderMachine(graphArray:Object, selectedGene:Array<object>
     let fun = builder[key];
     fun(graphArray, selectedGene);
 
-   function phenoTest(){
-       console.log('is this working align by gene');
-   }
+
 }
 
-let drawGene = async function(graphArray:Object, selectedGene:Array<object>){
+let drawGeneTest = async function(graphArray:Object, selectedGene:Array<object>){
     let canvas = d3.select('#graph-render').select('.graph-canvas');
     var toolDiv = d3.select('.tooltip');
 
@@ -294,12 +293,37 @@ let drawGene = async function(graphArray:Object, selectedGene:Array<object>){
     canvas.select('.nodes').selectAll('*').remove();
     d3.selectAll('.render-label').remove();
 
+    let col = {
+        'pheno': 50,
+        'gene': 400,
+        'vars': 500
+    }
+      
+      const consLabels = ['missense_variant', 'frameshift_variant', 'stop_gained', 'inframe_deletion', 'regulatory_region_variant', 'stop_lost' ]
+      let labels = d3.select('#graph-render').append('div').classed('render-label gene-label', true);//.append('svg');
+      //  let labelG = labels.append('div').attr('transform', 'translate(75, 30)')
+      labels.append('div').style('width', '430px').append('text').text('Gene');//.attr('x', col.gene+10);
+      let varDiv = labels.append('div').style('width', '450px');
+      varDiv.append('text').text('Variants');//.attr('x', col.vars+15);
+      let circLabel =   varDiv.append('svg').selectAll('circle-label').data(consLabels).enter().append('circle').attr('r', 3).attr('cx', (d,i)=> 10+(i*10)).attr('cy', 25);
+      circLabel.attr('class', d=> d).classed('circle-label', true);
+      labels.append('div').style('width', '100px').append('text').text('Phenotype');//.attr('x', 0);
 
-    let labels = d3.select('#graph-render').append('div').classed('render-label gene-label', true).append('svg');
-    let labelG = labels.append('g').attr('transform', 'translate(0, 30)')
-    labelG.append('text').text('Gene').attr('x', 0);
-    labelG.append('text').text('Variants').attr('x', 500);
-    labelG.append('text').text('Phenotype').attr('x', 600);
+
+      circLabel.on('mouseover', function(d){
+      
+        toolDiv.transition()
+        .duration(200)
+        .style("opacity", .8);
+        toolDiv.html(d)
+        .style("left", (d3.event.pageX) + "px")
+        .style("top", (d3.event.pageY - 28) + "px");
+     })
+     .on("mouseout", function(d) {
+        toolDiv.transition()
+            .duration(500)
+            .style("opacity", 0);
+    });
 
     let data = selectedGene.map(m=> {
 
@@ -321,7 +345,115 @@ let drawGene = async function(graphArray:Object, selectedGene:Array<object>){
             return vars;
         });
 
-        let filteredPheno = m.properties.Phenotypes[0]!= undefined? m.properties.Phenotypes.filter(p=> phenoList.indexOf(p.name) == -1).map(f=> { 
+        let filteredPheno = m.properties.Phenotypes[0]!= undefined? m.properties.Phenotypes.filter(p=> phenoList.indexOf(p.name) == -1 && p.properties.associatedGene == p.name).map(f=> { 
+            return {'data': f , 'level': 2, 'ypos':0, 'children': [] }}): null;
+        
+
+        let concatChil = filteredPheno != null? varPhenoList.concat(filteredPheno).map((t, i)=> {
+            // let ypos = i+1;
+                return t;
+            }) : varPhenoList;
+        
+        let mom = {'data': m, 'ypos': 0, 'level': 0, 'children': concatChil}
+    
+        return mom;
+    });
+
+    function assignPosition(node, position) {
+      
+        node.ypos = position;
+        
+        if (node.children.length === 0) return ++position;
+
+        node.children.forEach((child) => {
+            position = assignPosition(child, position);
+        });
+
+        return position;
+    }
+
+    assignPosition(data[0], 1);
+
+    let flatArray = [];
+    
+    data[0].parent = null;
+    data[0].children.forEach(child => {
+        child.parent = data[0];
+        flatArray.push(child);
+        if(child.children.length > 0){
+            child.children.forEach(c=> {
+                c.parent = child;
+                flatArray.push(c);
+            })
+        }
+    });
+
+    
+
+}
+
+let drawGene = async function(graphArray:Object, selectedGene:Array<object>){
+    let canvas = d3.select('#graph-render').select('.graph-canvas');
+    var toolDiv = d3.select('.tooltip');
+
+    console.log('selected',selectedGene);
+    
+    canvas.select('.links').selectAll('*').remove();
+    canvas.select('.nodes').selectAll('*').remove();
+    d3.selectAll('.render-label').remove();
+
+    let col = {
+        'pheno': 50,
+        'gene': 400,
+        'vars': 500
+    }
+    const consLabels = ['missense_variant', 'frameshift_variant', 'stop_gained', 'inframe_deletion', 'regulatory_region_variant', 'stop_lost' ]
+
+    let labels = d3.select('#graph-render').append('div').classed('render-label gene-label', true);//.append('svg');
+  //  let labelG = labels.append('div').attr('transform', 'translate(75, 30)')
+  labels.append('div').style('width', '430px').append('text').text('Gene');//.attr('x', col.gene+10);
+  let varDiv = labels.append('div').style('width', '450px');
+  varDiv.append('text').text('Variants');//.attr('x', col.vars+15);
+  let circLabel =   varDiv.append('svg').selectAll('circle-label').data(consLabels).enter().append('circle').attr('r', 3).attr('cx', (d,i)=> 10+(i*10)).attr('cy', 25);
+  circLabel.attr('class', d=> d).classed('circle-label', true);
+  labels.append('div').style('width', '100px').append('text').text('Phenotype');//.attr('x', 0);
+
+  circLabel.on('mouseover', function(d){
+      
+    toolDiv.transition()
+    .duration(200)
+    .style("opacity", .8);
+    toolDiv.html(d)
+    .style("left", (d3.event.pageX) + "px")
+    .style("top", (d3.event.pageY - 28) + "px");
+ })
+ .on("mouseout", function(d) {
+    toolDiv.transition()
+        .duration(500)
+        .style("opacity", 0);
+});
+
+    let data = selectedGene.map(m=> {
+
+        let phenoList = []
+        let varPhenoList = m.properties.Variants.map(v=> {
+            let varpheno = v.properties.Phenotypes[0] != undefined? v.properties.Phenotypes.flatMap(d=> d): null;
+            let clin = varpheno != null? varpheno.map(p=> p.disease_ids.filter(d=> d.organization == "OMIM")).flatMap(d=> d): null;
+            
+            if(clin != null){
+                clin.flatMap(c=> c.accession).forEach(element => {
+                phenoList.push(element);
+            });
+            }
+           // v.level = 1;
+            let childz = clin != null? clin.flatMap(c=> c.accession).map(m=> {
+               return {'data': {'name': m, }, 'level': 2, 'ypos':0, 'children': []  } ;
+            }): null;
+            let vars = {'data': v, 'level':1, 'ypos': 0, 'children': childz }
+            return vars;
+        });
+
+        let filteredPheno = m.properties.Phenotypes[0]!= undefined? m.properties.Phenotypes.filter(p=> phenoList.indexOf(p.name) == -1 && p.properties.associatedGene == p.name).map(f=> { 
             return {'data': f , 'level': 2, 'ypos':0, 'children': [] }}): null;
         
 
@@ -379,7 +511,7 @@ let drawGene = async function(graphArray:Object, selectedGene:Array<object>){
 
     var linkGroup = canvas.select('.links');
 
-    linkGroup.attr('transform', 'translate(50, 20)')
+    linkGroup.attr('transform', 'translate(50, 60)')
     
     linkGroup.selectAll(".line")
     .data(root.descendants().slice(1))
@@ -393,7 +525,7 @@ let drawGene = async function(graphArray:Object, selectedGene:Array<object>){
     });
   
    let nodeGroup = canvas.selectAll('.nodes');
-   nodeGroup.attr('transform', 'translate(50, 20)');
+   nodeGroup.attr('transform', 'translate(50, 60)');
    
    var node = nodeGroup.selectAll(".node")
    .data(root.descendants())
@@ -403,9 +535,9 @@ let drawGene = async function(graphArray:Object, selectedGene:Array<object>){
      return "translate(" + d.y + "," + d.x + ")"; 
    })
 
-   node.filter(d=> d.data.data.type == 'Gene').classed('gene-node', true);
-   node.filter(d=> d.data.data.type == 'Variant').classed('var-node', true);
-   node.filter(d=> d.data.data.type == undefined).classed('pheno-node', true);
+   let geneNodes = node.filter(d=> d.data.data.type == 'Gene').classed('gene-node', true);
+   let varNodes = node.filter(d=> d.data.data.type == 'Variant').attr('class', d=> d.data.data.properties.Consequence).classed('var-node', true);
+   let phenoNodes = node.filter(d=> d.data.data.type == undefined).classed('pheno-node', true);
 
 
 node.append("circle")
@@ -440,11 +572,14 @@ let drawPhenotypes = async function(graphArray:Object, selectedGene:Array<object
 
     let labels = d3.select('#graph-render').append('div').classed('render-label pheno-label', true);//.append('svg');
   //  let labelG = labels.append('div').attr('transform', 'translate(75, 30)')
-    labels.append('div').attr('width', 200).append('text').text('Phenotype');//.attr('x', 0);
-    labels.append('div').attr('width', 100).append('text').text('Gene');//.attr('x', col.gene+10);
-    labels.append('div').style('width', '70px').append('text').text('Variants');//.attr('x', col.vars+15);
-    let circLabel =   labels.append('svg').selectAll('circle-label').data(consLabels).enter().append('circle').attr('r', 3).attr('cx', (d,i)=> 10+(i*10)).attr('cy', 25);
+    labels.append('div').style('width', '415px').append('text').text('Phenotype');//.attr('x', 0);
+    labels.append('div').style('width', '50px').append('text').text('Gene');//.attr('x', col.gene+10);
+    let varDiv = labels.append('div').style('width', '380px');
+    varDiv.append('text').text('Variants');//.attr('x', col.vars+15);
+    let circLabel =   varDiv.append('svg').selectAll('circle-label').data(consLabels).enter().append('circle').attr('r', 3).attr('cx', (d,i)=> 10+(i*10)).attr('cy', 25);
     circLabel.attr('class', d=> d).classed('circle-label', true);
+
+    let groupButton = varDiv.append('span').classed('badge badge-pill badge-secondary', true).append('text').text('Ungroup');
 
     let geneData = graphArray.nodes.filter(d=> d.label == 'Gene');
 
@@ -491,8 +626,19 @@ let drawPhenotypes = async function(graphArray:Object, selectedGene:Array<object
         return pheno;
     });
 
+    let newPhenoSelected = newPheno.filter(async f=> {
     
-    let groupButton = labels.append('span').classed('badge badge-pill badge-secondary', true).append('text').text('Group');
+        let sel = await Promise.resolve(f);
+    
+        return sel.properties.associatedGene == selectedGene[0].name});
+
+    let notPheno = newPheno.filter(async f=> {
+      
+         let sel = await Promise.resolve(f);
+         console.log(sel.properties.associatedGene, selectedGene[0].name);
+         return sel.properties.associatedGene != selectedGene[0].name});gi
+
+    let totalPheno = newPhenoSelected.concat(notPheno);
 
     canvas.style('height', (150*phenoData.length) + 'px');
    
@@ -537,33 +683,13 @@ let drawPhenotypes = async function(graphArray:Object, selectedGene:Array<object
         circleG.classed('pheno-g', true);
     
         nodeEnter.append('text').text(d=> d.properties.associatedGene).attr('x', col.gene - 15).attr('y', 86);
-    /*
-        let circleVar = nodeEnter.append('g').classed('var-wrapper', true).selectAll('.pheno-v').data(d=>d.vars);
-        let circG = circleVar.enter().append('g').attr('class', d=> d.props.Consequence).classed('pheno-v', true);
-        let circ = circG.append('circle');
-        circ.attr('r', 5);
-        circ.attr('cx', (d, i)=> col.vars + (i*11)).attr('cy', 100);
-        circ.on('mouseover', function(d){
-          
-            toolDiv.transition()
-            .duration(200)
-            .style("opacity", .8);
-            toolDiv.html(d.vname + "<br/>" + d.props.Consequence + "<br/>")
-            .style("left", (d3.event.pageX) + "px")
-            .style("top", (d3.event.pageY - 28) + "px");
-         })
-         .on("mouseout", function(d) {
-            toolDiv.transition()
-                .duration(500)
-                .style("opacity", 0);
-        });
-*/
+
         return nodeEnter;
 
     }
 
     let drawVars = function(nodeEnter, grouped:Boolean){
-        console.log(nodeEnter);
+       
         nodeEnter.select('.var-wrapper').remove();
         if(grouped){
 
@@ -577,17 +703,14 @@ let drawPhenotypes = async function(graphArray:Object, selectedGene:Array<object
             let circEnter = circleVar.enter().append('g').attr('class', d=> d.key).classed('pheno-v', true);
             circEnter.attr('transform', (d,i)=> 'translate('+(col.vars + (i*21))+', 100)');
             let circ = circEnter.append('circle').attr('r', 10).attr('cx', 5).attr('cy', 0);
-
             let count = circEnter.append('text').text(d=> d.value.length).attr('y', 3);
-
             circleVar = circEnter.merge(circleVar);
 
-            circ.on('mouseover', function(d){
-              
+            circ.on('mouseover', function(d){          
                 toolDiv.transition()
                 .duration(200)
                 .style("opacity", .8);
-                toolDiv.html(d.key + "<br/>")
+                toolDiv.html(d.value.length +"<br/>"+ d.key + "<br/>")
                 .style("left", (d3.event.pageX) + "px")
                 .style("top", (d3.event.pageY - 28) + "px");
              })
@@ -598,10 +721,6 @@ let drawPhenotypes = async function(graphArray:Object, selectedGene:Array<object
             });
         }else{
 
-            //let circleVar = nodeEnter.append('g').classed('var-wrapper', true).selectAll('.pheno-v').data(d=>d.vars);
-           // let circ = circleVar.enter().append('circle').attr('class', d=> d.props.Consequence).classed('pheno-v', true)
-            //circ.attr('cx', (d, i)=> col.vars + (i*11)).attr('cy', 100);
-
             let circleVar = nodeEnter.append('g').classed('var-wrapper', true).selectAll('.pheno-v').data(d=> d.vars);
 
             circleVar.exit().remove();
@@ -609,8 +728,6 @@ let drawPhenotypes = async function(graphArray:Object, selectedGene:Array<object
             let circEnter = circleVar.enter().append('g').attr('class', d=> d.props.Consequence).classed('pheno-v', true);
             circEnter.attr('transform', (d,i)=> 'translate('+(col.vars + (i*11))+', 100)');
             let circ = circEnter.append('circle').attr('r', 5).attr('cx', 5).attr('cy', 0);
-
-          //  let count = circEnter.append('text').text(d=> d.value.length).attr('y', 3);
 
             circleVar = circEnter.merge(circleVar);
             circ.on('mouseover', function(d){
@@ -631,9 +748,7 @@ let drawPhenotypes = async function(graphArray:Object, selectedGene:Array<object
         
 
     }
-
-    let enterNode = await drawTabs(newPheno);
-    drawVars(enterNode, false);
+    //drawVars(enterNode, false);
 
     let groupVars = async function(thisEl: any, pheno: any){
         console.log(pheno);
@@ -655,6 +770,7 @@ let drawPhenotypes = async function(graphArray:Object, selectedGene:Array<object
             return p;
         });
       //  console.log(newPhen);
+      console.log(thisEl)
         d3.select(thisEl).text('Ungroup');
         drawVars(enterNode, true)
     }
@@ -662,16 +778,14 @@ let drawPhenotypes = async function(graphArray:Object, selectedGene:Array<object
     let ungroupVars = async function(thisEl: any, pheno: any){
         
         let phen = await Promise.all(pheno);
-       // console.log(phen);
+    
         let newPhen = phen.map(p=> {
         
             let flatVar = d3.entries(p.vars).map(d=> d.value);
-           // console.log('entries', flatVar);
-           // console.log(flatVar.flatMap(d=> d));
             p.vars = flatVar.flatMap(d=> d);
             return p;
         });
-      //  console.log(newPhen);
+   
         d3.select(thisEl).text('Group');
         drawVars(enterNode, false);
     }
@@ -681,6 +795,8 @@ let drawPhenotypes = async function(graphArray:Object, selectedGene:Array<object
         d3.select(this).text() == 'Group' ? groupVars(this, newPheno) : ungroupVars(this, newPheno);
     });
 
+    let enterNode = await drawTabs(totalPheno);
+    groupVars(groupButton, newPheno);
    
 
 }
