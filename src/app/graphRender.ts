@@ -573,6 +573,23 @@ let drawPhenotypes = async function(graphArray:Object, selectedGene:Array<object
         return pheno;
     });
 
+    let newPhenoSelected = newPheno.filter(async f=> {
+       // console.log(f, selectedGene[0]);
+        let sel = await Promise.resolve(f);
+        console.log(sel.properties.associatedGene, selectedGene[0].name);
+        return sel.properties.associatedGene == selectedGene[0].name});
+
+    let notPheno = newPheno.filter(async f=> {
+        // console.log(f, selectedGene[0]);
+         let sel = await Promise.resolve(f);
+         console.log(sel.properties.associatedGene, selectedGene[0].name);
+         return sel.properties.associatedGene != selectedGene[0].name});
+
+    console.log(newPhenoSelected);
+    console.log(notPheno);
+
+    let totalPheno = newPhenoSelected.concat(notPheno);
+
     
     let groupButton = labels.append('span').classed('badge badge-pill badge-secondary', true).append('text').text('Group');
 
@@ -688,7 +705,7 @@ let drawPhenotypes = async function(graphArray:Object, selectedGene:Array<object
 
     }
 
-    let enterNode = await drawTabs(newPheno);
+    let enterNode = await drawTabs(totalPheno);
     drawVars(enterNode, false);
 
     let groupVars = async function(thisEl: any, pheno: any){
