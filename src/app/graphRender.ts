@@ -2,7 +2,7 @@ import "./styles.scss";
 import * as d3 from 'D3';
 import * as search from './search';
 import * as qo from './queryObject';
-import { BaseType, select } from "D3";
+import { BaseType, select, geoIdentity } from "D3";
 const neoAPI = require('./neo4jLoader');
 const app = require('./app');
 
@@ -62,8 +62,8 @@ export async function renderCalls(promis: Array<object>, selectedNode:Array<obje
            
             let graph = await neoAPI.getGraph();
             qo.selected.addQueryOb(d);
-            let selected = qo.selected.queryKeeper.map(d=> d); //[qo.selected.queryKeeper.length - 1]
-            console.log('selected',selected[qo.selected.queryKeeper.length - 1]);
+            let selected = qo.selected.queryKeeper.map(d=> d)[qo.selected.queryKeeper.length - 1];qo.selected.queryKeeper.map(d=> d);
+            console.log('selected', selected);
             renderGeneDetail([d], graph);
             graphRenderMachine(graph[0], [d]);
             renderCalls(promis, [d]);
@@ -636,7 +636,7 @@ let drawPhenotypes = async function(graphArray:Object, selectedGene:Array<object
       
          let sel = await Promise.resolve(f);
          console.log(sel.properties.associatedGene, selectedGene[0].name);
-         return sel.properties.associatedGene != selectedGene[0].name});gi
+         return sel.properties.associatedGene != selectedGene[0].name});
 
     let totalPheno = newPhenoSelected.concat(notPheno);
 

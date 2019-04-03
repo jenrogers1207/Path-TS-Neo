@@ -119,9 +119,8 @@ dataLoad.loadFile().then(async (d)=> {
       //  neoAPI.buildSubGraph(selectedGene);
         dropdown.select('.dropdown-menu').selectAll('.dropdown-item').on('click', (d, i, g)=> {
             dropButton.text(d);
-            let selected = qo.selected.queryKeeper.map(d=> d);
-           // console.log('selected', selected[selected.length - 1]);
-            gCanvas.graphRenderMachine(graph, [selectedGene]);
+            let selected = qo.selected.queryKeeper.map(d=> d)[qo.selected.queryKeeper.length - 1];qo.selected.queryKeeper.map(d=> d);
+            gCanvas.graphRenderMachine(graph, [selected]);
         })
 
         gCanvas.graphRenderMachine(graph, [selectedGene]);
