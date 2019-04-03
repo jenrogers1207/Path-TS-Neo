@@ -440,9 +440,9 @@ let drawPhenotypes = async function(graphArray:Object, selectedGene:Array<object
 
     let labels = d3.select('#graph-render').append('div').classed('render-label pheno-label', true);//.append('svg');
   //  let labelG = labels.append('div').attr('transform', 'translate(75, 30)')
-    labels.append('div').attr('width', 200).append('text').text('Phenotype');//.attr('x', 0);
-    labels.append('div').attr('width', 100).append('text').text('Gene');//.attr('x', col.gene+10);
-    labels.append('div').style('width', '70px').append('text').text('Variants');//.attr('x', col.vars+15);
+    labels.append('div').style('width', '380px').append('text').text('Phenotype');//.attr('x', 0);
+    labels.append('div').style('width', '280px').append('text').text('Gene');//.attr('x', col.gene+10);
+    labels.append('div').style('width', '100px').append('text').text('Variants');//.attr('x', col.vars+15);
     let circLabel =   labels.append('svg').selectAll('circle-label').data(consLabels).enter().append('circle').attr('r', 3).attr('cx', (d,i)=> 10+(i*10)).attr('cy', 25);
     circLabel.attr('class', d=> d).classed('circle-label', true);
 
@@ -537,33 +537,13 @@ let drawPhenotypes = async function(graphArray:Object, selectedGene:Array<object
         circleG.classed('pheno-g', true);
     
         nodeEnter.append('text').text(d=> d.properties.associatedGene).attr('x', col.gene - 15).attr('y', 86);
-    /*
-        let circleVar = nodeEnter.append('g').classed('var-wrapper', true).selectAll('.pheno-v').data(d=>d.vars);
-        let circG = circleVar.enter().append('g').attr('class', d=> d.props.Consequence).classed('pheno-v', true);
-        let circ = circG.append('circle');
-        circ.attr('r', 5);
-        circ.attr('cx', (d, i)=> col.vars + (i*11)).attr('cy', 100);
-        circ.on('mouseover', function(d){
-          
-            toolDiv.transition()
-            .duration(200)
-            .style("opacity", .8);
-            toolDiv.html(d.vname + "<br/>" + d.props.Consequence + "<br/>")
-            .style("left", (d3.event.pageX) + "px")
-            .style("top", (d3.event.pageY - 28) + "px");
-         })
-         .on("mouseout", function(d) {
-            toolDiv.transition()
-                .duration(500)
-                .style("opacity", 0);
-        });
-*/
+
         return nodeEnter;
 
     }
 
     let drawVars = function(nodeEnter, grouped:Boolean){
-        console.log(nodeEnter);
+       
         nodeEnter.select('.var-wrapper').remove();
         if(grouped){
 
@@ -587,7 +567,7 @@ let drawPhenotypes = async function(graphArray:Object, selectedGene:Array<object
                 toolDiv.transition()
                 .duration(200)
                 .style("opacity", .8);
-                toolDiv.html(d.key + "<br/>")
+                toolDiv.html(d.value.length +"<br/>"+ d.key + "<br/>")
                 .style("left", (d3.event.pageX) + "px")
                 .style("top", (d3.event.pageY - 28) + "px");
              })
@@ -598,10 +578,6 @@ let drawPhenotypes = async function(graphArray:Object, selectedGene:Array<object
             });
         }else{
 
-            //let circleVar = nodeEnter.append('g').classed('var-wrapper', true).selectAll('.pheno-v').data(d=>d.vars);
-           // let circ = circleVar.enter().append('circle').attr('class', d=> d.props.Consequence).classed('pheno-v', true)
-            //circ.attr('cx', (d, i)=> col.vars + (i*11)).attr('cy', 100);
-
             let circleVar = nodeEnter.append('g').classed('var-wrapper', true).selectAll('.pheno-v').data(d=> d.vars);
 
             circleVar.exit().remove();
@@ -609,8 +585,6 @@ let drawPhenotypes = async function(graphArray:Object, selectedGene:Array<object
             let circEnter = circleVar.enter().append('g').attr('class', d=> d.props.Consequence).classed('pheno-v', true);
             circEnter.attr('transform', (d,i)=> 'translate('+(col.vars + (i*11))+', 100)');
             let circ = circEnter.append('circle').attr('r', 5).attr('cx', 5).attr('cy', 0);
-
-          //  let count = circEnter.append('text').text(d=> d.value.length).attr('y', 3);
 
             circleVar = circEnter.merge(circleVar);
             circ.on('mouseover', function(d){
@@ -662,16 +636,14 @@ let drawPhenotypes = async function(graphArray:Object, selectedGene:Array<object
     let ungroupVars = async function(thisEl: any, pheno: any){
         
         let phen = await Promise.all(pheno);
-       // console.log(phen);
+    
         let newPhen = phen.map(p=> {
         
             let flatVar = d3.entries(p.vars).map(d=> d.value);
-           // console.log('entries', flatVar);
-           // console.log(flatVar.flatMap(d=> d));
             p.vars = flatVar.flatMap(d=> d);
             return p;
         });
-      //  console.log(newPhen);
+   
         d3.select(thisEl).text('Group');
         drawVars(enterNode, false);
     }
