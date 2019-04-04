@@ -243,7 +243,7 @@ export async function structPheno(phenob: object, assocGene:string){
         let props = p.properties? p.properties : p;
         props = props.phenotypeMap? props.phenotypeMap : props;
        
-        let phenoOb = new PhenotypeObject(props.phenotypeMimNumber.toString());
+        let phenoOb = new PhenotypeObject(props.phenotypeMimNumber? props.phenotypeMimNumber.toString(): 'unknownMim');
         phenoOb.properties.associatedGene = assocGene;
         phenoOb.properties.OMIM = props.mimNumber? props.mimNumber : props.OMIM;
         phenoOb.properties.description =  props.phenotype? props.phenotype : props.description;// "Bart-Pumphrey syndrome"

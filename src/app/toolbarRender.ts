@@ -63,7 +63,7 @@ export async function renderCalls(promis: Array<object>, selectedNode:Array<obje
            
             let graph = await neoAPI.getGraph();
             qo.selected.addQueryOb(d);
-            let selected = qo.selected.queryKeeper.map(d=> d)[qo.selected.queryKeeper.length - 1];qo.selected.queryKeeper.map(d=> d);
+            let selected = qo.selected.queryKeeper.map(d=> d)[qo.selected.queryKeeper.length - 1];
             renderGeneDetail([selected], graph);
             gCanvas.graphRenderMachine(graph[0], [selected]);
             renderCalls(promis, [selected]);
@@ -124,10 +124,42 @@ export async function renderCalls(promis: Array<object>, selectedNode:Array<obje
         });
 
         let varDes = varEnter.append('div').classed('var-descript', true).classed('hidden', true);
-        let blurbs = varDes.selectAll('.blurb').data(d=>d3.entries(d)
-                .filter(f=> f.key != 'allelicVariantList' && f.key != 'text' && f.key != 'name' && f.key != 'properties' && f.key != 'Ids'))
+        let blurbs = varDes.selectAll('.blurb').data(d=>{
+               // console.log(d, d3.entries(d.properties));
+                let blurbin = {}
+                blurbin.Consequence = d.properties.Consequence;
+                blurbin.Frequency =  d.properties.Frequency;
+                blurbin.Names = d.properties.synonyms;
+                //blurbin.Ids = d.properties.Ids;
+                //blurbin.Type = d.properties.Type;
+                blurbin.Class = d.properties.class;
+                blurbin.Ambiguity = d.properties.ambiguity;
+                blurbin['Ancestral Allele'] = d.properties.ancestral_allele;
+                blurbin.Mutations = d.properties.mutations;
+                blurbin.Location = d.properties.Location;
+                // blurbin.Structure = d.properties.Structure;
+                 blurbin.Phenotypes = d.properties.Phenotypes;
+                blurbin['Minor Allele'] = d.properties.minor_allele;
+                blurbin['Assembly Name'] = d.properties.mappings? d.properties.mappings.assembly_name: null;
+                blurbin.Location['Chromosome Location'] = d.properties.mappings? d.properties.mappings.location: null;
+                
+                blurbin['Allele Annotations'] = d.properties.allelleAnnotations;
+
+                blurbin.Text = d.properties.Text;
+
+                console.log('b',blurbin);
+                return d3.entries(blurbin);
+               // return d3.entries(d)
+               // .filter(f=> f.key != 'allelicVariantList' && f.key != 'text' && f.key != 'name' && f.key != 'properties' && f.key != 'Ids')
+                })
                 .enter().append('div').classed('blurb', true);
 
+        let blurbHead = blurbs.append('div').classed('var-blurb-head', true);
+        blurbHead.append('test').text(d=> d.key)
+
+        let blurbVal = blurbs.append('div').classed('var-blurb-body', true);
+        blurbVal.append('text').text(d=> d.value)
+/*
         let properties = varDes.selectAll('.props').data(d=> d3.entries(d.properties));
         let propEnter = properties.enter().append('div').classed('props', true);
         let propText = propEnter.append('text').text(d=> d.key + ": "+ d.value);
@@ -137,6 +169,8 @@ export async function renderCalls(promis: Array<object>, selectedNode:Array<obje
         let snpEnter = snps.enter().append('div').classed('snp', true);
         snpEnter.append('text').text(d=> d.key + ": ");
         snps = snpEnter.merge(snps)
+
+    */
 
         variants = varEnter.merge(variants);
   
