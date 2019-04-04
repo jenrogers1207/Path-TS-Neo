@@ -2,11 +2,11 @@ import "./styles.scss";
 import * as d3 from 'D3';
 import * as search from './search';
 import * as qo from './queryObject';
-import { BaseType, select, geoIdentity, geoNaturalEarth1Raw, gray } from "D3";
+import { BaseType, select, geoIdentity, geoNaturalEarth1Raw, gray, map } from "D3";
 const neoAPI = require('./neo4jLoader');
 const app = require('./app');
-
-
+const qo = require('./queryObject');
+const toolbar = require('./toolbarRender');
 
 export function graphRenderMachine(graphArray:Object, selectedGene:Array<object>){
 
@@ -428,24 +428,49 @@ let drawPhenotypes = async function(graphArray:Object, selectedGene:Array<object
 
     let drawTabs = async function(data, selectedName:string){
 
-        let node = canvas.select('.nodes').append('g').classed('pheno-wrap', true).selectAll('.pheno-tab').data(await Promise.all(data));
+        let pData = await Promise.all(data);
+        let newData = pData.map((p,i)=>{
+            console.log('data',p);
+            let start = i == 0 ? 0 : pData[i-1].y;
+            let y = i>0 && pData[i-1].properties.inheritance == undefined? start + 88 : start + 160; 
+            p.y = i == 0 ? 0 : y;
+            p.h = p.properties.inheritance == undefined? 86 : 158; 
+            return p;
+        });
+
+        let node = canvas.select('.nodes').append('g').classed('pheno-wrap', true).selectAll('.pheno-tab').data(newData);
 
         let nodeEnter = node
             .enter().append('g')
             .attr("class", (d)=> 'pheno-tab '+d.name);
-    
-        nodeEnter.attr('transform', (d, i)=> 'translate(100, '+(88*i)+')')
+
+        nodeEnter.attr('transform', (d, i)=> {
+            return 'translate(100, '+d.y+')'});
 
         let selectedNode = nodeEnter.filter(n=>  n.properties.associatedGene === selectedName);
 
-        console.log(selectedNode, 'selectedddd');
+      //  console.log(selectedNode, 'selectedddd');
 
         let selectedRects = selectedNode.append('rect')
         selectedRects.attr('x', -50).attr('y', 66).attr('rx', 15).attr('ry', 15).attr('width', 1000);
-        selectedRects.attr('height', 86).attr('fill','gray').style('opacity', '0.15');
+        selectedRects.attr('height', d=>  d.h).attr('fill','gray').style('opacity', '0.15');
     
         let circleP = nodeEnter.append('circle').attr('cx', 0).attr('cy', 100);
         circleP.classed('pheno-c', true);
+
+        circleP.on('click', async (d)=>{
+           // console.log(d);
+            let newPheno = await Promise.resolve(search.searchOMIMPheno(d));
+           // d = newPheno;
+            let nameArr = data.map(m=> m.name);
+            let index = nameArr.indexOf(newPheno.name);
+            data[index] = newPheno;
+            canvas.select('.links').selectAll('*').remove();
+            canvas.select('.nodes').selectAll('*').remove();
+            let newTabs = await drawTabs(data, selectedName);
+            groupButton.text() == 'Group' ? drawVars(newTabs, false) :drawVars(newTabs, true);
+           
+        });
     
         let textBlurb = nodeEnter.append('g').selectAll('text').data(d=> d3.entries(d.properties).filter(k=> k.key != 'associatedGene' && k.key != 'OMIM'));
         textBlurb.enter().append('text').text(d=> {
@@ -534,7 +559,7 @@ let drawPhenotypes = async function(graphArray:Object, selectedGene:Array<object
     //drawVars(enterNode, false);
 
     let groupVars = async function(thisEl: any, pheno: any){
-        console.log(pheno);
+      
         let phen = await Promise.all(pheno);
  
         let newPhen = phen.map(p=> {
@@ -552,10 +577,9 @@ let drawPhenotypes = async function(graphArray:Object, selectedGene:Array<object
             p.vars = varGroups;
             return p;
         });
-      //  console.log(newPhen);
-      console.log(thisEl)
+      
         d3.select(thisEl).text('Ungroup');
-        drawVars(enterNode, true)
+        drawVars(enterNode, true);
     }
 
     let ungroupVars = async function(thisEl: any, pheno: any){
@@ -676,7 +700,7 @@ function drawGraph(graphArray: Object, selectedGene: Array<object>) {
         let newSelected = await qo.structGene(d);
         let queryKeeper = qo.allQueries.queryKeeper.map(m=> m);
         toolbar.renderGeneDetail([newSelected], graphArray);
-        renderCalls(queryKeeper, [newSelected]);
+        toolbar.renderCalls(queryKeeper, [newSelected]);
 
         if(mapped.includes(d.properties.name)){
             console.log('ALLREADY IN THE KEEPER');
