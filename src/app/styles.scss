@@ -414,19 +414,20 @@
     }
     
     .pheno-tab g.pheno-v circle {
-        fill: #66CDAA;
+        //fill: #66CDAA;
+        fill: #DAF7A6;
         opacity: .7;
     }
     
     .pheno-tab g.pheno-v.missense_variant circle,
     .circle-label.missense_variant,
     .var-node.missense_variant circle {
-        fill: #DAF7A6;
+        fill: #66CDAA;
         opacity: .7;
     }
     
     .badge.badge-info.missense_variant {
-        background-color: #DAF7A6;
+        background-color: #66CDAA;
         color: black;
     }
     
@@ -534,7 +535,7 @@
     
     .missense_variant.pheno-v text {
         font-weight: bold;
-        fill: black;
+        // fill: black;
     }
     
     .highlight circle {

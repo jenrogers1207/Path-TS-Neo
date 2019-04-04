@@ -1,8 +1,6 @@
 import * as d3 from 'D3';
-//import * as data from './testData.json';
 import * as data from './testSample.json';
 const qo = require('./queryObject');
-//const xhr = require('nets');
 const search = require('./search');
 
 
