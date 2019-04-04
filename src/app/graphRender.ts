@@ -2,7 +2,7 @@ import "./styles.scss";
 import * as d3 from 'D3';
 import * as search from './search';
 import * as qo from './queryObject';
-import { BaseType, select, geoIdentity, geoNaturalEarth1Raw } from "D3";
+import { BaseType, select, geoIdentity, geoNaturalEarth1Raw, gray } from "D3";
 const neoAPI = require('./neo4jLoader');
 const app = require('./app');
 
@@ -426,7 +426,7 @@ let drawPhenotypes = async function(graphArray:Object, selectedGene:Array<object
             .style("opacity", 0);
     });
 
-    let drawTabs = async function(data){
+    let drawTabs = async function(data, selectedName:string){
 
         let node = canvas.select('.nodes').append('g').classed('pheno-wrap', true).selectAll('.pheno-tab').data(await Promise.all(data));
 
@@ -434,7 +434,15 @@ let drawPhenotypes = async function(graphArray:Object, selectedGene:Array<object
             .enter().append('g')
             .attr("class", (d)=> 'pheno-tab '+d.name);
     
-        nodeEnter.attr('transform', (d, i)=> 'translate(100, '+(100*i)+')')
+        nodeEnter.attr('transform', (d, i)=> 'translate(100, '+(88*i)+')')
+
+        let selectedNode = nodeEnter.filter(n=>  n.properties.associatedGene === selectedName);
+
+        console.log(selectedNode, 'selectedddd');
+
+        let selectedRects = selectedNode.append('rect')
+        selectedRects.attr('x', -50).attr('y', 66).attr('rx', 15).attr('ry', 15).attr('width', 1000);
+        selectedRects.attr('height', 86).attr('fill','gray').style('opacity', '0.15');
     
         let circleP = nodeEnter.append('circle').attr('cx', 0).attr('cy', 100);
         circleP.classed('pheno-c', true);
@@ -566,11 +574,10 @@ let drawPhenotypes = async function(graphArray:Object, selectedGene:Array<object
     }
 
     groupButton.on('click', function(){
-       // console.log(this);
         d3.select(this).text() == 'Group' ? groupVars(this, newPheno) : ungroupVars(this, newPheno);
     });
 
-    let enterNode = await drawTabs(totalPheno);
+    let enterNode = await drawTabs(totalPheno, selectedGene[0].name);
     groupVars(groupButton, totalPheno);
    
 
