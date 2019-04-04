@@ -188,6 +188,35 @@ export async function loadEnsemble(value:string){
     
 }
 
+export async function searchOMIMPheno(queryOb:any){
+   
+    let value = queryOb.name;
+    const proxy = 'https://cors-anywhere.herokuapp.com/';
+    let url = 'https://api.omim.org/api/entry?mimNumber='+value+'&include=all&format=json&apiKey=mUYjhLsCRVOuShEhrHLG_w';
+    let req =  await got(proxy+url);
+    let json = JSON.parse(req.body);
+
+    let omim = json.omim.entryList[0].entry;
+
+  //  console.log('omim',omim);
+
+    queryOb.properties.inheritance = omim.clinicalSynopsis.inheritance;
+    queryOb.properties.Ids = {};
+    queryOb.properties.Ids.diseaseOntologyIDs = omim.externalLinks.diseaseOntologyIDs;// "0110563"
+    queryOb.properties.Ids.geneticAllianceIDs = omim.externalLinks.geneticAllianceIDs;
+    queryOb.properties.Ids.geneticsHomeReferenceIDs = omim.externalLinks.geneticsHomeReferenceIDs;
+    queryOb.properties.Ids.nbkIDs = omim.externalLinks.nbkIDs;//: "NBK1434;;Hereditary Hearing Loss and Deafness Overview"
+    queryOb.properties.Ids.orphanetDiseases =omim.externalLinks.orphanetDiseases;// "90635;;12046;;Autosomal dominant non-syndromic sensorineural deafness type DFNA"
+    queryOb.properties.Ids.swissProtIDs = omim.externalLinks.swissProtIDs;//: "Q8TDI8"
+    queryOb.properties.Ids.umlsIDs = omim.externalLinks.umlsIDs;//: "C1847626"
+
+    queryOb.properties.Text = omim.textSectionList.map(t=> t.textSection);
+
+   // console.log(queryOb);
+
+    return await queryOb;
+}
+
 export async function searchOMIM(queryOb:any){
 
     let searchValue = queryOb.properties.Ids.OMIM

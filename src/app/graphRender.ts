@@ -427,18 +427,24 @@ let drawPhenotypes = async function(graphArray:Object, selectedGene:Array<object
     });
 
     let drawTabs = async function(data, selectedName:string){
-
-        let node = canvas.select('.nodes').append('g').classed('pheno-wrap', true).selectAll('.pheno-tab').data(await Promise.all(data));
+        let pData = await Promise.all(data);
+        let node = canvas.select('.nodes').append('g').classed('pheno-wrap', true).selectAll('.pheno-tab').data(pData);
 
         let nodeEnter = node
             .enter().append('g')
             .attr("class", (d)=> 'pheno-tab '+d.name);
     
-        nodeEnter.attr('transform', (d, i)=> 'translate(100, '+(88*i)+')')
+        nodeEnter.attr('transform', (d, i)=> {
+            d.x = 0;
+            let increment = i > 0 && d.properties.inheritance == undefined? 88:160;
+            console.log(increment);
+            
+           // let increment = pData[i-1].properties.inheritence == undefined? 88 : 160;
+            return 'translate(100, '+(increment*i)+')'});
 
         let selectedNode = nodeEnter.filter(n=>  n.properties.associatedGene === selectedName);
 
-        console.log(selectedNode, 'selectedddd');
+      //  console.log(selectedNode, 'selectedddd');
 
         let selectedRects = selectedNode.append('rect')
         selectedRects.attr('x', -50).attr('y', 66).attr('rx', 15).attr('ry', 15).attr('width', 1000);
@@ -446,6 +452,19 @@ let drawPhenotypes = async function(graphArray:Object, selectedGene:Array<object
     
         let circleP = nodeEnter.append('circle').attr('cx', 0).attr('cy', 100);
         circleP.classed('pheno-c', true);
+
+        circleP.on('click', async (d)=>{
+           // console.log(d);
+            let newPheno = await Promise.resolve(search.searchOMIMPheno(d));
+           // d = newPheno;
+            let nameArr = data.map(m=> m.name);
+            let index = nameArr.indexOf(newPheno.name);
+            data[index] = newPheno;
+            canvas.select('.links').selectAll('*').remove();
+            canvas.select('.nodes').selectAll('*').remove();
+           // console.log(data);
+            drawTabs(data, selectedName);
+        });
     
         let textBlurb = nodeEnter.append('g').selectAll('text').data(d=> d3.entries(d.properties).filter(k=> k.key != 'associatedGene' && k.key != 'OMIM'));
         textBlurb.enter().append('text').text(d=> {
