@@ -2,7 +2,7 @@ import "./styles.scss";
 import * as d3 from 'D3';
 import * as search from './search';
 import * as qo from './queryObject';
-import { BaseType, select, geoIdentity } from "D3";
+import { BaseType, select, geoIdentity, geoNaturalEarth1Raw } from "D3";
 const neoAPI = require('./neo4jLoader');
 const app = require('./app');
 
@@ -312,6 +312,28 @@ node.append("text")
 
 }
 
+async function restack(data, selectedName:string){
+
+    let totalPheno:Array<object> = [];
+
+    await data.forEach(async f=> {
+        if(f.properties.associatedGene === selectedName){
+            totalPheno.push(f);
+        }
+    });
+     
+    await data.forEach(async f=> {
+       
+        let selNames = totalPheno.map(s=> s.name);
+      if(selNames.indexOf(f.name) == -1 ){
+          totalPheno.push(f);
+      }
+    });
+
+   return await Promise.all(totalPheno);
+
+}
+
 let drawPhenotypes = async function(graphArray:Object, selectedGene:Array<object>){
 
     let canvas = d3.select('#graph-render').select('.graph-canvas');
@@ -384,19 +406,8 @@ let drawPhenotypes = async function(graphArray:Object, selectedGene:Array<object
         return pheno;
     });
 
-    let newPhenoSelected = newPheno.filter(async f=> {
-    
-        let sel = await Promise.resolve(f);
-    
-        return sel.properties.associatedGene == selectedGene[0].name});
 
-    let notPheno = newPheno.filter(async f=> {
-      
-         let sel = await Promise.resolve(f);
-         console.log(sel.properties.associatedGene, selectedGene[0].name);
-         return sel.properties.associatedGene != selectedGene[0].name});
-
-    let totalPheno = newPhenoSelected.concat(notPheno);
+    let totalPheno = await restack(await Promise.all(newPheno), selectedGene[0].name);
 
     canvas.style('height', (150*phenoData.length) + 'px');
    
@@ -423,7 +434,7 @@ let drawPhenotypes = async function(graphArray:Object, selectedGene:Array<object
             .enter().append('g')
             .attr("class", (d)=> 'pheno-tab '+d.name);
     
-        nodeEnter.attr('transform', (d, i)=> 'translate(100, '+(130*i)+')')
+        nodeEnter.attr('transform', (d, i)=> 'translate(100, '+(100*i)+')')
     
         let circleP = nodeEnter.append('circle').attr('cx', 0).attr('cy', 100);
         circleP.classed('pheno-c', true);
@@ -560,7 +571,7 @@ let drawPhenotypes = async function(graphArray:Object, selectedGene:Array<object
     });
 
     let enterNode = await drawTabs(totalPheno);
-    groupVars(groupButton, newPheno);
+    groupVars(groupButton, totalPheno);
    
 
 }
