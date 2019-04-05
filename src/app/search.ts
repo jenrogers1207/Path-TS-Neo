@@ -16,6 +16,7 @@ export async function searchMachine(command:string, value:string){
         'Search Function' : testingSpace,//phenoTest,
         'Search Pathway' : addPathway,//drawPhenotypes,
         'Search Models' : testingSpace,
+        'Search Variant': addVariant
     }
 
     let fun = builder[command];
@@ -24,65 +25,71 @@ export async function searchMachine(command:string, value:string){
 
     d3.select('#topnav').select('.input-group.search').select('input.form-control').node().value = '';
 
-    console.log('response',response);
-
     let queryBox = d3.select('#graph-render').append('div').classed('query-box', true);
     let head = queryBox.append('div').classed('header', true);
 
     if(response != undefined){
 
-        //this is the same for initial load - maybe brerak this up
-        let varAlleles = await app.variantObjectMaker(response.properties.Variants, response.name);
-        let vars = qo.structVariants(await varAlleles);
-        response.properties.Variants = await Promise.resolve(vars);
+        if(command == 'Search Gene'){
+            //this is the same for initial load - maybe brerak this up
+            let varAlleles = await app.variantObjectMaker(response.properties.Variants, response.name);
+            let vars = qo.structVariants(await varAlleles);
+            response.properties.Variants = await Promise.resolve(vars);
 
-         let structuredPheno = await qo.structPheno(response.properties.Phenotypes, response.name);
-         response.properties.Phenotypes.nodes = structuredPheno;
+            let structuredPheno = await qo.structPheno(response.properties.Phenotypes, response.name);
+            response.properties.Phenotypes.nodes = structuredPheno;
 
 
-        // let enrighmentP = await search.searchStringEnrichment(no.name);
+            // let enrighmentP = await search.searchStringEnrichment(no.name);
 
-        let addbutton = head.append('button').classed('btn btn-outline-primary', true);
-        addbutton.append('text').text('Add to Graph');
-        addbutton.on('click', ()=> {
-            neoAPI.buildSubGraph(response);
-        });
-    
-        let closebutton = head.append('button').classed('close', true).attr('aria-label', "Close");
-        closebutton.append('span').attr('aria-hidden', "true").append('text').text('x');
-    
-        closebutton.on('click', ()=> {
-            d3.select('#graph-render').select('.query-box').remove();
-        })
-        let text = queryBox.append('div');
-        text.append('h3').text('Found for '+ value);
-        text.append('h4').text('Symbol: '+ response.name);
-        text.append('h4').text('Type: '+ response.type);
-    
-        let blurbP = text.append('div');
-        let blurbHeaderP = blurbP.append('h4').text('Associated Phenotypes: ');
-        let blurbEnterP = blurbP.selectAll('.found-blurb-pheno').data(response.properties.Phenotypes.nodes).enter().append('div').classed('found-blurb-pheno', true);
-        blurbEnterP.append('text').text(d=> d.properties.description)
-        
-        let blurbV = text.append('div');
-        let blurbHeaderV = blurbV.append('h4').text('Identified Variants: ');
-        let blurbEnterV = blurbV.selectAll('.found-blurb-var').data(response.properties.Variants).enter().append('div').classed('found-blurb-var', true);
-        blurbEnterV.append('text').text(d => d.name);
-        let spanType = blurbEnterV.append('span').text(d=> d.properties.class);
-        spanType.classed('badge badge-info', true);
-    
-        let spanCons = blurbEnterV.append('span').text(d=> {
-            let cons = d.properties.Consequence != null? d.properties.Consequence : '';
-            return cons;
-        });
-        spanCons.attr('class', d=> d.properties.Consequence);
-        spanCons.classed('badge badge-info', true);
+            let addbutton = head.append('button').classed('btn btn-outline-primary', true);
+            addbutton.append('text').text('Add to Graph');
+            addbutton.on('click', ()=> {
+                neoAPI.buildSubGraph(response);
+            });
 
-        let blurbT = text.append('div');
-        let blurbHeaderT = blurbT.append('h4').text('Literature: ');
-        let blurbEnterT = blurbT.selectAll('.found-blurb-text').data(response.properties.Text).enter().append('div').classed('found-blurb-text', true);
-        blurbEnterT.append('h6').text(d=> d.textSectionTitle+': ');
-        blurbEnterT.append('text').text(d=> d.textSectionContent);
+            let closebutton = head.append('button').classed('close', true).attr('aria-label', "Close");
+            closebutton.append('span').attr('aria-hidden', "true").append('text').text('x');
+
+            closebutton.on('click', ()=> {
+                d3.select('#graph-render').select('.query-box').remove();
+            })
+            let text = queryBox.append('div');
+            text.append('h3').text('Found for '+ value);
+            text.append('h4').text('Symbol: '+ response.name);
+            text.append('h4').text('Type: '+ response.type);
+
+            let blurbP = text.append('div');
+            let blurbHeaderP = blurbP.append('h4').text('Associated Phenotypes: ');
+            let blurbEnterP = blurbP.selectAll('.found-blurb-pheno').data(response.properties.Phenotypes.nodes).enter().append('div').classed('found-blurb-pheno', true);
+            blurbEnterP.append('text').text(d=> d.properties.description)
+            
+            let blurbV = text.append('div');
+            let blurbHeaderV = blurbV.append('h4').text('Identified Variants: ');
+            let blurbEnterV = blurbV.selectAll('.found-blurb-var').data(response.properties.Variants).enter().append('div').classed('found-blurb-var', true);
+            blurbEnterV.append('text').text(d => d.name);
+            let spanType = blurbEnterV.append('span').text(d=> d.properties.class);
+            spanType.classed('badge badge-info', true);
+
+            let spanCons = blurbEnterV.append('span').text(d=> {
+                let cons = d.properties.Consequence != null? d.properties.Consequence : '';
+                return cons;
+            });
+            spanCons.attr('class', d=> d.properties.Consequence);
+            spanCons.classed('badge badge-info', true);
+
+            let blurbT = text.append('div');
+            let blurbHeaderT = blurbT.append('h4').text('Literature: ');
+            let blurbEnterT = blurbT.selectAll('.found-blurb-text').data(response.properties.Text).enter().append('div').classed('found-blurb-text', true);
+            blurbEnterT.append('h6').text(d=> d.textSectionTitle+': ');
+            blurbEnterT.append('text').text(d=> d.textSectionContent);
+
+        }else if(command == 'Search Variant'){
+
+            console.log('returned var stuff', response);
+        }
+
+       
 
 
     }else{
@@ -105,6 +112,19 @@ export async function testingSpace(value:string){
 
     console.log('testing space ',value);
 
+}
+
+export async function addVariant(d: string){
+    
+    let variant = new qo.VariantObject(d);
+    variant.type = "Variant";
+    let snp = await loadSNP(d);
+    let ens = await loadEnsemble(d);
+
+    console.log('snp',snp);
+    console.log('ens', ens);
+    
+    return snp;
 }
 
 export async function addGene(d: string){
