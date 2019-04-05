@@ -19,7 +19,7 @@ toolbar.viewToggleInput();
 
 
 export function searchToggleInput(){
-   let data = ['Search Gene', 'Search Function', 'Search Pathway', 'Search Models', 'Search Variant'];
+   let data = ['Search Gene', 'Search GO',/*'Search Function', 'Search Pathway', 'Search Models',*/ 'Search Variant'];
 
    let searchbar = d3.select('#topnav').select('.input-group.search');
 

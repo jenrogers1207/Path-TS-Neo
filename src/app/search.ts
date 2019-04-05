@@ -16,7 +16,8 @@ export async function searchMachine(command:string, value:string){
         'Search Function' : testingSpace,//phenoTest,
         'Search Pathway' : addPathway,//drawPhenotypes,
         'Search Models' : testingSpace,
-        'Search Variant': addVariant
+        'Search Variant': addVariant,
+        'Search GO': addFromGo,
     }
 
     let fun = builder[command];
@@ -44,7 +45,6 @@ export async function searchMachine(command:string, value:string){
 
             let structuredPheno = await qo.structPheno(response.properties.Phenotypes, response.name);
             response.properties.Phenotypes.nodes = structuredPheno;
-
 
             // let enrighmentP = await search.searchStringEnrichment(no.name);
 
@@ -113,13 +113,28 @@ export async function searchMachine(command:string, value:string){
             spanCons.attr('class', ()=> variant.properties.Consequence);
             spanCons.classed('badge badge-info', true);
 
-
             text.append('h4').text('Associated Gene: '+ response.gene.name);
 
+        }else if(command == 'Search GO'){
+            console.log('go resp', command);
+            let addbutton = head.append('button').classed('btn btn-outline-primary', true);
+            addbutton.append('text').text('Add to Graph');
+            addbutton.on('click', ()=> {
+               // neoAPI.buildSubGraph(response.gene);
+            });
+         
+            let text = queryBox.append('div');
+            text.append('h3').text('Found for '+ value);
+            text.append('h4').text(response.length+' returned');
+            let entries = text.append('div').selectAll('.entry').data(response);
+            let entEnter = entries.enter().append('div').classed('entry', true);
+            let span = entEnter.append('span').text(d=> d.bioentity_label);
+            span.classed('badge badge-info', true);
+            entEnter.append('div').append('text').text(d=> d.bioentity_name);
+            entEnter.append('div').append('text').text(d=> d.synonym[0]);
+          //  text.append('h4').text('Type: '+ variant.type);
 
-        }
-
-    }else{
+        }else{
 
         let closebutton = head.append('button').classed('close', true).attr('aria-label', "Close");
         closebutton.append('span').attr('aria-hidden', "true").append('text').text('x');
@@ -131,7 +146,28 @@ export async function searchMachine(command:string, value:string){
         text.append('h3').text('Not Found');
     }
 
-   
+
+}
+}
+
+export async function addFromGo(value:string){
+
+    let url = 'http://api.geneontology.org/api/bioentity/function/'+value;
+
+    
+    let response = (async () => {
+        try {
+            let req = await ky.get(url).json();
+            console.log('ret', req)
+            return req;
+        } catch (error) {
+            console.log(error);
+            let req = null;
+            return req;
+        }
+    });
+
+    return await response();
 
 }
 
@@ -246,9 +282,9 @@ export async function searchBySymbol(query:object) {
 }
 
 export async function searchGO(queryOb:object){
-    let value = queryOb.properties.Ids.Ensembl
+    let value = queryOb.properties.Ids.ncbi
     const proxy = 'https://cors-anywhere.herokuapp.com/';
-    let url = 'http://api.geneontology.org/api/bioentity/gene/2706/function/';
+    let url = 'http://api.geneontology.org/api/bioentity/gene/'+value+'/function/';
 
     let response = (async () => {
         try {
