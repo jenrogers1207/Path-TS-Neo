@@ -17,7 +17,7 @@ export function graphRenderMachine(graphArray:Object, selectedGene:Array<object>
 
     const builder = {
         'Align by Gene' : drawGene,
-        'Align by Gene Test' : drawGeneTest,
+        'Align by Variants' : drawGeneTest,
         'Align by Phenotype' : drawPhenotypes,
         'Whole Network' : drawGraph,
     }
@@ -30,7 +30,12 @@ let drawGeneTest = async function(graphArray:Object, selectedGene:Array<object>)
     let canvas = d3.select('#graph-render').select('.graph-canvas');
     var toolDiv = d3.select('.tooltip');
 
-    console.log('selected',selectedGene);
+    console.log('selected',graphArray);
+
+  
+
+    let graphVariants = graphArray.nodes.filter(d=> d.label == 'Variant');
+    console.log('graphArray',graphVariants);
     
     canvas.select('.links').selectAll('*').remove();
     canvas.select('.nodes').selectAll('*').remove();
@@ -41,15 +46,30 @@ let drawGeneTest = async function(graphArray:Object, selectedGene:Array<object>)
         'gene': 400,
         'vars': 500
     }
+
+    let nodes = canvas.select('.nodes');
+
+    d3.select('#graph-render').style('height', ((graphVariants.length * 25)+ 75) + 'px');
+    canvas.style('height', ((graphVariants.length * 25)+ 75) + 'px');
+
+    let vartabs = nodes.selectAll('.var-tabs').data(graphVariants).enter().append('g').attr('class', (d)=> JSON.parse(d.properties.properties).Consequence).classed('var-tabs', true);
+
+    vartabs.attr('transform', (d, i)=> 'translate(20,'+((i*25))+')');
+
+    let rect = vartabs.append('rect').classed('wrapper', true).attr('width', 800).attr('height', 20).attr('y', 0).attr('rx', 5).attr('ry', 5);
+
+    //let text = vartabs.append('text').text(d=> d.name).classed('var-head', true);
       
-      const consLabels = ['missense_variant', 'frameshift_variant', 'stop_gained', 'inframe_deletion', 'regulatory_region_variant', 'stop_lost' ]
+      const consLabels = ['missense_variant', 'frameshift_variant', 'stop_gained', 'inframe_deletion', 'regulatory_region_variant', 'stop_lost' ];
+
       let labels = d3.select('#graph-render').append('div').classed('render-label gene-label', true);//.append('svg');
       //  let labelG = labels.append('div').attr('transform', 'translate(75, 30)')
-      labels.append('div').style('width', '430px').append('text').text('Gene');//.attr('x', col.gene+10);
+  
       let varDiv = labels.append('div').style('width', '450px');
       varDiv.append('text').text('Variants');//.attr('x', col.vars+15);
       let circLabel =   varDiv.append('svg').selectAll('circle-label').data(consLabels).enter().append('circle').attr('r', 3).attr('cx', (d,i)=> 10+(i*10)).attr('cy', 25);
       circLabel.attr('class', d=> d).classed('circle-label', true);
+      labels.append('div').style('width', '430px').append('text').text('Gene');//.attr('x', col.gene+10);
       labels.append('div').style('width', '100px').append('text').text('Phenotype');//.attr('x', 0);
 
 

@@ -21,7 +21,7 @@ export async function changeSelectedClasses(dataArray: Array<object>){
 }
 
 export function viewToggleInput(){
-    let dropData = ['Whole Network', 'Align by Gene', 'Align by Gene Test', 'Align by Phenotype']
+    let dropData = ['Whole Network', 'Align by Gene', 'Align by Variants', 'Align by Phenotype']
     let dropdown = d3.select('#topnav').select('.dropdown');
     let dropButton = dropdown.select('.dropdown-toggle');
     dropButton.text(dropData[0]);

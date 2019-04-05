@@ -8,6 +8,7 @@ const gCanvas = require('./graphRender');
 const got = require('got');
 import ky from 'ky';
 import { SrvRecord } from 'dns';
+import { buildSubGraph } from './neo4jLoader';
 
 export async function searchMachine(command:string, value:string){
 
@@ -51,6 +52,7 @@ export async function searchMachine(command:string, value:string){
             let addbutton = head.append('button').classed('btn btn-outline-primary', true);
             addbutton.append('text').text('Add to Graph');
             addbutton.on('click', ()=> {
+                console.log('clicked', buildSubGraph);
                 neoAPI.buildSubGraph(response);
             });
 
