@@ -63,7 +63,7 @@ export async function renderCalls(promis: Array<object>, selectedNode:Array<obje
            
             let graph = await neoAPI.getGraph();
             qo.selected.addQueryOb(d);
-            let selected = qo.selected.queryKeeper.map(d=> d)[qo.selected.queryKeeper.length - 1];qo.selected.queryKeeper.map(d=> d);
+            let selected = qo.selected.queryKeeper.map(d=> d)[qo.selected.queryKeeper.length - 1];
             renderGeneDetail([selected], graph);
             gCanvas.graphRenderMachine(graph[0], [selected]);
             renderCalls(promis, [selected]);
@@ -124,19 +124,62 @@ export async function renderCalls(promis: Array<object>, selectedNode:Array<obje
         });
 
         let varDes = varEnter.append('div').classed('var-descript', true).classed('hidden', true);
-        let blurbs = varDes.selectAll('.blurb').data(d=>d3.entries(d)
-                .filter(f=> f.key != 'allelicVariantList' && f.key != 'text' && f.key != 'name' && f.key != 'properties' && f.key != 'Ids'))
+        let blurbs = varDes.selectAll('.blurb').data(d=>{
+               // console.log(d, d3.entries(d.properties));
+                let blurbin = {}
+                blurbin.Class = d.properties.class;
+                blurbin.Consequence = d.properties.Consequence;
+                //blurbin.Ids = d.properties.Ids;
+                //blurbin.Type = d.properties.Type;
+                blurbin.Ambiguity = d.properties.ambiguity;
+                blurbin['Ancestral Allele'] = d.properties.ancestral_allele;
+                blurbin['Minor Allele'] = d.properties.minor_allele;       
+                blurbin['Assembly Name'] = d.properties.mappings? d.properties.mappings.assembly_name: null;
+                blurbin.Frequency =  d.properties.Frequency;
+                blurbin.Names = d.properties.synonyms? String(d.properties.synonyms).split(',') : [];
+                blurbin.Mutations = d.properties.mutations;
+                blurbin.Location = d.properties.Location;
+                // blurbin.Structure = d.properties.Structure;
+                 blurbin.Phenotypes = d.properties.Phenotypes;
+
+                blurbin.Location['Chromosome Location'] = d.properties.mappings? d.properties.mappings.location: null;
+                
+                blurbin['Allele Annotations'] = d.properties.allelleAnnotations;
+
+                blurbin.Text = d.properties.Text;
+
+                console.log('b',blurbin);
+                return d3.entries(blurbin);
+                })
                 .enter().append('div').classed('blurb', true);
 
-        let properties = varDes.selectAll('.props').data(d=> d3.entries(d.properties));
-        let propEnter = properties.enter().append('div').classed('props', true);
-        let propText = propEnter.append('text').text(d=> d.key + ": "+ d.value);
+        let shortBlurbs = ['Class', 'Consequence', 'Ambiguity', 'Ancestral Allele', 'Minor Allele', 'Assembly Name', 'Frequency'];
 
-        let idBlurbs = blurbs.filter(b=> b.key != 'snpProps').append('text').text(d=> d.key + ": "+ d.value);
-        let snps = blurbs.filter(b=> b.key == 'snpProps').selectAll('.snp').data(d=> d3.entries(d.value));
-        let snpEnter = snps.enter().append('div').classed('snp', true);
-        snpEnter.append('text').text(d=> d.key + ": ");
-        snps = snpEnter.merge(snps)
+        let blurbShort = blurbs.filter(d=> shortBlurbs.includes(d.key)).classed('short', true);
+        let blurbShortHead = blurbShort.append('div').classed('var-blurb head-short', true);
+        blurbShortHead.append('span').append('text').text(d=> d.key + ': ');
+        blurbShortHead.append('text').text(function(d) { return d.value == null? 'Unknown' : String(d.value);});
+
+
+        let blurbLong = blurbs.filter(d=> shortBlurbs.indexOf(d.key)== -1);
+        let blurbLongHead = blurbLong.append('div').classed('var-blurb head-long', true);
+        blurbLongHead.append('span').append('text').text(d=> d.key + ': ');
+
+        let blurbNames = blurbLong.filter(d=> d.key =='Names').selectAll('.var-names').data(d=> d.value).enter().append('div').classed('var-names var-blurb-body', true);
+        blurbNames.append('text').text(d=> d);
+
+        let locBlurb = blurbLong.filter(d=> d.key == 'Location').selectAll('.val-loc').data(d=> d3.entries(d.value)).enter().append('div').classed('var-loc', true);
+        locBlurb.append('text').text(d=> d.key+': '+d.value);
+
+        let blurbPheno = blurbLong.filter(d=> d.key =='Phenotypes').selectAll('.var-p').data(d=> d.value).enter().append('div').classed('var-p var-blurb-body', true);
+        let span = blurbPheno.append('span').append('text').text(d=> d[0].clinical_significances[0])
+        span.classed('badge badge-warning', true);
+        let phenoTypes = blurbPheno.selectAll('.pheno-types').data(d=>{
+            return d}).enter().append('div').classed('pheno-types', true);
+        phenoTypes.append('text').text(d=> d.disease_names[0]);
+
+        let textBlurb = blurbLong.filter(d=> d.key == 'Text' || d.key == 'Mutations').append('div').classed('var-text', true);
+        textBlurb.append('text').text(d=> d.value);
 
         variants = varEnter.merge(variants);
   
@@ -181,20 +224,27 @@ export async function renderGeneDetail(dataArray: Array<object>, graph:object){
 
     let ids = propEnter.filter(d=> d == 'Ids').select('.detail-wrapper').selectAll('.ids').data(d=> d3.entries(data.properties[d]));
     let idEnter = ids.enter().append('div').classed('ids', true);
-    let idsSec = idEnter.append('text').text(d=> d.key + ': ' + d.value);
+   // let idsSec = idEnter.append('text').text(d=> d.key + ': ' + d.value);
+    idEnter.append('span').append('text').text(d=> d.key + ': ');
+    idEnter.append('text').text(d=> d.value);
 
     let location = propEnter.filter(d=> d == "Location").select('.detail-wrapper').selectAll('.location').data(d=> d3.entries(data.properties[d]));
     let locEnter = location.enter().append('div').classed('location', true);
-    let locSec = locEnter.append('text').text(d=> d.key + ': ' + d.value);
+    locEnter.append('span').append('text').text(d=> d.key + ': ');
+    locEnter.append('text').text(d=> d.value);
   
     if(data.properties.Phenotypes.length > 0){
         let phenotype = propEnter.filter(d=> d == "Phenotypes").select('.detail-wrapper').selectAll('.pheno-wrap').data(d=> {
-                let phenoD = data.properties[d].map(p=> p.properties);
+                let phenoD = data.properties[d].map(p=> p.properties).filter(p=> {
+                    return JSON.parse(p.properties).associatedGene == data.name});
                 return phenoD;
         });
         let phenoEnter = phenotype.enter().append('div').classed('pheno-wrap', true);
         let phenoSec = phenoEnter.append('text').text(d=> {   
+          
             let descript = typeof d.properties == 'string'? JSON.parse(d.properties) : d.properties;
+          //  console.log('pheno', descript);
+          //  console.log(descript.filter(d=> d.associatedGene == data.name));
                 return descript.description});
     }
    
@@ -203,7 +253,9 @@ export async function renderGeneDetail(dataArray: Array<object>, graph:object){
     let titleEnter = titles.enter().append('div').classed('title sections', true);
     titleEnter.append('text').text(d=> d.value);
 
-    let models = propEnter.filter(d=> d == "Models").select('.detail-wrapper').selectAll('.des').data(d=> {return d3.entries(data.properties[d])});
+    let models = propEnter.filter(d=> d == "Models").select('.detail-wrapper').selectAll('.des').data(d=> {
+        console.log('models',d);
+        return d3.entries(data.properties[d])});
     let modEnter = models.enter().append('div').classed('des', true);
     modEnter.append('text').text(d=> d.key + ": " + JSON.stringify(d.value));
 

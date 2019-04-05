@@ -39,7 +39,6 @@ export async function searchMachine(command:string, value:string){
          let structuredPheno = await qo.structPheno(response.properties.Phenotypes, response.name);
          response.properties.Phenotypes.nodes = structuredPheno;
 
-         console.log('response', response);
 
         // let enrighmentP = await search.searchStringEnrichment(no.name);
 

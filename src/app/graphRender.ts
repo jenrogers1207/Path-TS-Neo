@@ -244,7 +244,7 @@ let drawGene = async function(graphArray:Object, selectedGene:Array<object>){
     canvas.style('height', (flatArray.length* 50) + 'px');
 
     var tree = d3.cluster()
-    .size([flatArray.length* 20, 1000]);
+    .size([flatArray.length* 20, 850]);
 
     var stratify = d3.stratify()
     .parentId(function(d) { return d.parent.data.name });
@@ -287,16 +287,31 @@ let drawGene = async function(graphArray:Object, selectedGene:Array<object>){
     node.on('mouseover', function(d){
         let matches = d3.selectAll('.'+d.data.data.name);
         matches.classed('highlight', true);
+        if(d.data.data.type == undefined){
+            toolDiv.transition()
+            .duration(200)
+            .style("opacity", .8);
+            toolDiv.html(d.data.data.properties)
+            .style("left", (d3.event.pageX + 55) + "px")
+            .style("top", (d3.event.pageY - 15) + "px");
+        }else if(d.data.data.type == 'Variant'){
+            toolDiv.transition()
+            .duration(200)
+            .style("opacity", .8);
+            toolDiv.html(d.data.data.properties.Consequence)
+            .style("left", (d3.event.pageX) + "px")
+            .style("top", (d3.event.pageY - 28) + "px");
+        }
+       
     });
    
     node.on('mouseout', function(d){
         let matches = d3.selectAll('.highlight');
         matches.classed('highlight', false);
+        toolDiv.transition()
+        .duration(500)
+        .style("opacity", 0);
     });
-
-
-
-
 
 node.append("circle")
    .attr("r", 2.5);
@@ -430,11 +445,10 @@ let drawPhenotypes = async function(graphArray:Object, selectedGene:Array<object
 
         let pData = await Promise.all(data);
         let newData = pData.map((p,i)=>{
-            console.log('data',p);
             let start = i == 0 ? 0 : pData[i-1].y;
-            let y = i>0 && pData[i-1].properties.inheritance == undefined? start + 88 : start + 160; 
+            let y = i>0 && pData[i-1].properties.inheritance == undefined? start + 80 : start + 160; 
             p.y = i == 0 ? 0 : y;
-            p.h = p.properties.inheritance == undefined? 86 : 158; 
+            p.h = p.properties.inheritance == undefined? 78 : 158; 
             return p;
         });
 
@@ -448,8 +462,6 @@ let drawPhenotypes = async function(graphArray:Object, selectedGene:Array<object
             return 'translate(100, '+d.y+')'});
 
         let selectedNode = nodeEnter.filter(n=>  n.properties.associatedGene === selectedName);
-
-      //  console.log(selectedNode, 'selectedddd');
 
         let selectedRects = selectedNode.append('rect')
         selectedRects.attr('x', -50).attr('y', 66).attr('rx', 15).attr('ry', 15).attr('width', 1000);
@@ -472,7 +484,7 @@ let drawPhenotypes = async function(graphArray:Object, selectedGene:Array<object
            
         });
     
-        let textBlurb = nodeEnter.append('g').selectAll('text').data(d=> d3.entries(d.properties).filter(k=> k.key != 'associatedGene' && k.key != 'OMIM'));
+        let textBlurb = nodeEnter.append('g').selectAll('text').data(d=> d3.entries(d.properties).filter(k=> k.key != 'associatedGene' && k.key != 'phenotypeMappingKey' && k.key != 'OMIM'));
         textBlurb.enter().append('text').text(d=> {
             if(d.key == 'description'){return d.value
             }else{
@@ -556,23 +568,19 @@ let drawPhenotypes = async function(graphArray:Object, selectedGene:Array<object
         
 
     }
-    //drawVars(enterNode, false);
 
     let groupVars = async function(thisEl: any, pheno: any){
       
         let phen = await Promise.all(pheno);
- 
         let newPhen = phen.map(p=> {
             let varGroups:object = { };
             p.vars.forEach(v => {
                 let key = v.props.Consequence;
-              //  console.log(d3.keys(varGroups));
                 if(d3.keys(varGroups).includes(key)){
                     varGroups[key].push(v)
                 }else{
                     varGroups[key] = [v]
                 }
-               // if(varGroups.keys().includes(key))
             });
             p.vars = varGroups;
             return p;
