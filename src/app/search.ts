@@ -103,7 +103,8 @@ export async function searchMachine(command:string, value:string){
               text.append('h4').text('Name: '+ variant.name);
               text.append('h4').text('Type: '+ variant.type);
 
-             // console.log(variant);
+              let spanType = text.append('span').text(d=> variant.properties.class);
+              spanType.classed('badge badge-info', true);
 
               let spanCons = text.append('span').text(()=>{
                 let cons = variant.properties.Consequence != null? variant.properties.Consequence : '';
@@ -114,10 +115,6 @@ export async function searchMachine(command:string, value:string){
 
 
             text.append('h4').text('Associated Gene: '+ response.gene.name);
-
-
-
-
 
 
         }
@@ -151,17 +148,6 @@ export async function addVariant(d: string){
     let snp = await loadSNP(d);
     let ens = await loadEnsemble(d);
 
-   // console.log('snp',snp);
-  //  console.log('ens', ens);
-/*
-    allele_annotations: (3) [{…}, {…}, {…}]
-    anchor: "NC_000009.12:0072816160:1:snv"
-    placements_with_allele: (7) [{…}, {…}, {…}, {…}, {…}, {…}, {…}]
-    refsnp_id: "121908072"
-    support: (8) [{…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}]
-    variant_type: "snv"
-    
-*/
     variantOb.properties.Type = snp.variant_type;
     variantOb.properties.Location.anchor = snp.anchor? snp.anchor : 'null';
     variantOb.properties.Location.placements_with_allele = snp.placements_with_allele;
@@ -194,37 +180,12 @@ export async function addVariant(d: string){
     let newGene = new qo.GeneObject(null, 'Gene');
     newGene.properties.Ids.OMIM = clinvar.uid;
     let omimGene = await searchOMIM(newGene);
-    
-   // omimGene.name = omimGene.name == null? omimGene.properties.symbols.split(',')[0] : omimGene.name;
-  //  console.log(omimGene);
-   // console.log(omimGene.properties.Symbols);
-  //  console.log(omimGene.properties.Symbols.split(',')[0]);
 
     omimGene.name = omimGene.properties.Symbols.split(',')[0];
 
     let newNode = await initialSearch(omimGene);
 
     console.log(newNode);
-
-
-                 /*
-             accession: ""
-accession_version: ""
-chr_sort: "04"
-clinical_significance: {description: "Benign", last_evaluated: "2012/01/17 00:00", review_status: "no assertion criteria provided"}
-fda_recognized_database: ""
-gene_sort: "DRD5"
-genes: (3) [{…}, {…}, {…}]
-location_sort: "99999999999999999999"
-obj_type: "Simple"
-record_status: ""
-supporting_submissions: {scv: Array(1), rcv: Array(1)}
-title: "GRCh37/hg19 4p16.1(chr4:9476926-10275470)x0"
-trait_set: [{…}]
-uid: "606706"
-variation_set: [{…}]
-variation_set_id: ""
-variation_set_name: ""*/
 
 
     return {'variant': variantOb, 'gene': omimGene};
@@ -256,7 +217,14 @@ export async function initialSearch(queryOb: object){
     let omimOb = await searchOMIM(mimId);
     let kegg = await getKegg(omimOb.properties.Ids.ncbi, omimOb);
     let interact = await searchStringInteractors(kegg);
-    return interact;
+
+    let test = await searchEnsembl(interact);
+    interact.properties.Biotype = test.biotype;
+    interact.properties.Transcript = test.Transcript;
+
+    let final = await searchGO(interact);
+
+    return final;
 }
 
 export async function searchBySymbol(query:object) {
@@ -275,6 +243,53 @@ export async function searchBySymbol(query:object) {
     query.properties.Description = idSearch.name;
 
     return query;
+}
+
+export async function searchGO(queryOb:object){
+    let value = queryOb.properties.Ids.Ensembl
+    const proxy = 'https://cors-anywhere.herokuapp.com/';
+    let url = 'http://api.geneontology.org/api/bioentity/gene/2706/function/';
+
+    let response = (async () => {
+        try {
+            let req = await ky.get(url).json();
+            console.log('ret', req)
+            return req;
+        } catch (error) {
+            console.log(error);
+            let req = null;
+            return req;
+        }
+    });
+
+    let json = await response();
+
+    let findings = json.associations.map(m=> m.object);
+
+    queryOb.properties.GO = findings;
+    return queryOb;
+
+
+}
+
+export async function searchEnsembl(queryOb:object){
+    let value = queryOb.properties.Ids.Ensembl
+    const proxy = 'https://cors-anywhere.herokuapp.com/';
+    let url = 'https://rest.ensembl.org/lookup/id/'+value+'?expand=1;content-type=application/json';
+
+    let response = (async () => {
+        try {
+            let req = await ky.get(url).json();
+            console.log('ret', req)
+            return req;
+        } catch (error) {
+            console.log(error);
+            let req = null;
+            return req;
+        }
+    });
+
+    return await response();
 }
 
 export async function searchUniprot(value:string){

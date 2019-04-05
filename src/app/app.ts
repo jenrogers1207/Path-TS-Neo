@@ -59,6 +59,8 @@ dataLoad.loadFile().then(async (d)=> {
         let graph = graphArray[0];
 
         let queryGenes = graph.nodes.filter(f=> f.label.includes('Gene'));
+
+        console.log('query genes', queryGenes);
     
         let queryKeeper = queryGenes.map(async (gene:object) => {
             let ob = isStored(graph, gene);
@@ -144,7 +146,7 @@ dataLoad.loadFile().then(async (d)=> {
                 neoAPI.buildSubGraph(no).then(()=> {
 
 
-/*
+
                     neoAPI.getGraph().then(async (g)=> {
 
                         let graph = g[0];
@@ -161,7 +163,9 @@ dataLoad.loadFile().then(async (d)=> {
                           //adding selectednode as the file gene
                         let selectedGene = await Promise.resolve(queryKeeper[0]);
 
-                        console.log('selectedGene',selectedGene);
+                        console.log('selected', selectedGene)
+
+                       
                         qo.selected.addQueryOb(selectedGene);
 
                         gCanvas.graphRenderMachine(graph, [selectedGene]);
@@ -169,7 +173,7 @@ dataLoad.loadFile().then(async (d)=> {
                         toolbar.renderGeneDetail([selectedGene], graph);
 
                     });
-*/
+
 
 
                 });

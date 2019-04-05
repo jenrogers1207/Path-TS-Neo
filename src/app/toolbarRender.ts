@@ -148,7 +148,7 @@ export async function renderCalls(promis: Array<object>, selectedNode:Array<obje
 
                 blurbin.Text = d.properties.Text;
 
-                console.log('b',blurbin);
+                //console.log('b',blurbin);
                 return d3.entries(blurbin);
                 })
                 .enter().append('div').classed('blurb', true);
@@ -200,6 +200,7 @@ export async function renderCalls(promis: Array<object>, selectedNode:Array<obje
 export async function renderGeneDetail(dataArray: Array<object>, graph:object){
     
     let data = dataArray[0];
+    console.log('deatail data',data)
     let headers = d3.keys(data.properties).filter(d=> d != 'References' && d !='Variants'  && d != 'name');
 
     let sidebar = d3.select('#left-nav');
@@ -252,10 +253,21 @@ export async function renderGeneDetail(dataArray: Array<object>, graph:object){
     titleEnter.append('text').text(d=> d.value);
 
     let models = propEnter.filter(d=> d == "Models").select('.detail-wrapper').selectAll('.des').data(d=> {
-        console.log('models',d);
+        //console.log('models',d);
         return d3.entries(data.properties[d])});
     let modEnter = models.enter().append('div').classed('des', true);
     modEnter.append('text').text(d=> d.key + ": " + JSON.stringify(d.value));
+
+    let biotype = propEnter.filter(d=> d == "Biotype").select('.detail-wrapper');
+    let bioEnter = biotype.append('div').classed('des', true);
+    bioEnter.append('text').text(d=> data.properties[d]);
+
+    let gos = propEnter.filter(d=> d == "GO").select('.detail-wrapper').selectAll('.des').data(d=> {
+        console.log('b',d);
+        return data.properties[d]});
+    let goEnter = gos.enter().append('div').classed('des', true);
+    goEnter.append('span').append('text').text(d=> d.label + ': ');
+    goEnter.append('text').text(d=> d.id);
 
     let textProp = propEnter.filter(d=> d == 'Text').select('.detail-wrapper').selectAll('.text').data(d=> {return data.properties[d]});
     let textEnter = textProp.enter().append('div').classed('text', true);

@@ -471,9 +471,8 @@ let drawPhenotypes = async function(graphArray:Object, selectedGene:Array<object
         circleP.classed('pheno-c', true);
 
         circleP.on('click', async (d)=>{
-           // console.log(d);
+       
             let newPheno = await Promise.resolve(search.searchOMIMPheno(d));
-           // d = newPheno;
             let nameArr = data.map(m=> m.name);
             let index = nameArr.indexOf(newPheno.name);
             data[index] = newPheno;

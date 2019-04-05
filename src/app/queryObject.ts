@@ -122,23 +122,12 @@ export async function structGene(g: object){
     node.label = ob.label? ob.label : ob.type;
 
     node.type = ob.type? ob.type: ob.label[0];
-    /*
-    node.properties.Ids.ncbi = geneOb.ncbi;
-    node.properties.Ids.sequenceID =  geneOb.sequenceID;
-    node.properties.Ids.taxid = geneOb.taxid;
-    node.properties.Ids.Vega = geneOb.Vega;
-    node.properties.Ids.OMIM = geneOb.OMIM;
-    node.properties.Ids.Pharos = geneOb.Pharos;
-    node.properties.Ids.HGNC = geneOb.HGNC;
-    node.properties.Ids.Ensemble = geneOb.Ensemble;
-    node.properties.Ids.UniProt = geneOb.UniProt;
-    node.properties.Ids['NCBI-GeneID'] = geneOb['NCBI-GeneID']; //"2706"
-    node.properties.Ids['NCBI-ProteinID'] = geneOb['NCBI-ProteinID'];
-    */
+
     node.properties.Ids = typeof geneOb.Ids === 'string' ? JSON.parse(geneOb.Ids): geneOb.Ids;
     node.properties.Description = geneOb.Description;
+    node.properties.Biotype = geneOb.Biotype? geneOb.Biotype : geneOb.biotype;
     node.properties.Brite = typeof geneOb.Brite == 'string'? JSON.parse(geneOb.Brite) : geneOb.Brite;//: "{"kegg":[["KEGG","Orthology","(KO)","[BR:hsa00001]"],["09180","Brite","Hierarchies"],["09183","Protein","families:","signaling","and","cellular","processes"],["02000","Transporters","[BR:hsa02000]"],["2706","(GJB2)"],["Transporters","[BR:hsa02000]"],["Other","Transporters"],["Pores","ion","channels","[TC:1]"],["2706","(GJB2)"]]}"
-    //: "gap junction protein beta 2"
+    node.properties.GO = typeof geneOb.GO == 'string'? JSON.parse(geneOb.GO) : geneOb.GO;
     node.properties.Location = typeof geneOb.Location == 'string' ? JSON.parse(geneOb.Location) : geneOb.Location;//: "{"chromosome":13,"chromosomeStart":20187462,"chromosomeEnd":20192974,"chromosomeSort":15,"computedCytoLocation":"13q12.11","cytoLocation":"13q11-q12"}"
     node.properties.Models = typeof geneOb.Models == 'string' ? JSON.parse(geneOb.Models) : geneOb.Models; //"{"mouse":{"MgiID":"MGI:95720","symbol":"Gjb2"}}"
     node.properties.Orthology = typeof geneOb.Orthology == 'string'? JSON.parse(geneOb.Orthology) : geneOb.Orthology;//"{"keggID":"K07621"}"

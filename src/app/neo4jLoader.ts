@@ -3,7 +3,7 @@ import * as d3 from 'D3';
 import { readdirSync } from "fs";
 
 var neo4j = require('neo4j-driver').v1;
-var driver = neo4j.driver("bolt://localhost:11004", neo4j.auth.basic("neo4j", "123"));
+var driver = neo4j.driver("bolt://localhost:7687", neo4j.auth.basic("neo4j", "123"));
 var _ = require('lodash');
 
 export async function addLabel(node:object){
@@ -14,7 +14,7 @@ export async function addLabel(node:object){
                 .run(command)
                 .then(function(result) {
 
-                    console.log('reselt', result);
+                  //  console.log('reselt', result);
                     session.close();
                     console.log("adding to graph");
                 })
@@ -29,7 +29,7 @@ export async function setProperties(node:object){
     
     let prop = {};
 
-    console.log('node insetprops', node);
+   // console.log('node insetprops', node);
        
     let propKeys = d3.keys(node.properties);
 
@@ -125,7 +125,9 @@ export async function addNodeArray(obArray:Array<object>){
                     o[k] = JSON.stringify(o[k])
                 }else if(typeof o[k] == 'object'){
                     o[k] = JSON.stringify(Promise.resolve(o[k]))
-                }else{console.log('whaaa')}
+                }else{
+                    //console.log('whaaa')
+            }
             })
             return o;
         });
@@ -157,7 +159,7 @@ export async function structureRelation(node1: Array<object>, node2: Array<objec
     let relationArr = []
     let relatedPhenotypes = node2.map(p=>{
 
-            console.log('var', p);
+          //  console.log('var', p);
         
             let varProps = typeof p.properties == 'string'? JSON.parse(p.properties) : p.properties;
             varProps = varProps.properties? varProps.properties : varProps;
@@ -171,7 +173,7 @@ export async function structureRelation(node1: Array<object>, node2: Array<objec
             let filtered = phenoFromVars != null? phenoFromVars.flatMap(fil=>{ 
                 return fil.filter(test=> test.length > 0);
             }).flatMap(d=> d) : null;
-            console.log(filtered);
+           // console.log(filtered);
             if(filtered != null){
                 filtered.forEach(fil=> {
                     let index = phenoNames.indexOf(fil.accession)
