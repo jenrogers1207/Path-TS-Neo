@@ -243,8 +243,6 @@ export async function renderGeneDetail(dataArray: Array<object>, graph:object){
         let phenoSec = phenoEnter.append('text').text(d=> {   
           
             let descript = typeof d.properties == 'string'? JSON.parse(d.properties) : d.properties;
-          //  console.log('pheno', descript);
-          //  console.log(descript.filter(d=> d.associatedGene == data.name));
                 return descript.description});
     }
    

@@ -387,10 +387,11 @@
             position: fixed;
             top: 60px;
             right: 0px;
-            width: 200px;
+            width: 300px;
             height: 100%;
-            padding: auto;
+            padding: 15px;
             overflow: auto;
+            border: .5px solid #808080;
         }
         
         .query-box div {
@@ -565,4 +566,8 @@
         
         .var-blurb-body {
             display: inline-block;
-        } //
+        }
+        
+        .found-blurb-var span {
+            margin: 5px;
+        }
