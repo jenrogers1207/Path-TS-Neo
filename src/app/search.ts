@@ -59,10 +59,31 @@ export async function searchMachine(command:string, value:string){
         text.append('h4').text('Symbol: '+ response.name);
         text.append('h4').text('Type: '+ response.type);
     
-        let blurb = text.selectAll('.found-blurb').data(response.properties.Text);
-        let blurbEnter = blurb.enter().append('div').classed('found-blurb', true);
-        blurbEnter.append('h5').text(d=> d.textSectionTitle);
-        blurbEnter.append('text').text(d=> d.textSectionContent);
+        let blurbP = text.append('div');
+        let blurbHeaderP = blurbP.append('h4').text('Associated Phenotypes: ');
+        let blurbEnterP = blurbP.selectAll('.found-blurb-pheno').data(response.properties.Phenotypes.nodes).enter().append('div').classed('found-blurb-pheno', true);
+        blurbEnterP.append('text').text(d=> d.properties.description)
+        
+        let blurbV = text.append('div');
+        let blurbHeaderV = blurbV.append('h4').text('Identified Variants: ');
+        let blurbEnterV = blurbV.selectAll('.found-blurb-var').data(response.properties.Variants).enter().append('div').classed('found-blurb-var', true);
+        blurbEnterV.append('text').text(d => d.name);
+        let spanType = blurbEnterV.append('span').text(d=> d.properties.class);
+        spanType.classed('badge badge-info', true);
+    
+        let spanCons = blurbEnterV.append('span').text(d=> {
+            let cons = d.properties.Consequence != null? d.properties.Consequence : '';
+            return cons;
+        });
+        spanCons.attr('class', d=> d.properties.Consequence);
+        spanCons.classed('badge badge-info', true);
+
+        let blurbT = text.append('div');
+        let blurbHeaderT = blurbT.append('h4').text('Literature: ');
+        let blurbEnterT = blurbT.selectAll('.found-blurb-text').data(response.properties.Text).enter().append('div').classed('found-blurb-text', true);
+        blurbEnterT.append('h6').text(d=> d.textSectionTitle+': ');
+        blurbEnterT.append('text').text(d=> d.textSectionContent);
+
 
     }else{
 
