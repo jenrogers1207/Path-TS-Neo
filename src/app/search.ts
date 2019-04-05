@@ -27,6 +27,12 @@ export async function searchMachine(command:string, value:string){
 
     let queryBox = d3.select('#graph-render').append('div').classed('query-box', true);
     let head = queryBox.append('div').classed('header', true);
+    let closebutton = head.append('button').classed('close', true).attr('aria-label', "Close");
+    closebutton.append('span').attr('aria-hidden', "true").append('text').text('x');
+
+    closebutton.on('click', ()=> {
+        d3.select('#graph-render').select('.query-box').remove();
+    });
 
     if(response != undefined){
 
@@ -48,12 +54,7 @@ export async function searchMachine(command:string, value:string){
                 neoAPI.buildSubGraph(response);
             });
 
-            let closebutton = head.append('button').classed('close', true).attr('aria-label', "Close");
-            closebutton.append('span').attr('aria-hidden', "true").append('text').text('x');
-
-            closebutton.on('click', ()=> {
-                d3.select('#graph-render').select('.query-box').remove();
-            })
+       
             let text = queryBox.append('div');
             text.append('h3').text('Found for '+ value);
             text.append('h4').text('Symbol: '+ response.name);
@@ -87,10 +88,39 @@ export async function searchMachine(command:string, value:string){
         }else if(command == 'Search Variant'){
 
             console.log('returned var stuff', response);
+
+              // let enrighmentP = await search.searchStringEnrichment(no.name);
+
+              let addbutton = head.append('button').classed('btn btn-outline-primary', true);
+              addbutton.append('text').text('Add to Graph');
+              addbutton.on('click', ()=> {
+                  neoAPI.buildSubGraph(response.gene);
+              });
+              let variant = response.variant;
+
+              let text = queryBox.append('div');
+              text.append('h3').text('Found for '+ value);
+              text.append('h4').text('Name: '+ variant.name);
+              text.append('h4').text('Type: '+ variant.type);
+
+             // console.log(variant);
+
+              let spanCons = text.append('span').text(()=>{
+                let cons = variant.properties.Consequence != null? variant.properties.Consequence : '';
+                return cons;
+              });
+            spanCons.attr('class', ()=> variant.properties.Consequence);
+            spanCons.classed('badge badge-info', true);
+
+
+            text.append('h4').text('Associated Gene: '+ response.gene.name);
+
+
+
+
+
+
         }
-
-       
-
 
     }else{
 
@@ -116,15 +146,88 @@ export async function testingSpace(value:string){
 
 export async function addVariant(d: string){
     
-    let variant = new qo.VariantObject(d);
-    variant.type = "Variant";
+    let variantOb = new qo.VariantObject(d);
+    variantOb.type = "Variant";
     let snp = await loadSNP(d);
     let ens = await loadEnsemble(d);
 
-    console.log('snp',snp);
-    console.log('ens', ens);
+   // console.log('snp',snp);
+  //  console.log('ens', ens);
+/*
+    allele_annotations: (3) [{…}, {…}, {…}]
+    anchor: "NC_000009.12:0072816160:1:snv"
+    placements_with_allele: (7) [{…}, {…}, {…}, {…}, {…}, {…}, {…}]
+    refsnp_id: "121908072"
+    support: (8) [{…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}]
+    variant_type: "snv"
     
-    return snp;
+*/
+    variantOb.properties.Type = snp.variant_type;
+    variantOb.properties.Location.anchor = snp.anchor? snp.anchor : 'null';
+    variantOb.properties.Location.placements_with_allele = snp.placements_with_allele;
+    variantOb.properties.allelleAnnotations = snp.allele_annotations;
+    let clinicalSNP = snp.allele_annotations.filter(a=> a.clinical.length > 0);
+    variantOb.properties.Phenotypes = clinicalSNP.map(f=> f.clinical);
+    variantOb.properties.Ids.refsnp_id = snp.refsnp_id;
+
+    variantOb.properties.Consequence = ens.most_severe_consequence ? ens.most_severe_consequence: null;
+    variantOb.properties.Frequency = ens.MAF ? ens.MAF :  null;
+ //   variantOb.properties.ens = ens? ens : null;
+    variantOb.properties.synonyms = ens.synonyms? ens.synonyms: null;
+    variantOb.properties.ambiguity = ens.ambiguity? ens.ambiguity: null;
+    variantOb.properties.minor_allele = ens.minor_allele? ens.minor_allele : null;
+    variantOb.properties.mappings = ens.mappings? ens.mappings[0]: null;
+    variantOb.properties.class = ens.var_class? ens.var_class:null;
+    variantOb.properties.ancestral_allele = ens.ancestral_allele? ens.ancestral_allele : null;
+
+    let test = ens.synonyms.filter(f=> f.includes('.') && !f.startsWith("N"));
+   
+    let clin = await loadClinVar(test[0]);
+
+  //  console.log(clin.result);
+    let key = clin.result.uids[0];
+  //  console.log(clin.result[key]);
+    let clinvar = clin.result[key];
+
+    variantOb.properties.OMIM = clinvar.uid;
+
+    let newGene = new qo.GeneObject(null, 'Gene');
+    newGene.properties.Ids.OMIM = clinvar.uid;
+    let omimGene = await searchOMIM(newGene);
+    
+   // omimGene.name = omimGene.name == null? omimGene.properties.symbols.split(',')[0] : omimGene.name;
+  //  console.log(omimGene);
+   // console.log(omimGene.properties.Symbols);
+  //  console.log(omimGene.properties.Symbols.split(',')[0]);
+
+    omimGene.name = omimGene.properties.Symbols.split(',')[0];
+
+    let newNode = await initialSearch(omimGene);
+
+    console.log(newNode);
+
+
+                 /*
+             accession: ""
+accession_version: ""
+chr_sort: "04"
+clinical_significance: {description: "Benign", last_evaluated: "2012/01/17 00:00", review_status: "no assertion criteria provided"}
+fda_recognized_database: ""
+gene_sort: "DRD5"
+genes: (3) [{…}, {…}, {…}]
+location_sort: "99999999999999999999"
+obj_type: "Simple"
+record_status: ""
+supporting_submissions: {scv: Array(1), rcv: Array(1)}
+title: "GRCh37/hg19 4p16.1(chr4:9476926-10275470)x0"
+trait_set: [{…}]
+uid: "606706"
+variation_set: [{…}]
+variation_set_id: ""
+variation_set_name: ""*/
+
+
+    return {'variant': variantOb, 'gene': omimGene};
 }
 
 export async function addGene(d: string){
@@ -184,6 +287,26 @@ export async function searchUniprot(value:string){
    // let req = await ky.get(url);
    let req =  await got(proxy+url);
 
+}
+
+export async function loadClinVar(value:string){
+    let proxy = 'https://cors-anywhere.herokuapp.com/';
+    console.log(value);
+    let url = 'https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esummary.fcgi?db=clinvar&id='+value+'&retmode=json'
+    //'https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=clinvar&rettype=clinvarset&id='+value
+    let response = (async () => {
+        try {
+            let req = await ky.get(url).json();
+          //  console.log('ret', req)
+            return req;
+        } catch (error) {
+            console.log(error);
+            let req = null;
+            return req;
+        }
+    });
+
+    return await response();
 }
 
 export async function loadSNP(value: string){
