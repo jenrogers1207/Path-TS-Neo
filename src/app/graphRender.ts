@@ -176,6 +176,11 @@ let drawGeneTest = async function(graphArray:Object, selectedGene:Array<object>)
   circLabel.attr('class', d=> d).classed('circle-label', true);
   labels.append('div').style('width', '100px').append('text').text('Phenotype');//.attr('x', 0);
 
+  circLabel.attr('class', d=> d).classed('circle-label', true);
+
+  let groupButton = varDiv.append('span').classed('badge badge-pill badge-secondary', true).append('text').text('Ungroup');
+
+
   circLabel.on('mouseover', function(d){
       
     toolDiv.transition()
@@ -253,15 +258,40 @@ let drawGeneTest = async function(graphArray:Object, selectedGene:Array<object>)
 
     console.log('data frorm gene test', data[0]);
 
+    var compact = function(firstEl:any, secEl:any){
+        firstEl.transition().duration(2000).attr('transform', (d, i)=> 'translate(20,'+((i*15))+')');
+        secEl.transition().duration(2000).attr('transform', (d, i)=> 'translate('+(70+(i*15))+',0)');
+        groupButton.text('Ungroup');
+    }
+    var spread = function(firstEl:any, secEl:any){
+        firstEl.transition().duration(2000).attr('transform', d=> 'translate(20,'+(d.ypos * 20)+')');
+        secEl.transition().duration(2000).attr('transform', (d, i)=> 'translate(70,'+(i * 20)+')');
+        groupButton.text('Group');
+    }
 
     d3.select('#graph-render').style('height', (flatArray.length * 50) + 'px');
     canvas.style('height', (flatArray.length* 50) + 'px');
 
-    let nodeCanvas = canvas.select('.nodes');
+    let nodeCanvas = canvas.select('.nodes').attr('transform', 'translate(100, 70)');
 
     let genebox = nodeCanvas.selectAll('.gene').data(data).enter().append('g').classed('gene', true);
 
-    let childbox = genebox.selectAll('.children').data(d=> d.children).enter().append('g').classed('children', true);
+    let firstCol = genebox.selectAll('.first').data(d=> d.children).enter().append('g').classed('first', true);
+    
+    let circleG = firstCol.append('circle').attr('cx', 0).attr('cy', 0).attr('fill', 'blue').attr('r', 5);
+    circleG.classed('pheno-g', true);
+
+    let secondCol = firstCol.selectAll('.second').data(d=> d.children).enter().append('g').classed('second', true);
+
+    compact(firstCol, secondCol);
+ 
+    let circleSec = secondCol.append('circle').attr('cx', 0).attr('cy', 0).attr('fill', 'red').attr('r', 5);
+    circleG.classed('pheno-g', true);
+
+    groupButton.on('click', (d, i)=>{
+        groupButton.text() == 'Group' ? compact(firstCol, secondCol) :spread(firstCol, secondCol);
+      
+    });
     
 }
 
@@ -455,7 +485,6 @@ node.append("text")
    });
 
 }
-
 async function restack(data, selectedName:string){
 
     let totalPheno:Array<object> = [];
@@ -477,7 +506,6 @@ async function restack(data, selectedName:string){
    return await Promise.all(totalPheno);
 
 }
-
 let drawPhenotypesTest = async function(graphArray:Object, selectedGene:Array<object>){
 
     let canvas = d3.select('#graph-render').select('.graph-canvas');
