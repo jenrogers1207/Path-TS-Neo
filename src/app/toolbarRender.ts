@@ -210,7 +210,7 @@ export async function renderGeneDetail(dataArray: Array<object>, graph:object){
    // let symbolBand = geneDet.append('div').classed('symbols', true).data(JSON.parse(data.Symbols));
     let propertyDivs = geneDet.selectAll('.prop-headers').data(headers);
     let propEnter = propertyDivs.enter().append('div').classed('prop-headers', true);
-    let propHead = propEnter.append('div').attr('class', (d)=> d).classed('head-wrapper', true)
+    let propHead = propEnter.append('div').attr('class', (d)=> d).classed('head-wrapper', true);
     propHead.append('h5').text((d)=> d.toUpperCase());
     propHead.append('i').attr('class', (d)=> d+' fas fa-chevron-circle-up');
     propEnter.append('div').attr('class', (d)=> d+' detail-wrapper');

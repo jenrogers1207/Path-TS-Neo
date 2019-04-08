@@ -167,16 +167,16 @@ let drawGeneTest = async function(graphArray:Object, selectedGene:Array<object>)
 
     let labels = d3.select('#graph-render').append('div').classed('render-label gene-label', true);//.append('svg');
   //  let labelG = labels.append('div').attr('transform', 'translate(75, 30)')
-  labels.append('div').style('width', '430px').append('text').text('Gene');//.attr('x', col.gene+10);
-  let varDiv = labels.append('div').style('width', '450px');
+  labels.append('div').style('width', '120px').append('text').text('Gene');//.attr('x', col.gene+10);
+  let varDiv = labels.append('div').style('width', '300px');
   varDiv.append('text').text('Variants');//.attr('x', col.vars+15);
   let circLabel =   varDiv.append('svg').selectAll('circle-label').data(consLabels).enter().append('circle').attr('r', 3).attr('cx', (d,i)=> 10+(i*10)).attr('cy', 25);
   circLabel.attr('class', d=> d).classed('circle-label', true);
-  labels.append('div').style('width', '100px').append('text').text('Phenotype');//.attr('x', 0);
+  let phenoDiv = labels.append('div').style('width', '100px').append('text').text('Phenotype');//.attr('x', 0);
 
   circLabel.attr('class', d=> d).classed('circle-label', true);
-
-  let groupButton = varDiv.append('span').classed('badge badge-pill badge-secondary', true).append('text').text('Ungroup');
+  let sortButton = varDiv.append('span').classed('badge badge-pill badge-secondary', true).append('text').text('Sort');
+  let groupButton = phenoDiv.append('span').classed('badge badge-pill badge-secondary', true).append('text').text('Ungroup');
 
   circLabel.on('mouseover', function(d){
       
@@ -259,17 +259,18 @@ let drawGeneTest = async function(graphArray:Object, selectedGene:Array<object>)
 
     console.log('data frorm gene test', data[0]);
 
-    var compact = function(firstEl:any, secEl:any){
+    var compact = async function(firstEl:any, secEl:any){
         canvas.selectAll('.pheno-text').transition().duration(2000).attr('opacity', 0);
-        canvas.selectAll('.pheno-text').remove();
+       
         firstEl.transition().duration(2000).attr('transform', (d, i)=> 'translate(20,'+((i*15))+')');
-        secEl.transition().duration(2000).attr('transform', (d, i)=> 'translate('+(180+(i*15))+',0)');
+        secEl.transition().duration(2000).attr('transform', (d, i)=> 'translate('+(210+(i*15))+',0)');
         groupButton.text('Ungroup');
+
     }
     var spread = function(firstEl:any, secEl:any){
         canvas.selectAll('.pheno-text').remove();
         firstEl.transition().duration(2000).attr('transform', d=> 'translate(20,'+(d.ypos * 20)+')');
-        secEl.transition().duration(2000).attr('transform', (d, i)=> 'translate(180,'+(i * 20)+')');
+        secEl.transition().duration(2000).attr('transform', (d, i)=> 'translate(210,'+(i * 20)+')');
         groupButton.text('Group');
         let text = secEl.append('text').text(d=>{
             let texting = d.data.properties != undefined && d.data.properties.description!= null? d.data.properties.description : '';
@@ -287,7 +288,7 @@ let drawGeneTest = async function(graphArray:Object, selectedGene:Array<object>)
 
     let genebox = nodeCanvas.selectAll('.gene').data(data).enter().append('g').classed('gene', true);
 
-    let geneLabel = genebox.append('text').text(d=> d.data.name).attr('class', 'gene-label').attr('transform', 'translate(-50, 0)')
+    let geneLabel = genebox.append('text').text(d=> d.data.name).attr('class', 'gene-label').attr('transform', 'translate(-100, 0)')
 
     let firstCol = genebox.selectAll('.first').data(d=> d.children).enter().append('g').attr('class', d=> d.data.properties.Consequence).classed('first var-node', true);
     
@@ -303,7 +304,7 @@ let drawGeneTest = async function(graphArray:Object, selectedGene:Array<object>)
     circleSec.classed('pheno-g', true);
 
     groupButton.on('click', (d, i)=>{
-        groupButton.text() == 'Group' ? compact(firstCol, secondCol) :spread(firstCol, secondCol);
+        groupButton.text() == 'Group' ? compact(firstCol, secondCol).then(()=> canvas.selectAll('.pheno-text').remove()) :spread(firstCol, secondCol);
     });
 
 }
