@@ -160,7 +160,6 @@ export async function renderCalls(promis: Array<object>, selectedNode:Array<obje
         blurbShortHead.append('span').append('text').text(d=> d.key + ': ');
         blurbShortHead.append('text').text(function(d) { return d.value == null? 'Unknown' : String(d.value);});
 
-
         let blurbLong = blurbs.filter(d=> shortBlurbs.indexOf(d.key)== -1);
         let blurbLongHead = blurbLong.append('div').classed('var-blurb head-long', true);
         blurbLongHead.append('span').append('text').text(d=> d.key + ': ');
