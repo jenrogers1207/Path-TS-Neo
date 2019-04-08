@@ -2,7 +2,7 @@ import "./styles.scss";
 import * as d3 from 'D3';
 import * as search from './search';
 import * as qo from './queryObject';
-import { BaseType, select, geoIdentity, geoNaturalEarth1Raw, gray, map } from "D3";
+import { BaseType, select, geoIdentity, geoNaturalEarth1Raw, gray, map, dragDisable } from "D3";
 const neoAPI = require('./neo4jLoader');
 const app = require('./app');
 const qo = require('./queryObject');
@@ -32,8 +32,6 @@ let drawVars = async function(graphArray:Object, selectedGene:Array<object>){
     var toolDiv = d3.select('.tooltip');
 
     console.log('selected',graphArray);
-
-  
 
     let graphVariants = graphArray.nodes.filter(d=> d.label == 'Variant');
     console.log('graphArray',graphVariants);
@@ -158,11 +156,6 @@ let drawGeneTest = async function(graphArray:Object, selectedGene:Array<object>)
     canvas.select('.nodes').selectAll('*').remove();
     d3.selectAll('.render-label').remove();
 
-    let col = {
-        'pheno': 50,
-        'gene': 400,
-        'vars': 500
-    }
     const consLabels = ['missense_variant', 'frameshift_variant', 'stop_gained', 'inframe_deletion', 'regulatory_region_variant', 'stop_lost' ]
 
     let labels = d3.select('#graph-render').append('div').classed('render-label gene-label', true);//.append('svg');
@@ -209,7 +202,6 @@ let drawGeneTest = async function(graphArray:Object, selectedGene:Array<object>)
             let childz = clin != null? clin.flatMap(c=> c.accession).map(x=> {
                 let index = m.properties.Phenotypes.map(d=> d.properties.name).indexOf(x);
                 let datp = m.properties.Phenotypes[index];
-                console.log('index', datp);
                 let final = datp? JSON.parse(datp.properties.properties):null;
                return {'data': {'name': 'p'+x, 'properties': final, }, 'level': 2, 'ypos':0, 'children': []  } ;
             }): null;
@@ -257,11 +249,8 @@ let drawGeneTest = async function(graphArray:Object, selectedGene:Array<object>)
         }
     });
 
-    console.log('data frorm gene test', data[0]);
-
     var compact = async function(firstEl:any, secEl:any){
         canvas.selectAll('.pheno-text').transition().duration(2000).attr('opacity', 0);
-       
         firstEl.transition().duration(2000).attr('transform', (d, i)=> 'translate(20,'+((i*15))+')');
         secEl.transition().duration(2000).attr('transform', (d, i)=> 'translate('+(210+(i*15))+',0)');
         groupButton.text('Ungroup');
@@ -288,23 +277,101 @@ let drawGeneTest = async function(graphArray:Object, selectedGene:Array<object>)
 
     let genebox = nodeCanvas.selectAll('.gene').data(data).enter().append('g').classed('gene', true);
 
-    let geneLabel = genebox.append('text').text(d=> d.data.name).attr('class', 'gene-label').attr('transform', 'translate(-100, 0)')
+    let geneLabel = genebox.append('text').text(d=> d.data.name).attr('class', 'gene-label').attr('transform', 'translate(-120, 0)')
 
-    let firstCol = genebox.selectAll('.first').data(d=> d.children).enter().append('g').attr('class', d=> d.data.properties.Consequence).classed('first var-node', true);
+    let firstCol = genebox.selectAll('.first').data(d=> d.children).enter().append('g').attr('class', d=> d.data.properties.Consequence + ' ' +d.data.name).classed('first var-node', true);
     
     let circleV = firstCol.append('circle').attr('cx', 0).attr('cy', 0).attr('fill', 'blue').attr('r', 5);
-    circleV.classed('pheno-g', true);
-    let labelV = firstCol.append('text').text(d=> d.data.name).attr('transform', 'translate(20, 0)')
+    circleV.classed('pheno-g circ', true);
+    let labelV = firstCol.append('text').text(d=> d.data.name).attr('transform', 'translate(20, 0)');
 
-    let secondCol = firstCol.selectAll('.second').data(d=> d.children).enter().append('g').classed('second', true);
+    let secondCol = firstCol.selectAll('.second').data(d=> d.children).enter().append('g').attr('class', d=> d.data.name +" "+ d.parent.data.name).classed('pheno-node', true).classed('second', true);
 
     compact(firstCol, secondCol);
  
-    let circleSec = secondCol.append('circle').attr('cx', 0).attr('cy', 0).attr('fill', 'red').attr('r', 5);
-    circleSec.classed('pheno-g', true);
+    let circleSec = secondCol.append('circle').attr('cx', 0).attr('cy', 0).attr('r', 5);
+    circleSec.classed('pheno-g circ', true);
 
     groupButton.on('click', (d, i)=>{
         groupButton.text() == 'Group' ? compact(firstCol, secondCol).then(()=> canvas.selectAll('.pheno-text').remove()) :spread(firstCol, secondCol);
+    });
+
+    var groupBy = function(xs, key) {
+        console.log(xs)
+        return xs.reduce(function(rv, x) {
+          (rv[x[key]] = rv[x[key]] || []).push(x);
+          return rv;
+        }, {});
+      };
+
+    sortButton.on('click', ()=>{
+      let groupVars = groupBy(selectedGene[0].properties.Variants, 'cons');
+      let array = d3.entries(groupVars);
+       selectedGene[0].properties.Variants = array.flatMap(d=> d.value);
+       drawGeneTest(graphArray, selectedGene);
+    });
+
+    let circles = d3.selectAll('.circ');
+
+    circleV.on('mouseover', function(d){
+        let matches = d3.selectAll('.'+d.data.name);
+        matches.classed('highlight', true);
+     
+       let antiMatch = d3.selectAll('.gene').selectAll('.first').filter(function(c, i, g){ return d.data.name != c.data.name; });
+
+        antiMatch.classed('dimmed', true);
+
+        if(d.data.type == undefined){
+            toolDiv.transition()
+            .duration(200)
+            .style("opacity", .8);
+            toolDiv.html(d.data.properties)
+            .style("left", (d3.event.pageX + 55) + "px")
+            .style("top", (d3.event.pageY - 15) + "px");
+        }else if(d.data.type == 'Variant'){
+            toolDiv.transition()
+            .duration(200)
+            .style("opacity", .8);
+            toolDiv.html(d.data.properties.Consequence)
+            .style("left", (d3.event.pageX) + "px")
+            .style("top", (d3.event.pageY - 28) + "px");
+        }
+       
+    });
+   
+    circleSec.on('mouseover', function(d){
+        let matches = d3.selectAll('.'+d.data.name);
+        matches.classed('highlight', true);
+     
+       let antiMatch = d3.selectAll('.gene').selectAll('.second').selectAll('.circ').filter(function(c, i, g){ return d.data.name != c.data.name; });
+
+        antiMatch.classed('dimmed', true);
+        
+        if(d.data.type == undefined){
+            toolDiv.transition()
+            .duration(200)
+            .style("opacity", .8);
+            toolDiv.html(d.data.properties)
+            .style("left", (d3.event.pageX + 55) + "px")
+            .style("top", (d3.event.pageY - 15) + "px");
+        }else if(d.data.type == 'Variant'){
+            toolDiv.transition()
+            .duration(200)
+            .style("opacity", .8);
+            toolDiv.html(d.data.properties.Consequence)
+            .style("left", (d3.event.pageX) + "px")
+            .style("top", (d3.event.pageY - 28) + "px");
+        }
+       
+    });
+   
+    circles.on('mouseout', function(d){
+        let matches = d3.selectAll('.highlight');
+        matches.classed('highlight', false);
+        let antiMatch = d3.selectAll('.dimmed').classed('dimmed', false);
+        toolDiv.transition()
+        .duration(500)
+        .style("opacity", 0);
     });
 
 }
@@ -313,8 +380,6 @@ let drawGeneTest = async function(graphArray:Object, selectedGene:Array<object>)
 let drawGene = async function(graphArray:Object, selectedGene:Array<object>){
     let canvas = d3.select('#graph-render').select('.graph-canvas');
     var toolDiv = d3.select('.tooltip');
-
-    console.log('selected',selectedGene);
     
     canvas.select('.links').selectAll('*').remove();
     canvas.select('.nodes').selectAll('*').remove();
@@ -443,7 +508,7 @@ let drawGene = async function(graphArray:Object, selectedGene:Array<object>){
    
    var node = nodeGroup.selectAll(".node")
    .data(root.descendants())
-    .enter().append("g")
+   .enter().append("g")
    .attr("class", function(d) { return "node" + (d.children ? " node--internal" : " node--leaf"); })
    .attr("transform", function(d) { 
      return "translate(" + d.y + "," + d.x + ")"; 
@@ -492,7 +557,7 @@ node.append("text")
    .attr("x", function(d) { return d.children ? -8 : 8; })
    .style("text-anchor", function(d) { return d.children ? "end" : "start"; })
    .text(function(d) { 
-       console.log(d);
+      // console.log(d);
      return d.data.data.name;
    });
 
