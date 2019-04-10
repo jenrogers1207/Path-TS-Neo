@@ -3,7 +3,7 @@ import * as d3 from 'D3';
 import { readdirSync } from "fs";
 
 var neo4j = require('neo4j-driver').v1;
-var driver = neo4j.driver("bolt://localhost:11004", neo4j.auth.basic("neo4j", "123"));
+var driver = neo4j.driver("bolt://localhost:11001", neo4j.auth.basic("neo4j", "123"));
 var _ = require('lodash');
 
 export async function addLabel(node:object){

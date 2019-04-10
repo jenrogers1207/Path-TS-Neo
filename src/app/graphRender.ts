@@ -87,7 +87,7 @@ let drawVars = async function(graphArray:Object, selectedGene:Array<object>){
             .style("opacity", 0);
     });
 
-    let data = selectedGene.map(m=> {
+    let data = await selectedGene.map(m=> {
         let phenoList = []
         let varPhenoList = m.properties.Variants.map(v=> {
             let varpheno = v.properties.Phenotypes[0] != undefined? v.properties.Phenotypes.flatMap(d=> d): null;
@@ -98,6 +98,7 @@ let drawVars = async function(graphArray:Object, selectedGene:Array<object>){
                 phenoList.push(element);
             });
             }
+            console.log('phenoList',phenoList)
            // v.level = 1;
             let childz = clin != null? clin.flatMap(c=> c.accession).map(m=> {
                return {'data': {'name': m, }, 'level': 2, 'ypos':0, 'children': []  } ;
@@ -106,13 +107,21 @@ let drawVars = async function(graphArray:Object, selectedGene:Array<object>){
             return vars;
         });
 
-        let filteredPheno = m.properties.Phenotypes[0]!= undefined? m.properties.Phenotypes.filter(p=> phenoList.indexOf(p.name) == -1 && p.properties.associatedGene == p.name).map(f=> { 
+        console.log("varrPheno", varPhenoList)
+
+        let filteredPheno = m.properties.Phenotypes[0]!= undefined? m.properties.Phenotypes.filter(p=> {
+            console.log(p.properties.associatedGene, m);
+            
+            phenoList.indexOf(p.name) == -1 && p.properties.associatedGene == m.name
+        }).map(f=> { 
             return {'data': f , 'level': 2, 'ypos':0, 'children': [] }}): null;
         
         let concatChil = filteredPheno != null? varPhenoList.concat(filteredPheno).map((t, i)=> {
             // let ypos = i+1;
                 return t;
             }) : varPhenoList;
+
+        console.log('concat',concatChil);
         
         let mom = {'data': m, 'ypos': 0, 'level': 0, 'children': concatChil}
     
@@ -120,7 +129,7 @@ let drawVars = async function(graphArray:Object, selectedGene:Array<object>){
     });
 
     function assignPosition(node, position) {
-      
+        console.log('node',node);
         node.ypos = position;
         
         if (node.children.length === 0) return ++position;
@@ -186,7 +195,7 @@ let drawGeneTest = async function(graphArray:Object, selectedGene:Array<object>)
         .style("opacity", 0);
 });
 
-    let data = selectedGene.map(m=> {
+    let data = await selectedGene.map(m=> {
 
         let phenoList = []
         let varPhenoList = m.properties.Variants.map(v=> {
@@ -204,17 +213,16 @@ let drawGeneTest = async function(graphArray:Object, selectedGene:Array<object>)
                 let datp = m.properties.Phenotypes[index];
                 let final = datp? JSON.parse(datp.properties.properties):null;
                return {'data': {'name': 'p'+x, 'properties': final, }, 'level': 2, 'ypos':0, 'children': []  } ;
-            }): null;
+            }): [];
             let vars = {'data': v, 'level':1, 'ypos': 0, 'children': childz }
             return vars;
         });
 
-        let filteredPheno = m.properties.Phenotypes[0]!= undefined? m.properties.Phenotypes.filter(p=> phenoList.indexOf(p.name) == -1 && p.properties.associatedGene == p.name).map(f=> { 
+        let filteredPheno = m.properties.Phenotypes[0]!= undefined? m.properties.Phenotypes.filter(p=> phenoList.indexOf(p.name) == -1 && p.properties.associatedGene == m.name).map(f=> { 
             return {'data': f , 'level': 2, 'ypos':0, 'children': [] }}): null;
         
 
         let concatChil = filteredPheno != null? varPhenoList.concat(filteredPheno).map((t, i)=> {
-            // let ypos = i+1;
                 return t;
             }) : varPhenoList;
         
@@ -223,10 +231,12 @@ let drawGeneTest = async function(graphArray:Object, selectedGene:Array<object>)
         return mom;
     });
 
+    console.log('data', data);
+
     function assignPosition(node, position) {
       
         node.ypos = position;
-        if (node.children.length === 0) return ++position;
+        if (node.children == null || node.children.length === 0 ) return ++position;
         node.children.forEach((child) => {
             position = assignPosition(child, position);
         });

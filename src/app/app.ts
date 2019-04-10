@@ -87,7 +87,7 @@ dataLoad.loadFile().then(async (d)=> {
         });
 
         async function checkPhenoTypes(graphPheno, queryOb){
-
+            console.log('graph pheno in check pheno', graphPheno);
             let  gene = await Promise.resolve(queryOb);
             let nodePheno = gene.properties.Phenotypes.nodes? gene.properties.Phenotypes.nodes : gene.properties.Phenotypes;
 
@@ -141,12 +141,14 @@ dataLoad.loadFile().then(async (d)=> {
                 let structuredPheno = await qo.structPheno(no.properties.Phenotypes, no.name);
                 no.properties.Phenotypes.nodes = structuredPheno;
 
+                console.log('strructurerd pheno in initial load', no.properties.Phenotypes.nodes);
+
                 let enrighmentP = await search.searchStringEnrichment(no.name);
     
                 neoAPI.buildSubGraph(no).then(()=> {
 
 
-
+/*
                     neoAPI.getGraph().then(async (g)=> {
 
                         let graph = g[0];
@@ -165,7 +167,6 @@ dataLoad.loadFile().then(async (d)=> {
 
                         console.log('selected', selectedGene)
 
-                       
                         qo.selected.addQueryOb(selectedGene);
 
                         gCanvas.graphRenderMachine(graph, [selectedGene]);
@@ -174,11 +175,8 @@ dataLoad.loadFile().then(async (d)=> {
 
                     });
 
-
-
+*/
                 });
-
-
         });
     }
 });
