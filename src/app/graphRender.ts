@@ -27,6 +27,17 @@ export function graphRenderMachine(graphArray:Object, selectedGene:Array<object>
     fun(graphArray, selectedGene);
 }
 
+//helper function 
+function assignPosition(node, position) {
+    node.ypos = position;
+    
+    if (node.children.length === 0) return ++position;
+    node.children.forEach((child) => {
+        position = assignPosition(child, position);
+    });
+    return position;
+}
+
 let drawVars = async function(graphArray:Object, selectedGene:Array<object>){
     let canvas = d3.select('#graph-render').select('.graph-canvas');
     var toolDiv = d3.select('.tooltip');
@@ -128,17 +139,6 @@ let drawVars = async function(graphArray:Object, selectedGene:Array<object>){
         return mom;
     });
 
-    function assignPosition(node, position) {
-        console.log('node',node);
-        node.ypos = position;
-        
-        if (node.children.length === 0) return ++position;
-        node.children.forEach((child) => {
-            position = assignPosition(child, position);
-        });
-        return position;
-    }
-
     assignPosition(data[0], 1);
 
     let flatArray = [];
@@ -233,15 +233,6 @@ let drawGeneTest = async function(graphArray:Object, selectedGene:Array<object>)
 
     console.log('data', data);
 
-    function assignPosition(node, position) {
-      
-        node.ypos = position;
-        if (node.children == null || node.children.length === 0 ) return ++position;
-        node.children.forEach((child) => {
-            position = assignPosition(child, position);
-        });
-        return position;
-    }
 
     assignPosition(data[0], 1);
 
@@ -441,7 +432,7 @@ let drawGene = async function(graphArray:Object, selectedGene:Array<object>){
            // v.level = 1;
             let childz = clin != null? clin.flatMap(c=> c.accession).map(m=> {
                return {'data': {'name': 'p'+m, }, 'level': 2, 'ypos':0, 'children': []  } ;
-            }): null;
+            }): [];
             let vars = {'data': v, 'level':1, 'ypos': 0, 'children': childz }
             return vars;
         });
@@ -459,16 +450,6 @@ let drawGene = async function(graphArray:Object, selectedGene:Array<object>){
         return mom;
     });
 
-    function assignPosition(node, position) {
-      
-        node.ypos = position;
-        if (node.children.length === 0) return ++position;
-        node.children.forEach((child) => {
-            position = assignPosition(child, position);
-        });
-
-        return position;
-    }
 
     assignPosition(data[0], 1);
 
