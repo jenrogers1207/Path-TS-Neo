@@ -695,6 +695,25 @@ let drawPhenotypesTest = async function(graphArray:Object, selectedGene:Array<ob
 
     let drawTabs = async function(data, selectedName:string){
 
+        console.log('data in draw tabs',data)
+        let node = canvas.select('.nodes').append('g').classed('pheno-wrap', true).selectAll('.pheno-tab').data(data);
+
+        let nodeEnter = node
+            .enter().append('g')
+            .attr("class", (d)=> 'pheno-tab '+d.name);
+
+        let geneNode = nodeEnter.selectAll('.gene').data(d=> d.children);
+        let geneEnter = geneNode.enter().append('g').attr('class', d=> d.name).classed('gene first', true);
+
+        nodeEnter.attr('transform', (d, i) => 'translate(100, '+(i * 20)+')');
+
+        let circleP = nodeEnter.append('circle').attr('cx', 0).attr('cy', 100);
+        circleP.attr('class', d=> d.name).classed('pheno-c', true);
+
+       // let varNode = geneEnter.selectAll('.var').data(d=> d.children);
+       // let varEnter = varNode.enter().append('g').attr('class', d=> d.name).classed('var second', true);
+
+        /*
         let pData = await Promise.all(data);
         let newData = pData.map((p,i)=>{
             let start = i == 0 ? 0 : pData[i-1].y;
@@ -747,23 +766,20 @@ let drawPhenotypesTest = async function(graphArray:Object, selectedGene:Array<ob
         circleG.classed('pheno-g', true);
     
         nodeEnter.append('text').text(d=> d.properties.associatedGene).attr('x', col.gene - 15).attr('y', 86);
-
-        return nodeEnter;
+*/
+        return geneEnter;
 
     }
 
-    let drawVars = function(nodeEnter, grouped:Boolean){
+    let drawVars = function(nodeEnter, varData, grouped:Boolean){
        
         nodeEnter.select('.var-wrapper').remove();
         if(grouped){
-            let circleVar = nodeEnter.append('g').classed('var-wrapper', true).selectAll('.pheno-v').data(d=> {
-                let dat = d3.entries(d.vars);
-                return dat;
-            });
+            let circleVar = nodeEnter.append('g').classed('var-wrapper', true).selectAll('.pheno-v').data(d=> d3.entries(d.children));
 
             circleVar.exit().remove();
 
-            let circEnter = circleVar.enter().append('g').attr('class', d=> d.key).classed('pheno-v', true);
+            let circEnter = circleVar.enter().append('g').attr('class', d=> d.key).classed('pheno-v second', true);
             circEnter.attr('transform', (d,i)=> 'translate('+(col.vars + (i*21))+', 100)');
             let circ = circEnter.append('circle').attr('r', 10).attr('cx', 5).attr('cy', 0);
             let count = circEnter.append('text').text(d=> d.value.length).attr('y', 3);
@@ -784,11 +800,11 @@ let drawPhenotypesTest = async function(graphArray:Object, selectedGene:Array<ob
             });
         }else{
 
-            let circleVar = nodeEnter.append('g').classed('var-wrapper', true).selectAll('.pheno-v').data(d=> d.vars);
+            let circleVar = nodeEnter.append('g').classed('var-wrapper', true).selectAll('.pheno-v').data(d=> d.children);
 
             circleVar.exit().remove();
 
-            let circEnter = circleVar.enter().append('g').attr('class', d=> d.props.Consequence+' '+d.vname).classed('pheno-v', true);
+            let circEnter = circleVar.enter().append('g').attr('class', d=> d.properties.Consequence+' '+d.vname).classed('pheno-v second', true);
             circEnter.attr('transform', (d,i)=> 'translate('+(col.vars + (i*11))+', 100)');
             let circ = circEnter.append('circle').attr('r', 5).attr('cx', 5).attr('cy', 0);
 
@@ -814,57 +830,49 @@ let drawPhenotypesTest = async function(graphArray:Object, selectedGene:Array<ob
                     .style("opacity", 0);
             });
         }
-        
-
     }
 
-    let groupVars = async function(thisEl: any, pheno: any){
+    let groupVars = async function(buttonEl: any, drawEl:any){
       
-        let phen = await Promise.all(pheno);
-        let newPhen = phen.map(p=> {
-            let varGroups:object = { };
-            p.vars.forEach(v => {
-                let key = v.props.Consequence;
-                if(d3.keys(varGroups).includes(key)){
-                    varGroups[key].push(v)
-                }else{
-                    varGroups[key] = [v]
-                }
-            });
-            p.vars = varGroups;
-            return p;
+        let gene = drawEl.data();
+       
+        let newPhen = gene.map(m=> {
+                let varGroups:object = { };
+                m.children.forEach(v => {
+                    let key = v.properties.Consequence;
+                    if(d3.keys(varGroups).includes(key)){
+                        varGroups[key].push(v)
+                    }else{
+                        varGroups[key] = [v]
+                    }
+                });
+                m.children = varGroups;
+        
+            return m;
         });
-      
-        d3.select(thisEl).text('Ungroup');
-        drawVars(enterNode, true);
+
+        d3.select(buttonEl).text('Ungroup');
+        drawVars(drawEl, newPhen, true);
     }
 
-    let ungroupVars = async function(thisEl: any, pheno: any){
+    let ungroupVars = async function(buttonEl: any, drawEl:any){
         
-        let phen = await Promise.all(pheno);
-    
-        let newPhen = phen.map(p=> {
-
-            let vars = p.children.map(m=> {
+        let gene = drawEl.data();
+        let newPhen = gene.map(m=> {
                 let flatVar = d3.entries(m.children).map(d=> d.value);
                 m.children = flatVar.flatMap(d=> d);
                 return m;
-            })
-        
-          
-            return p;
         });
    
-        d3.select(thisEl).text('Group');
-        drawVars(enterNode, false);
+        d3.select(buttonEl).text('Group');
+        drawVars(drawEl, newPhen, false);
     }
 
-    groupButton.on('click', function(){
-        d3.select(this).text() == 'Group' ? groupVars(this, newPheno) : ungroupVars(this, newPheno);
-    });
-
     let enterNode = await drawTabs(finalPheno, selectedGene[0].name);
-    groupVars(groupButton, finalPheno);
+    groupButton.on('click', function(){
+        d3.select(this).text() == 'Group' ? groupVars(this, enterNode) : ungroupVars(this, enterNode);
+    });
+    groupVars(groupButton, enterNode);
    
 
 }
