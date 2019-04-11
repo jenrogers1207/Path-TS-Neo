@@ -102,13 +102,8 @@ dataLoad.loadFile().then(async (d)=> {
         }
 
         let phenotypes = graphPhenotypes.length > 0? graphPhenotypes : await qo.structPheno(selectedGene.properties.Phenotypes, selectedGene.name);
-      
         selectedGene.properties.Phenotypes = phenotypes;
-
-      //  let enrighmentP = search.searchStringEnrichment(selectedGene.name);
-
         let graphInteraction = graph.nodes.filter(d=> d.label == 'Interaction');
-      
         selectedGene.properties.InteractionPartners = graphInteraction.map(int=> {
             int.properties = int.properties.properties? JSON.parse(int.properties.properties) : int.properties;
             return int;
