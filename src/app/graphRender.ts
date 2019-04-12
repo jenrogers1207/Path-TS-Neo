@@ -310,7 +310,7 @@ let drawGeneTest = async function(graphArray:Object, selectedGeneP:Array<object>
     var compact = async function(firstEl:any, secEl:any){
         canvas.selectAll('.pheno-text').remove();
         firstEl.transition().duration(2000).attr('transform', (d, i)=> 'translate(20,'+((i*15))+')');
-        secEl.transition().duration(2000).attr('transform', (d, i)=> 'translate('+(210+(i*15))+',0)');
+        secEl.transition().duration(2000).attr('transform', (d, i)=> 'translate('+(275+(i*15))+',0)');
         let parent = firstEl.nodes().map(m=> m.parentNode);
         let pText = d3.selectAll(parent).select('text.gene-label');
         pText.transition().duration(2000).attr('transform', d=> 'translate(-130,0)');
@@ -319,7 +319,7 @@ let drawGeneTest = async function(graphArray:Object, selectedGeneP:Array<object>
     }
     var spread = function(firstEl:any, secEl:any){
         firstEl.transition().duration(2000).attr('transform', d=> 'translate(20,'+(d.ypos * 15)+')');
-        secEl.transition().duration(2000).attr('transform', (d, i)=> 'translate(210,'+(i * 15)+')');
+        secEl.transition().duration(2000).attr('transform', (d, i)=> 'translate(275,'+(i * 15)+')');
         let parent = firstEl.nodes().map(m=> m.parentNode);
       
         let pText = d3.selectAll(parent).select('text.gene-label');
@@ -402,6 +402,7 @@ let drawGeneTest = async function(graphArray:Object, selectedGeneP:Array<object>
             .duration(200)
             .style("opacity", .8);
             toolDiv.html(d.data.properties)
+            console.log('phenoho', d)
             .style("left", (d3.event.pageX + 55) + "px")
             .style("top", (d3.event.pageY - 15) + "px");
         }else if(d.data.type == 'Variant'){
@@ -415,6 +416,7 @@ let drawGeneTest = async function(graphArray:Object, selectedGeneP:Array<object>
             toolDiv.transition()
             .duration(200)
             .style("opacity", .8);
+            console.log('phenoho', d)
             toolDiv.html(d.data.properties.phenotypeInheritance)
             .style("left", (d3.event.pageX + 55) + "px")
             .style("top", (d3.event.pageY - 15) + "px");
