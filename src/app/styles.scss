@@ -515,6 +515,7 @@
                             }
                             
                             .pheno-tab g.pheno-v.stop_lost circle,
+                            .pheno-tab g.vars.stop_lost circle,
                             .circle-label.stop_lost,
                             .var-node.stop_lost circle {
                                 fill: #581845;
@@ -574,6 +575,11 @@
                             }
                             
                             .pheno-v text {
+                                font-weight: bold;
+                                fill: #fff;
+                            }
+                            
+                            .vars text {
                                 font-weight: bold;
                                 fill: #fff;
                             }

@@ -134,8 +134,6 @@ dataLoad.loadFile().then(async (d)=> {
                 let variants = await updateVariants(fileVariants, varAlleles);
                 no.properties.Variants = await Promise.all(variants);
 
-               // console.log('in app', variants);
-
                 let structuredPheno = await qo.structPheno(no.properties.Phenotypes, no.name);
                 no.properties.Phenotypes.nodes = structuredPheno;
 

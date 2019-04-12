@@ -39,6 +39,8 @@ export async function renderCalls(promis: Array<object>, selectedNode:Array<obje
       //  let selectedNames = qo.selected.queryKeeper.map(k=> k.name);
         let selectedNames = selectedNode.map(k=> k.name);
 
+        console.log(selectedNode,promis);
+
         let data = await Promise.all(promis);
 
         let sidebar = d3.select('#left-nav');
