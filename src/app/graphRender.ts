@@ -30,7 +30,6 @@ export function graphRenderMachine(graphArray:Object, selectedGene:Array<object>
 //helper function 
 function assignPosition(node, position) {
     node.ypos = position;
-    console.log(node);
     if (node.children.length === 0) return ++position;
     node.children.forEach((child) => {
         position = assignPosition(child, position);
@@ -175,7 +174,7 @@ let drawGeneTest = async function(graphArray:Object, selectedGene:Array<object>)
 
     circLabel.attr('class', d=> d).classed('circle-label', true);
     let sortButton = varDiv.append('span').classed('badge badge-pill badge-secondary', true).append('text').text('Sort');
-    let groupButton = phenoDiv.append('span').classed('badge badge-pill badge-secondary', true).append('text').text('Ungroup');
+    let groupButton = phenoDiv.append('span').classed('badge badge-pill badge-secondary', true).append('text').text('Expand');
 
     circLabel.on('mouseover', function(d){
         d3.select(this).attr('r', 6);
@@ -222,11 +221,11 @@ let drawGeneTest = async function(graphArray:Object, selectedGene:Array<object>)
                 phenoList.push(element);
             });
             }
-           // v.level = 1;
             let childz = clin != null? clin.flatMap(c=> c.accession).map(x=> {
                 let index = m.properties.Phenotypes.map(d=> d.properties.name).indexOf(x);
-                let datp = m.properties.Phenotypes[index];
-                let final = datp? JSON.parse(datp.properties.properties):null;
+                let datp = m.properties.Phenotypes[index] ? m.properties.Phenotypes[index]: null;
+                let props = datp != null ? datp.properties.properties : null;
+                let final = props != null && typeof(props) == 'string'? JSON.parse(props): props != null? props : null;
                return {'data': {'name': 'p'+x, 'properties': final, }, 'level': 2, 'ypos':0, 'children': []  } ;
             }): [];
             let vars = {'data': v, 'level':1, 'ypos': 0, 'children': childz }
@@ -236,7 +235,6 @@ let drawGeneTest = async function(graphArray:Object, selectedGene:Array<object>)
         let filteredPheno = m.properties.Phenotypes[0]!= undefined? m.properties.Phenotypes.filter(p=> phenoList.indexOf(p.name) == -1 && p.properties.associatedGene == m.name).map(f=> { 
             return {'data': f , 'level': 2, 'ypos':0, 'children': [] }}): null;
         
-
         let concatChil = filteredPheno != null? varPhenoList.concat(filteredPheno).map((t, i)=> {
                 return t;
             }) : varPhenoList;
@@ -266,14 +264,14 @@ let drawGeneTest = async function(graphArray:Object, selectedGene:Array<object>)
         canvas.selectAll('.pheno-text').transition().duration(2000).attr('opacity', 0);
         firstEl.transition().duration(2000).attr('transform', (d, i)=> 'translate(20,'+((i*15))+')');
         secEl.transition().duration(2000).attr('transform', (d, i)=> 'translate('+(210+(i*15))+',0)');
-        groupButton.text('Ungroup');
+        groupButton.text('Expand');
 
     }
     var spread = function(firstEl:any, secEl:any){
         canvas.selectAll('.pheno-text').remove();
         firstEl.transition().duration(2000).attr('transform', d=> 'translate(20,'+(d.ypos * 20)+')');
         secEl.transition().duration(2000).attr('transform', (d, i)=> 'translate(210,'+(i * 20)+')');
-        groupButton.text('Group');
+        groupButton.text('Collapse');
         let text = secEl.append('text').text(d=>{
             let texting = d.data.properties != undefined && d.data.properties.description!= null? d.data.properties.description : '';
             return texting;
@@ -306,7 +304,7 @@ let drawGeneTest = async function(graphArray:Object, selectedGene:Array<object>)
     circleSec.classed('pheno-g circ', true);
 
     groupButton.on('click', (d, i)=>{
-        groupButton.text() == 'Group' ? compact(firstCol, secondCol).then(()=> canvas.selectAll('.pheno-text').remove()) :spread(firstCol, secondCol);
+        groupButton.text() == 'Collapse' ? compact(firstCol, secondCol).then(()=> canvas.selectAll('.pheno-text').remove()) :spread(firstCol, secondCol);
     });
 
     var groupBy = function(xs, key) {
@@ -597,14 +595,14 @@ let drawPhenotypesTest = async function(graphArray:Object, selectedGene:Array<ob
     let col = {
         'pheno': 50,
         'gene': 400,
-        'vars': 500
+        'vars': 200
     }
     const consLabels = ['missense_variant', 'frameshift_variant', 'stop_gained', 'inframe_deletion', 'regulatory_region_variant', 'stop_lost' ]
 
     let labels = d3.select('#graph-render').append('div').classed('render-label pheno-label', true);
 
-    labels.append('div').style('width', '415px').append('text').text('Phenotype');//.attr('x', 0);
-    labels.append('div').style('width', '50px').append('text').text('Gene');//.attr('x', col.gene+10);
+    labels.append('div').style('width', '415px').append('text').text('Phenotype');
+    labels.append('div').style('width', '50px').append('text').text('Gene');
     let varDiv = labels.append('div').style('width', '380px');
     varDiv.append('text').text('Variants');//.attr('x', col.vars+15);
     let circLabel =   varDiv.append('svg').selectAll('circle-label').data(consLabels).enter().append('circle').attr('r', 3).attr('cx', (d,i)=> 10+(i*10)).attr('cy', 25);
@@ -625,7 +623,6 @@ let drawPhenotypesTest = async function(graphArray:Object, selectedGene:Array<ob
 
     let variants = graphArray.nodes.filter(d=> d.label == 'Variant').map(v=> {
         let varName = v.name;
-
         let props = typeof v.properties.properties == 'string' ? JSON.parse(v.properties.properties) : v.properties.properties;
         let pheno = props.Phenotypes[0] != undefined? props.Phenotypes.flatMap(d=> d): null;
         let clin = pheno != null? pheno.map(p=> p.disease_ids.filter(d=> d.organization == "OMIM")).flatMap(d=> d): null;
@@ -634,23 +631,17 @@ let drawPhenotypesTest = async function(graphArray:Object, selectedGene:Array<ob
         return {'name': v.name, 'properties': props, 'pheno': clin, 'gene': gene[0], 'children': [] };
     });
 
-    console.log('vars', variants);
-
     variants = variants.filter(v=> v.gene != 'undefined');
 
     let newVars = d3.nest().key(function(d) { return d.gene; })
     .entries(variants);
 
-    console.log('newvars', newVars);
-
     let newPheno = await phenoData.map(async p=> {
         let pheno = p;
         pheno.name = p.name;
-        //pheno.allvars = await newVars.filter(v=> v.key == p.properties.associatedGene).map(m=> m.values)[0];
 
         let allvars = await newVars.filter(v=> {
-           // console.log(v.key, p.properties.associatedGene);
-            return v.key == p.properties.associatedGene})//.map(m=> m.values)[0];
+            return v.key == p.properties.associatedGene});
 
         p.children = allvars[0].values != undefined? allvars.map(all=> {
             let geneName = all.key;
@@ -672,10 +663,6 @@ let drawPhenotypesTest = async function(graphArray:Object, selectedGene:Array<ob
     let finalPheno = await Promise.all(newPheno);
     finalPheno.map(p=> assignPosition(p, 1));
 
-    //await assignPosition(await Promise.all(newPheno), 1)
-   // console.log(newPheno)
-  //  let totalPheno = await restack(await Promise.all(newPheno), selectedGene[0].name);
-
     canvas.style('height', (150*phenoData.length) + 'px');
    
     circLabel.on('mouseover', function(d){
@@ -695,7 +682,6 @@ let drawPhenotypesTest = async function(graphArray:Object, selectedGene:Array<ob
 
     let drawTabs = async function(data, selectedName:string){
 
-        console.log('data in draw tabs',data)
         let node = canvas.select('.nodes').append('g').classed('pheno-wrap', true).selectAll('.pheno-tab').data(data);
 
         let nodeEnter = node
@@ -705,10 +691,17 @@ let drawPhenotypesTest = async function(graphArray:Object, selectedGene:Array<ob
         let geneNode = nodeEnter.selectAll('.gene').data(d=> d.children);
         let geneEnter = geneNode.enter().append('g').attr('class', d=> d.name).classed('gene first', true);
 
-        nodeEnter.attr('transform', (d, i) => 'translate(100, '+(i * 20)+')');
+        nodeEnter.transition().duration(2000).attr('transform', (d, i) => 'translate(50, '+(i * 25)+')');
+        geneEnter.transition().duration(2000).attr('transform', (d, i) => 'translate(300, '+(i * 0)+')');
 
         let circleP = nodeEnter.append('circle').attr('cx', 0).attr('cy', 100);
         circleP.attr('class', d=> d.name).classed('pheno-c', true);
+
+        let textP = nodeEnter.append('text').text(d=> d.properties.description);
+        textP.attr('x', 15).attr('y', 100)
+
+        let circleG = geneEnter.append('circle').attr('cx', 0).attr('cy', 100);
+        circleG.attr('class', d=> d.name).classed('pheno-g', true);
 
        // let varNode = geneEnter.selectAll('.var').data(d=> d.children);
        // let varEnter = varNode.enter().append('g').attr('class', d=> d.name).classed('var second', true);
@@ -1194,16 +1187,14 @@ function drawGraph(graphArray: Object, selectedGene: Array<object>) {
             }else{
                 return 'node ' + d.label[0] + ' ' + d.name;
             }
-           
         });
 
     let circles = nodeEnter.append('circle')
         .call(d3.drag()
             .on("start", dragstarted)
             .on("drag", dragged)
-            .on("end", dragended))
-         //   .on('dblclick', connectedNodes); 
-
+            .on("end", dragended));
+       
     let geneNode = nodeEnter.filter(d => d.label.includes('Gene'));
 
     nodeEnter.filter(d=> selectedNames.includes(d.name)).classed('selected', true);
