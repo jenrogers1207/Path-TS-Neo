@@ -59,15 +59,13 @@ dataLoad.loadFile().then(async (d)=> {
         let graph = graphArray[0];
 
         let queryGenes = graph.nodes.filter(f=> f.label.includes('Gene'));
-
-        console.log('query genes', queryGenes);
     
         let queryKeeper = queryGenes.map((gene:object) => {
           //  let ob = isStored(graph, gene);
            let ob = qo.structGene(gene);
-           console.log(ob);
+       
             qo.allQueries.addQueryOb(ob);
-            console.log('object', ob);
+         
             return ob;
         });
 
@@ -90,7 +88,7 @@ dataLoad.loadFile().then(async (d)=> {
         });
 
         async function checkPhenoTypes(graphPheno, queryOb){
-            console.log('graph pheno in check pheno', graphPheno);
+       
             let  gene = await Promise.resolve(queryOb);
             let nodePheno = gene.properties.Phenotypes.nodes? gene.properties.Phenotypes.nodes : gene.properties.Phenotypes;
 
@@ -114,7 +112,6 @@ dataLoad.loadFile().then(async (d)=> {
 
         let dropdown = d3.select('#topnav').select('.dropdown');
         let dropButton = dropdown.select('.dropdown-toggle');
-      //  neoAPI.buildSubGraph(selectedGene);
         dropdown.select('.dropdown-menu').selectAll('.dropdown-item').on('click', (d, i, g)=> {
             dropButton.text(d);
             let selected = qo.selected.queryKeeper.map(d=> d)[qo.selected.queryKeeper.length - 1];qo.selected.queryKeeper.map(d=> d);
@@ -136,8 +133,6 @@ dataLoad.loadFile().then(async (d)=> {
 
                 let structuredPheno = await qo.structPheno(no.properties.Phenotypes, no.name);
                 no.properties.Phenotypes.nodes = structuredPheno;
-
-                console.log('strructurerd pheno in initial load', no.properties.Phenotypes.nodes);
 
                 let enrighmentP = await search.searchStringEnrichment(no.name);
     

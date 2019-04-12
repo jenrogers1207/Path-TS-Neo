@@ -117,7 +117,7 @@ let drawVars = async function(graphArray:Object, selectedGene:Array<object>){
         console.log("varrPheno", varPhenoList)
 
         let filteredPheno = m.properties.Phenotypes[0]!= undefined? m.properties.Phenotypes.filter(p=> {
-            console.log(p.properties.associatedGene, m);
+           // console.log(p.properties.associatedGene, m);
             
             phenoList.indexOf(p.name) == -1 && p.properties.associatedGene == m.name
         }).map(f=> { 
@@ -128,7 +128,7 @@ let drawVars = async function(graphArray:Object, selectedGene:Array<object>){
                 return t;
             }) : varPhenoList;
 
-        console.log('concat',concatChil);
+      //  console.log('concat',concatChil);
         
         let mom = {'data': m, 'ypos': 0, 'level': 0, 'children': concatChil}
     
@@ -156,7 +156,7 @@ let drawVars = async function(graphArray:Object, selectedGene:Array<object>){
 let drawGeneTest = async function(graphArray:Object, selectedGeneP:Array<object>){
     let selectedGene = await Promise.resolve(selectedGeneP);
 
-    console.log('grarphArrray', graphArray);
+   // console.log('grarphArrray', graphArray);
 
     let canvas = d3.select('#graph-render').select('.graph-canvas');
     var toolDiv = d3.select('.tooltip');
@@ -176,20 +176,6 @@ let drawGeneTest = async function(graphArray:Object, selectedGeneP:Array<object>
     circLabel.attr('class', d=> d).classed('circle-label', true);
     let phenoDiv = labels.append('div').style('width', '100px').append('text').text('Phenotype');//.attr('x', 0);
 
-    function viewToggleInput(divClassName:any){
-        let dropData = ['Whole Network', 'Align by Gene', 'Align by Gene Test', 'Align by Variants', 'Align by Phenotype']
-        let dropdown = d3.select(divClassName).select('.dropdown');
-        let dropButton = dropdown.select('.dropdown-toggle');
-        dropButton.text(dropData[0]);
-        let dropdownItems = dropdown.select('.dropdown-menu').selectAll('.dropdown-item').data(dropData);
-        let dropEnter = dropdownItems.enter().append('a').classed('dropdown-item', true);
-        dropEnter.attr('href', '#');
-        dropEnter.text(d=> d);
-        dropdownItems.merge(dropEnter);
-    
-        return dropdown;
-    }
-
     circLabel.attr('class', d=> d).classed('circle-label', true);
 
     let geneData = graphArray.nodes.filter(d=> d.label.includes('Gene')).map(p=> {
@@ -200,21 +186,7 @@ let drawGeneTest = async function(graphArray:Object, selectedGeneP:Array<object>
     geneData = await Promise.all(geneData);
 
     let dropData = ['Whole Network', 'Align by Gene', 'Align by Gene Test', 'Align by Variants', 'Align by Phenotype']
-  //  
-   // let dropButton = dropdown.select('.dropdown-toggle');
-   // dropButton.text(dropData[0]);
-  //  let dropdownItems = dropdown.select('.dropdown-menu').selectAll('.dropdown-item').data(dropData);
-   
-/*
-    let sortDrop = varDiv.append('div').append('div').classed('dropdown', true).selectAll('.dropdown-item').data(dropData);
-    let dropButton = sortDrop.select('.dropdown-toggle');
-    drop.text(dropData[0]);
-    let dropdownItems = dropdown.select('.dropdown-menu').selectAll('.dropdown-item').data(dropData);
-    let dropEnter = dropdownItems.enter().append('a').classed('dropdown-item', true);
-    dropEnter.attr('href', '#');
-    dropEnter.text(d=> d);
-    dropdownItems.merge(dropEnter);
-    */
+
     let sortButton = varDiv.append('span').classed('badge badge-pill badge-secondary', true).append('text').text('Sort');
     let groupButton = phenoDiv.append('span').classed('badge badge-pill badge-secondary', true).append('text').text('Expand');
 
@@ -254,9 +226,9 @@ let drawGeneTest = async function(graphArray:Object, selectedGeneP:Array<object>
     let selectedVariants = selectedGene[0].properties.Variants.length == 0? JSON.parse(graphArray.nodes.filter(n=> n.name == selectedGene[0].name)[0].properties.Variants) : selectedGene[0].properties.Variants;
  
     selectedGene[0].properties.Variants = selectedVariants;
-   // let data = selectedGene.map(m=> {
+
     let data = geneData.map(m=> {
-        console.log(m);
+        //console.log(m);
 
         let phenoList = []
         let varPhenoList = m.properties.Variants.map(v=> {
@@ -267,12 +239,19 @@ let drawGeneTest = async function(graphArray:Object, selectedGeneP:Array<object>
                 phenoList.push(element);
             });
             }
+
+        
             let childz = clin != null? clin.flatMap(c=> c.accession).map(x=> {
+
                 let pheno = m.properties.Phenotypes.nodes? m.properties.Phenotypes.nodes : m.properties.Phenotypes;
-                let index = pheno.map(d=> d.properties.name).indexOf(x);
+         
+                let index = pheno.map(d=> d.properties.name? d.properties.name: d.name).indexOf(x);
+          
                 let datp = pheno[index] ? pheno[index]: null;
-                let props = datp != null ? datp.properties.properties : null;
+           
+                let props = datp != null ? datp.properties.properties ? datp.properties.properties : datp.properties : null;
                 let final = props != null && typeof(props) == 'string'? JSON.parse(props): props != null? props : null;
+             
                return {'data': {'name': 'p'+x, 'properties': final, }, 'level': 2, 'ypos':0, 'children': []  } ;
             }): [];
             let vars = {'data': v, 'level':1, 'ypos': 0, 'children': childz }
@@ -288,7 +267,6 @@ let drawGeneTest = async function(graphArray:Object, selectedGeneP:Array<object>
     });
 
     let wrapperObject = {'children': data, 'data':{'name':'root'}}
-    //assignPosition(data[0], 1);
 
     assignPosition(wrapperObject, 0);
 
@@ -382,11 +360,8 @@ let drawGeneTest = async function(graphArray:Object, selectedGeneP:Array<object>
         c.data.label = ['Gene']
         return c.data;
     });
-    
-   
-    console.log(newSort);
-    let newgraph = {'nodes': newSort}
-     // selectedGene[0].properties.Variants = array.flatMap(d=> d.value);
+
+        let newgraph = {'nodes': newSort}
        drawGeneTest(newgraph, selectedGene);
     });
 
@@ -414,6 +389,13 @@ let drawGeneTest = async function(graphArray:Object, selectedGeneP:Array<object>
             toolDiv.html(d.data.properties.Consequence)
             .style("left", (d3.event.pageX) + "px")
             .style("top", (d3.event.pageY - 28) + "px");
+        }else{
+            toolDiv.transition()
+            .duration(200)
+            .style("opacity", .8);
+            toolDiv.html(d.data.properties.phenotypeInheritance)
+            .style("left", (d3.event.pageX + 55) + "px")
+            .style("top", (d3.event.pageY - 15) + "px");
         }
        
     });
