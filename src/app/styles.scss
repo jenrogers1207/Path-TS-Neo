@@ -351,6 +351,7 @@
                             }
                             
                             .pheno-tab circle.pheno-v,
+                            .pheno-tab circle.vars,
                             .geneNode .var-node circle,
                             .nodeGroup circle,
                             .var-node circle {
@@ -422,6 +423,7 @@
                             }
                             
                             .pheno-tab g.pheno-v.missense_variant circle,
+                            .pheno-tab g.vars.missense_variant circle,
                             .circle-label.missense_variant,
                             .var-node.missense_variant circle {
                                 fill: #66CDAA;
@@ -440,6 +442,7 @@
                             }
                             
                             .pheno-tab g.pheno-v.frameshift_variant circle,
+                            .pheno-tab g.vars.frameshift_variant circle,
                             .circle-label.frameshift_variant,
                             .var-node.frameshift_variant circle {
                                 fill: #FFC300;
@@ -458,6 +461,7 @@
                             }
                             
                             .pheno-tab g.pheno-v.stop_gained circle,
+                            .pheno-tab g.vars.stop_gained circle,
                             .circle-label.stop_gained,
                             .var-node.stop_gained circle {
                                 fill: #FF5733;
@@ -475,6 +479,7 @@
                             }
                             
                             .pheno-tab g.pheno-v.inframe_deletion circle,
+                            .pheno-tab g.vars.inframe_deletion circle,
                             .circle-label.inframe_deletion,
                             .var-node.inframe_deletion circle {
                                 fill: #C70039;
@@ -492,6 +497,7 @@
                             }
                             
                             .pheno-tab g.pheno-v.regulatory_region_variant circle,
+                            .pheno-tab g.vars.regulatory_region_variant circle,
                             .circle-label.regulatory_region_variant,
                             .var-node.regulatory_region_variant circle {
                                 fill: #900C3F;
