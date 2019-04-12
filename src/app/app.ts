@@ -22,7 +22,6 @@ export function searchToggleInput(){
    let data = ['Search Gene', 'Search GO',/*'Search Function', 'Search Pathway', 'Search Models',*/ 'Search Variant'];
 
    let searchbar = d3.select('#topnav').select('.input-group.search');
-
    searchbar.select('.input-group-append').select('button').text(data[0]);
 
    let searchItems = searchbar.select('.dropdown-menu').selectAll('.dropdown-item').data(data);
@@ -33,7 +32,6 @@ export function searchToggleInput(){
    searchItems.merge(searchEnter);
 
    searchEnter.on('click', (d, i, g)=> {
-    
     searchbar.select('.input-group-append').select('button').text(d);
     });
 

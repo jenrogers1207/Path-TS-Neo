@@ -185,9 +185,32 @@ let drawGeneTest = async function(graphArray:Object, selectedGeneP:Array<object>
 
     geneData = await Promise.all(geneData);
 
-    let dropData = ['Whole Network', 'Align by Gene', 'Align by Gene Test', 'Align by Variants', 'Align by Phenotype']
+    let dropData = ['Consequence']
+    /*
+    let dropSort = varDiv.append('div').classed('dropdown', true);
+    //dropSort.select('.input-group-append').select('button').text(data[0]);
+   
+    let dropButton = dropSort.append('a').classed('btn btn-secondary dropdown-toggle', true);
+    dropButton.attr('id', "dropdownMenuLink")
+    dropButton.attr('aria-haspopup', true);
+    dropButton.attr('data-toggle', 'dropdown');
+    dropButton.attr('aria-expanded', false);
+    dropButton.attr('role', 'button');
+    dropButton.text('Sort By');
+    let dropmenu = dropSort.append('div').classed('dropdown-menu', true);
+    dropmenu.attr('aria-labelledby', 'dropdownMenuLink');
+    let searchItems = dropmenu.selectAll('.dropdown-item').data(dropData);
+    let searchEnter = searchItems.enter().append('a').classed('dropdown-item', true)
+    searchEnter.text(d=> d);
+    searchEnter.attr('href', '#');
+ 
+    searchItems.merge(searchEnter);
+ 
+    searchEnter.on('click', (d, i, g)=> {
+    // searchbar.select('.input-group-append').select('button').text(d);
+     });*/
 
-    let sortButton = varDiv.append('span').classed('badge badge-pill badge-secondary', true).append('text').text('Sort');
+    let sortButton = varDiv.append('span').classed('badge badge-pill badge-secondary', true).append('text').text('Sort by Consequence');
     let groupButton = phenoDiv.append('span').classed('badge badge-pill badge-secondary', true).append('text').text('Expand');
 
     circLabel.on('mouseover', function(d){

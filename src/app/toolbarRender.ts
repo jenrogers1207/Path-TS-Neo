@@ -43,8 +43,6 @@ export async function renderCalls(promis: Array<object>, selectedNode:Array<obje
         let geneProm = graphArray[0].nodes.filter(f=> f.label.includes('Gene')).map(g=> qo.structGene(g));
         //let geneNode = await Promise.all(geneProm);
 
-
-
        // let data = await Promise.all(promis);
        let data = await Promise.all(geneProm);
 
@@ -278,12 +276,14 @@ export async function renderGeneDetail(dataArray: Array<object>, graph:object){
     let textProp = propEnter.filter(d=> d == 'Text').select('.detail-wrapper').selectAll('.text').data(d=> {return data.properties[d]});
     let textEnter = textProp.enter().append('div').classed('text', true);
     let headText = textEnter.append('div').classed('text-sec-head', true).append('h5').text(d=> d.textSectionTitle + ': ');
-    let textDiv = textEnter.append('div').classed('textbody', true).classed('hidden', true);
+    let textDiv = textEnter.append('div').classed('textbody', true);
+    textDiv//.classed('hidden', true);
     let textText = textDiv.append('text').text(d=> d.textSectionContent);
 
     headText.on('click', function(d) {
-        let text = this.parent.nextSibling
-        d3.select(text).classed('hidden')? d3.select(text).classed('hidden', false) : d3.select(text).classed('hidden', true);
+       // let text = this.parentNode.nextSibling
+       // console.log(text)
+       // textDiv.classed('hidden')? d3.select(text).classed('hidden', false) : d3.select(text).classed('hidden', true);
     });
 
     let descript = propEnter.filter(d=> d == "Description").select('.detail-wrapper').append('div').append('text').text(d=> data.properties[d]);
