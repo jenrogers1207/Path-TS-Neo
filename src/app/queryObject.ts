@@ -116,12 +116,22 @@ export let allQueries = new QueryStore();
 export async function structGene(g: object){
     
     let ob = await Promise.resolve(g);//.properties;
+    console.log('ob', ob)
 
+    
     let geneOb = ob.properties;
     let node = new GeneObject(ob.name, 'Gene');
     node.label = ob.label? ob.label : ob.type;
 
     node.type = ob.type? ob.type: ob.label[0];
+
+    console.log('gener', geneOb);
+
+    console.log(geneOb.Variants)
+
+    
+
+    
 
     node.properties.Ids = typeof geneOb.Ids === 'string' ? JSON.parse(geneOb.Ids): geneOb.Ids;
     node.properties.Description = geneOb.Description;
@@ -140,8 +150,9 @@ export async function structGene(g: object){
     node.properties.Transcript = geneOb.Transcript; //"ENST00000645189.1"
     node.properties.Variants = typeof geneOb.Variants === 'string'? JSON.parse(geneOb.Variants) : geneOb.Variants; //(120) [VariantObject,
     node.properties.InteractionPartners = typeof geneOb.InteractionPartners === 'string'? JSON.parse(geneOb.InteractionPartners) : geneOb.InteractionPartners;
-
+    console.log('node', node);
     return node;
+    
 }
 
 export async function structVariants(varArray: object){

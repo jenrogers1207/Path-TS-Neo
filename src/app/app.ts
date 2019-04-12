@@ -62,9 +62,12 @@ dataLoad.loadFile().then(async (d)=> {
 
         console.log('query genes', queryGenes);
     
-        let queryKeeper = queryGenes.map(async (gene:object) => {
-            let ob = isStored(graph, gene);
+        let queryKeeper = queryGenes.map((gene:object) => {
+          //  let ob = isStored(graph, gene);
+           let ob = qo.structGene(gene);
+           console.log(ob);
             qo.allQueries.addQueryOb(ob);
+            console.log('object', ob);
             return ob;
         });
 
@@ -205,14 +208,19 @@ export async function isStored(graph: object, data:object){
 
     let foundGraphNodes = graph.nodes.filter(n=> n.name == data.name);
 
-    let nodeOb = foundGraphNodes.length > 0 ? labelsMatch(foundGraphNodes[0], data) : await search.initialSearch(data);
+    console.log('found nodes', foundGraphNodes);
 
+    let nodeOb = foundGraphNodes.length > 0 ? labelsMatch(foundGraphNodes[0], data) : await search.initialSearch(data);
+    console.log('no',nodeOb)
     let structuredOb = await qo.structGene(nodeOb);
 
     return await structuredOb;
 
     async function labelsMatch(graphNode:object, newNode:object){
+        console.log('graph node', graphNode);
+        console.log('newnode', newNode);
         let type = newNode.type? newNode.type : newNode.label;
+        console.log(graphNode.label == type)
         let node = graphNode.label == type? graphNode : neoAPI.addLabel(newNode);
         return await node;
     }

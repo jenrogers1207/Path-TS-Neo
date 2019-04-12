@@ -153,7 +153,9 @@ let drawVars = async function(graphArray:Object, selectedGene:Array<object>){
 
 }
 
-let drawGeneTest = async function(graphArray:Object, selectedGene:Array<object>){
+let drawGeneTest = async function(graphArray:Object, selectedGeneP:Array<object>){
+    let selectedGene = await Promise.resolve(selectedGeneP);
+    console.log(graphArray, selectedGene);
     let canvas = d3.select('#graph-render').select('.graph-canvas');
     var toolDiv = d3.select('.tooltip');
     
@@ -208,11 +210,15 @@ let drawGeneTest = async function(graphArray:Object, selectedGene:Array<object>)
         }
    
     });
-
-    let data = await selectedGene.map(m=> {
-
+    console.log('sg',selectedGene);
+    let selectedVariants = selectedGene[0].properties.Variants.length == 0? JSON.parse(graphArray.nodes.filter(n=> n.name == selectedGene[0].name)[0].properties.Variants) : selectedGene[0].properties.Variants;
+    console.log('selected', selectedVariants)
+    selectedGene[0].properties.Variants = selectedVariants;
+    let data = selectedGene.map(m=> {
+        console.log(m);
         let phenoList = []
         let varPhenoList = m.properties.Variants.map(v=> {
+            console.log(v.properties.associatedGene);
             let varpheno = v.properties.Phenotypes[0] != undefined? v.properties.Phenotypes.flatMap(d=> d): null;
             let clin = varpheno != null? varpheno.map(p=> p.disease_ids.filter(d=> d.organization == "OMIM")).flatMap(d=> d): null;
             
@@ -222,8 +228,9 @@ let drawGeneTest = async function(graphArray:Object, selectedGene:Array<object>)
             });
             }
             let childz = clin != null? clin.flatMap(c=> c.accession).map(x=> {
-                let index = m.properties.Phenotypes.map(d=> d.properties.name).indexOf(x);
-                let datp = m.properties.Phenotypes[index] ? m.properties.Phenotypes[index]: null;
+                let pheno = m.properties.Phenotypes.nodes? m.properties.Phenotypes.nodes : m.properties.Phenotypes;
+                let index = pheno.map(d=> d.properties.name).indexOf(x);
+                let datp = pheno[index] ? pheno[index]: null;
                 let props = datp != null ? datp.properties.properties : null;
                 let final = props != null && typeof(props) == 'string'? JSON.parse(props): props != null? props : null;
                return {'data': {'name': 'p'+x, 'properties': final, }, 'level': 2, 'ypos':0, 'children': []  } ;
@@ -584,6 +591,8 @@ async function restack(data, selectedName:string){
 }
 let drawPhenotypesTest = async function(graphArray:Object, selectedGene:Array<object>){
 
+    console.log(graphArray);
+
     let canvas = d3.select('#graph-render').select('.graph-canvas');
     var toolDiv = d3.select('.tooltip');
     
@@ -629,12 +638,10 @@ let drawPhenotypesTest = async function(graphArray:Object, selectedGene:Array<ob
     }
     var spread = function(el:any, level:number){
         let move = [50, 200, 400]
-        console.log('is this working');
         canvas.selectAll('.pheno-text').remove();
         el.transition().duration(2000).attr('transform', d=> 'translate('+move[level]+','+(d.ypos * 2)+')');
-       
         stackButton.text('Collapse');
-        console.log('testing',stackButton);
+      
         /*
         let text = secEl.append('text').text(d=>{
             let texting = d.data.properties != undefined && d.data.properties.description!= null? d.data.properties.description : '';
