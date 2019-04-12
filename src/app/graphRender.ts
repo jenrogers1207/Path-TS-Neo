@@ -16,7 +16,7 @@ export function graphRenderMachine(graphArray:Object, selectedGene:Array<object>
     let key = String(dropButton.text());
 
     const builder = {
-        'Align by Gene' : drawGene,
+        'Align by Gene' : drawGeneTest,
         'Align by Gene Test' : drawGeneTest,
         'Align by Variants' : drawVars,
         'Align by Phenotype' : drawPhenotypesTest,
@@ -338,7 +338,6 @@ let drawGeneTest = async function(graphArray:Object, selectedGeneP:Array<object>
     });
 
     var groupBy = function(xs, key) {
-        console.log(xs)
         return xs.reduce(function(rv, x) {
           (rv[x[key]] = rv[x[key]] || []).push(x);
           return rv;
@@ -651,15 +650,17 @@ let drawPhenotypesTest = async function(graphArray:Object, selectedGene:Array<ob
 
     let labels = d3.select('#graph-render').append('div').classed('render-label pheno-label', true);
 
-    labels.append('div').style('width', '415px').append('text').text('Phenotype');
-    labels.append('div').style('width', '50px').append('text').text('Gene');
-    let varDiv = labels.append('div').style('width', '380px');
+    labels.append('div').style('width', '280px').append('text').text('Phenotype');
+    labels.append('div').style('width', '100px').append('text').text('Gene');
+    let varDiv = labels.append('div').style('width', '400px');
     varDiv.append('text').text('Variants');//.attr('x', col.vars+15);
     let circLabel =   varDiv.append('svg').selectAll('circle-label').data(consLabels).enter().append('circle').attr('r', 3).attr('cx', (d,i)=> 10+(i*10)).attr('cy', 25);
     circLabel.attr('class', d=> d).classed('circle-label', true);
 
     let groupButton = varDiv.append('span').classed('badge badge-pill badge-secondary', true).append('text').text('Ungroup');
-    let stackButton = varDiv.append('span').classed('badge badge-pill badge-secondary', true).append('text').text('Expand');
+    let stackButton = varDiv.append('span').classed('badge badge-pill badge-secondary', true);
+    stackButton.append('text').text('Expand');
+    stackButton.classed('hidden', true);
 
     let phenoData = graphArray.nodes.filter(d=> d.label == 'Phenotype').map(p=> {
         let phen = p.properties;
@@ -761,6 +762,14 @@ let drawPhenotypesTest = async function(graphArray:Object, selectedGene:Array<ob
 
         let geneNode = nodeEnter.selectAll('.gene').data(d=> d.children);
         let geneEnter = geneNode.enter().append('g').attr('class', d=> d.name).classed('gene first', true);
+        console.log('sele',selectedName)
+        let selectedGene = geneEnter.filter(g=> g.data.name === selectedName.name);
+        console.log('selected',selectedGene);
+
+        //selectedGene.append('rect')
+        //let selectedRects = selectedGene.append('rect')
+        //selectedRects.attr('x', -50).attr('y', 66).attr('rx', 15).attr('ry', 15).attr('width', 1000);
+        //selectedRects.attr('height', d=>  d.h).attr('fill','gray').style('opacity', '0.15');
 
         nodeEnter.transition().duration(2000).attr('transform', (d, i) => 'translate(50, '+(i * 25)+')');
         geneEnter.transition().duration(2000).attr('transform', (d, i) => 'translate(300, '+(i * 0)+')');
@@ -865,6 +874,7 @@ let drawPhenotypesTest = async function(graphArray:Object, selectedGene:Array<ob
         });
 
         d3.select(buttonEl).text('Ungroup');
+        stackButton.classed('hidden', true);
         drawVars(drawEl, true);
         let varEnter = drawVars(drawEl, true);
         return varEnter;
@@ -880,13 +890,13 @@ let drawPhenotypesTest = async function(graphArray:Object, selectedGene:Array<ob
         });
    
         d3.select(buttonEl).text('Group');
+        stackButton.classed('hidden', false);
         let varEnter = drawVars(drawEl, false);
         return varEnter;
     }
 
     let enterNode = await drawTabs(finalPheno, selectedGene[0].name);
     let geneNode = enterNode.selectAll('.gene.first');
-   // let varNode = geneNode.select('g').selectAll('g');
 
     let varNode = await groupVars(groupButton, geneNode);
 
@@ -946,7 +956,6 @@ let drawPhenotypes = async function(graphArray:Object, selectedGene:Array<object
 
     let variants = graphArray.nodes.filter(d=> d.label == 'Variant').map(v=> {
         let varName = v.name;
-      
         let props = typeof v.properties.properties == 'string' ? JSON.parse(v.properties.properties) : v.properties.properties;
         let pheno = props.Phenotypes[0] != undefined? props.Phenotypes.flatMap(d=> d): null;
         let clin = pheno != null? pheno.map(p=> p.disease_ids.filter(d=> d.organization == "OMIM")).flatMap(d=> d): null;

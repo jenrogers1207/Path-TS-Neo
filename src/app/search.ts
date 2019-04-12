@@ -291,7 +291,7 @@ export async function searchGO(queryOb:object){
     let response = (async () => {
         try {
             let req = await ky.get(url).json();
-            console.log('ret', req)
+         
             return req;
         } catch (error) {
             console.log(error);
@@ -301,7 +301,7 @@ export async function searchGO(queryOb:object){
     });
 
     let json = await response();
-
+  
     let findings = json.associations.map(m=> m.object);
 
     queryOb.properties.GO = findings;
@@ -318,7 +318,7 @@ export async function searchEnsembl(queryOb:object){
     let response = (async () => {
         try {
             let req = await ky.get(url).json();
-            console.log('ret', req)
+  
             return req;
         } catch (error) {
             console.log(error);

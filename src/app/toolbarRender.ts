@@ -21,7 +21,7 @@ export async function changeSelectedClasses(dataArray: Array<object>){
 }
 
 export function viewToggleInput(){
-    let dropData = ['Whole Network', 'Align by Gene', 'Align by Gene Test', 'Align by Variants', 'Align by Phenotype']
+    let dropData = ['Whole Network', 'Align by Gene', 'Align by Phenotype']
     let dropdown = d3.select('#topnav').select('.dropdown');
     let dropButton = dropdown.select('.dropdown-toggle');
     dropButton.text(dropData[0]);
@@ -34,14 +34,19 @@ export function viewToggleInput(){
     return dropdown;
 }
 
-export async function renderCalls(promis: Array<object>, selectedNode:Array<object>){
+export async function renderCalls(promis: Array<object>, selectedNode:Array<object>, graphArray:any){
 
       //  let selectedNames = qo.selected.queryKeeper.map(k=> k.name);
         let selectedNames = selectedNode.map(k=> k.name);
 
-        console.log(selectedNode,promis);
+        console.log('in toolbar',selectedNode,promis, graphArray[0].nodes.filter(f=> f.label.includes('Gene')));//
+        let geneProm = graphArray[0].nodes.filter(f=> f.label.includes('Gene')).map(g=> qo.structGene(g));
+        //let geneNode = await Promise.all(geneProm);
 
-        let data = await Promise.all(promis);
+
+
+       // let data = await Promise.all(promis);
+       let data = await Promise.all(geneProm);
 
         let sidebar = d3.select('#left-nav');
         let callTable = sidebar.select('.call-table');
@@ -68,7 +73,7 @@ export async function renderCalls(promis: Array<object>, selectedNode:Array<obje
             let selected = qo.selected.queryKeeper.map(d=> d)[qo.selected.queryKeeper.length - 1];
             renderGeneDetail([selected], graph);
             gCanvas.graphRenderMachine(graph[0], [selected]);
-            renderCalls(promis, [selected]);
+            renderCalls(promis, [selected], graphArray);
         });
     
         geneIcon.on('click', function(d){
@@ -127,7 +132,7 @@ export async function renderCalls(promis: Array<object>, selectedNode:Array<obje
 
         let varDes = varEnter.append('div').classed('var-descript', true).classed('hidden', true);
         let blurbs = varDes.selectAll('.blurb').data(d=>{
-               // console.log(d, d3.entries(d.properties));
+            
                 let blurbin = {}
                 blurbin.Class = d.properties.class;
                 blurbin.Consequence = d.properties.Consequence;
@@ -150,7 +155,7 @@ export async function renderCalls(promis: Array<object>, selectedNode:Array<obje
 
                 blurbin.Text = d.properties.Text;
 
-                //console.log('b',blurbin);
+                
                 return d3.entries(blurbin);
                 })
                 .enter().append('div').classed('blurb', true);
@@ -201,7 +206,7 @@ export async function renderCalls(promis: Array<object>, selectedNode:Array<obje
 export async function renderGeneDetail(dataArray: Array<object>, graph:object){
     
     let data = dataArray[0];
-    console.log('deatail data',data)
+    
     let headers = d3.keys(data.properties).filter(d=> d != 'References' && d !='Variants'  && d != 'name');
 
     let sidebar = d3.select('#left-nav');

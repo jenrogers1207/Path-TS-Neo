@@ -119,7 +119,7 @@ dataLoad.loadFile().then(async (d)=> {
         })
 
         gCanvas.graphRenderMachine(graph, [selectedGene]);
-        toolbar.renderCalls(queryKeeper, [selectedGene]);
+        toolbar.renderCalls(queryKeeper, [selectedGene], graphArray);
         toolbar.renderGeneDetail([selectedGene], graph);
   
         }else{
