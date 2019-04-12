@@ -156,6 +156,8 @@ let drawVars = async function(graphArray:Object, selectedGene:Array<object>){
 let drawGeneTest = async function(graphArray:Object, selectedGeneP:Array<object>){
     let selectedGene = await Promise.resolve(selectedGeneP);
 
+    console.log('grarphArrray', graphArray);
+
     let canvas = d3.select('#graph-render').select('.graph-canvas');
     var toolDiv = d3.select('.tooltip');
     
@@ -366,10 +368,26 @@ let drawGeneTest = async function(graphArray:Object, selectedGeneP:Array<object>
       };
 
     sortButton.on('click', ()=>{
-      let groupVars = groupBy(selectedGene[0].properties.Variants, 'cons');
-      let array = d3.entries(groupVars);
-       selectedGene[0].properties.Variants = array.flatMap(d=> d.value);
-       drawGeneTest(graphArray, selectedGene);
+   
+    let newSort = wrapperObject.children.map(c=> {
+        let vas = c.data.properties.Variants.map(v=> {
+            v.cons = v.properties.Consequence;
+            return v;
+        });
+        c.data.properties.Variants = vas;
+        let array =  groupBy(c.data.properties.Variants, 'cons');
+        let vals = d3.entries(array);
+        let flattened = vals.flatMap(d=> d.value)
+        c.data.properties.Variants = flattened;
+        c.data.label = ['Gene']
+        return c.data;
+    });
+    
+   
+    console.log(newSort);
+    let newgraph = {'nodes': newSort}
+     // selectedGene[0].properties.Variants = array.flatMap(d=> d.value);
+       drawGeneTest(newgraph, selectedGene);
     });
 
     let circles = d3.selectAll('.circ');
@@ -1145,9 +1163,7 @@ let drawPhenotypes = async function(graphArray:Object, selectedGene:Array<object
     let ungroupVars = async function(thisEl: any, pheno: any){
         
         let phen = await Promise.all(pheno);
-    
         let newPhen = phen.map(p=> {
-        
             let flatVar = d3.entries(p.vars).map(d=> d.value);
             p.vars = flatVar.flatMap(d=> d);
             return p;
