@@ -672,6 +672,327 @@ let drawPhenotypesTest = async function(graphArray:Object, selectedGene:Array<ob
         'vars': 200
     }
     const consLabels = ['missense_variant', 'frameshift_variant', 'stop_gained', 'inframe_deletion', 'regulatory_region_variant', 'stop_lost' ]
+    let labels = d3.select('#graph-render').append('div').classed('render-label pheno-label', true);
+
+    labels.append('div').style('width', '280px').append('text').text('Phenotype');
+    labels.append('div').style('width', '100px').append('text').text('Gene');
+    let varDiv = labels.append('div').style('width', '400px');
+    varDiv.append('text').text('Variants');//.attr('x', col.vars+15);
+    let circLabel =   varDiv.append('svg').selectAll('circle-label').data(consLabels).enter().append('circle').attr('r', 3).attr('cx', (d,i)=> 10+(i*10)).attr('cy', 25);
+    circLabel.attr('class', d=> d).classed('circle-label', true);
+
+    let groupButton = varDiv.append('span').classed('badge badge-pill badge-secondary', true).append('text').text('Ungroup');
+    let stackButton = varDiv.append('span').classed('badge badge-pill badge-secondary', true);
+    stackButton.append('text').text('Expand');
+    stackButton.classed('hidden', true);
+
+    let phenoData = graphArray.nodes.filter(d=> d.label == 'Phenotype').map(p=> {
+        let phen = p.properties;
+        phen.properties = typeof p.properties.properties == 'string' ? JSON.parse(p.properties.properties) : p.properties.properties;
+        return phen;
+    });
+
+    d3.select('#graph-render').style('height', (phenoData.length * 90) + 'px');
+    canvas.style('height', (phenoData.length * 90) + 'px');
+
+    var collapse = async function(el:any, level:number){
+        let move = [50, 200, 400]
+        canvas.selectAll('.pheno-text').transition().duration(2000).attr('opacity', 0);
+        el.transition().duration(2000).attr('transform', (d, i)=> 'translate('+move[level]+','+((i*25))+')');
+        stackButton.text('Expand');
+    }
+    var spread = function(el:any, level:number){
+        let move = [50, 200, 400]
+        canvas.selectAll('.pheno-text').remove();
+        el.transition().duration(2000).attr('transform', d=> 'translate('+move[level]+','+(d.ypos * 2)+')');
+        stackButton.text('Collapse');
+      
+        /*
+        let text = secEl.append('text').text(d=>{
+            let texting = d.data.properties != undefined && d.data.properties.description!= null? d.data.properties.description : '';
+            return texting;
+        })
+        text.classed('pheno-text', true).attr('transform', 'translate(50, 0)').attr('opacity', 0);
+        text.transition().duration(3000).attr('opacity', 1);
+*/
+    }
+
+    let variants = graphArray.nodes.filter(d=> d.label == 'Variant').map(v=> {
+        let varName = v.name;
+        let props = typeof v.properties.properties == 'string' ? JSON.parse(v.properties.properties) : v.properties.properties;
+
+        let pheno = props.Phenotypes[0] != undefined? props.Phenotypes.flatMap(d=> d): null;
+        let clin = pheno != null? pheno.map(p=> p.disease_ids.filter(d=> d.organization == "OMIM")).flatMap(d=> d): null;
+        let gene = String(props.mutations).split(',');
+
+        let geneLocation = graphArray.nodes.filter(d=> d.label.includes('Gene')).filter(f=> gene.includes(f.name)).map(m=> JSON.parse(m.properties.Location));
+       
+        return {'name': v.name, 'properties': props, 'pheno': clin, 'gene': gene[0], 'geneLocation':geneLocation[0], 'children': [] };
+    });
+
+    variants = variants.filter(v=> v.gene != 'undefined');
+
+    let newVars = d3.nest().key(function(d) { return d.gene; })
+    .entries(variants);
+
+    let newPheno = await phenoData.map(async p=> {
+        let pheno = p;
+        pheno.name = p.name;
+
+        let allvars = await newVars.filter(v=> {
+            return v.key == p.properties.associatedGene});
+
+        p.children = allvars[0].values != undefined? allvars.map(all=> {
+            let geneName = all.key;
+            let children = all.values;
+            let filtered = children.filter(c=> {
+                
+                let ids = c.pheno != null? c.pheno.map(m=> m.accession) : [];
+                return ids.includes(p.name);
+            })
+      
+            let data = {'type': 'Gene'};
+            return {'name': geneName, 'children': filtered, 'data':data }
+        }) : [];
+ 
+        return pheno;
+
+    });
+    
+    let finalPheno = {'children': await Promise.all(newPheno), 'name': 'root' };
+
+    assignPosition(finalPheno, 1);
+
+    canvas.style('height', (150*phenoData.length) + 'px');
+   
+    circLabel.on('mouseover', function(d){
+      
+        toolDiv.transition()
+        .duration(200)
+        .style("opacity", .8);
+        toolDiv.html(d)
+        .style("left", (d3.event.pageX) + "px")
+        .style("top", (d3.event.pageY - 28) + "px");
+     })
+     .on("mouseout", function(d) {
+        toolDiv.transition()
+            .duration(500)
+            .style("opacity", 0);
+    });
+
+    let drawTabs = async function(data, selectedName:string){
+
+        let node = canvas.select('.nodes').append('g').classed('pheno-wrap', true).selectAll('.pheno-tab').data(data.children);
+
+        let nodeEnter = node
+            .enter().append('g')
+            .attr("class", (d)=> 'pheno-tab '+d.name);
+
+        let geneNode = nodeEnter.selectAll('.gene').data(d=> d.children);
+        let geneEnter = geneNode.enter().append('g').attr('class', d=> d.name).classed('gene first', true);
+        let selectedGene = geneEnter.filter(g=> g.data.name === selectedName.name);
+
+        //selectedGene.append('rect')
+        //let selectedRects = selectedGene.append('rect')
+        //selectedRects.attr('x', -50).attr('y', 66).attr('rx', 15).attr('ry', 15).attr('width', 1000);
+        //selectedRects.attr('height', d=>  d.h).attr('fill','gray').style('opacity', '0.15');
+
+        nodeEnter.transition().duration(2000).attr('transform', (d, i) => 'translate(50, '+(i * 25)+')');
+        geneEnter.transition().duration(2000).attr('transform', (d, i) => 'translate(300, '+(i * 0)+')');
+
+        let circleP = nodeEnter.append('circle').attr('cx', 0).attr('cy', 100);
+        circleP.attr('class', d=> d.name).classed('pheno-c', true);
+
+        let textP = nodeEnter.append('text').text(d=> d.properties.description);
+        textP.attr('x', 16).attr('y', 100);
+
+        let circleG = geneEnter.append('circle').attr('cx', 0).attr('cy', 100);
+        circleG.attr('class', d=> d.name).classed('pheno-g', true);
+
+        let textG = geneEnter.append('text').text(d=> d.name);
+        textG.attr('x', 16).attr('y', 100);
+
+        return nodeEnter;
+
+    }
+
+    let drawVars = function(nodeEnter, grouped:Boolean){
+       
+        nodeEnter.select('.var-wrapper').remove();
+
+        if(grouped){
+            let circleVar = nodeEnter.append('g').classed('var-wrapper', true).selectAll('.vars').data(d=> d3.entries(d.children));
+
+            circleVar.exit().remove();
+
+            let circEnter = circleVar.enter().append('g').attr('class', d=> d.key).classed('vars second', true);
+            circEnter.attr('transform', (d,i)=> 'translate('+(col.vars + (i*21))+', 100)');
+            let circ = circEnter.append('circle').attr('r', 10).attr('cx', 5).attr('cy', 0);
+            let count = circEnter.append('text').text(d=> d.value.length).attr('y', 3);
+            circleVar = circEnter.merge(circleVar);
+
+            circ.on('mouseover', function(d){          
+                toolDiv.transition()
+                .duration(200)
+                .style("opacity", .8);
+                toolDiv.html(d.value.length +"<br/>"+ d.key + "<br/>")
+                .style("left", (d3.event.pageX) + "px")
+                .style("top", (d3.event.pageY - 28) + "px");
+             })
+             .on("mouseout", function(d) {
+                toolDiv.transition()
+                    .duration(500)
+                    .style("opacity", 0);
+            });
+            return circEnter;
+        }else{
+
+        
+            let scale = d3.scaleLinear().range([0, 200])//.domain(function(d:object){ return [d.geneLocation.chromosomeStart, d.geneLocation.chromosomeEnd] } );
+            let geneSpace = nodeEnter.append('g').classed('gene-space', true);
+            let spaceRect = geneSpace.append('rect').attr('width', 200).attr('height', 20).attr('fill', 'gray').attr('opacity', .2);
+            let axisS = geneSpace.append('text').text(d=> {
+                return d.children[0].geneLocation.chromosomeStart;
+            });
+         
+            axisS.attr('x', -45);
+            axisS.attr('y', 10);
+            let axisE = geneSpace.append('text').text(d=> {
+                return d.children[0].geneLocation.chromosomeEnd;
+            })
+            axisE.attr('x', 205);
+            axisE.attr('y', 10);
+            geneSpace.attr('transform', 'translate(150, 90)');
+            let circleVar = nodeEnter.append('g').classed('var-wrapper', true).selectAll('.vars').data(d=> d.children);
+
+            circleVar.exit().remove();
+
+            let circEnter = circleVar.enter().append('g').attr('class', d=> d.properties.Consequence+' '+d.vname).classed('vars second ungrouped', true);
+            circEnter.attr('transform', 'translate(150, 100)');
+
+/*
+            let circ = circEnter.append('circle').attr('r', 5).attr('cx', (d, i)=> {
+                let newScale = scale.domain([d.geneLocation.chromosomeStart, d.geneLocation.chromosomeEnd]);
+                return newScale(d.properties.mappings.start);}).attr('cy', 0);
+*/
+                let circ = circEnter.append('rect').attr('x', (d, i)=> {
+                    let newScale = scale.domain([d.geneLocation.chromosomeStart, d.geneLocation.chromosomeEnd]);
+                    return newScale(d.properties.mappings.start);})
+                    .attr('y', -10)
+                    .attr('height', 20)
+                    .attr('width', (d, i)=>{
+                        let start = d.properties.mappings.start;
+                        let end = d.properties.mappings.end;
+                        let width = (end - start) < 1? 2: (end-start);
+                        return width;
+                    });
+    
+
+            circleVar = circEnter.merge(circleVar);
+            circ.on('mouseover', function(d){
+            
+                let matches = d3.selectAll('.'+d.vname);
+             //   matches.classed('highlight', true);
+                d3.select(this).classed('highlight', true);
+
+
+                toolDiv.transition()
+                .duration(200)
+                .style("opacity", .8);
+                toolDiv.html(d.vname + "<br/>" + d.properties.Consequence + "<br/>")
+                .style("left", (d3.event.pageX) + "px")
+                .style("top", (d3.event.pageY - 50) + "px");
+             })
+             .on("mouseout", function(d) {
+                let matches = d3.selectAll('.highlight');
+                matches.classed('highlight', false);
+
+                toolDiv.transition()
+                    .duration(500)
+                    .style("opacity", 0);
+            });
+            return circEnter;
+        }
+    }
+
+    let groupVars = async function(buttonEl: any, drawEl:any){
+      
+        let gene = drawEl.data();
+       
+        let newPhen = gene.map(m=> {
+                let varGroups:object = { };
+                m.children.forEach(v => {
+                    let key = v.properties.Consequence;
+                    if(d3.keys(varGroups).includes(key)){
+                        varGroups[key].push(v)
+                    }else{
+                        varGroups[key] = [v]
+                    }
+                });
+                m.children = varGroups;
+        
+            return m;
+        });
+
+        d3.select(buttonEl).text('Ungroup');
+        stackButton.classed('hidden', true);
+       // drawVars(drawEl, true);
+        let varEnter = drawVars(drawEl, true);
+        return varEnter;
+    }
+
+    let ungroupVars = async function(buttonEl: any, drawEl:any){
+        
+        let gene = drawEl.data();
+        let newPhen = gene.map(m=> {
+                let flatVar = d3.entries(m.children).map(d=> d.value);
+                m.children = flatVar.flatMap(d=> d);
+                return m;
+        });
+   
+        d3.select(buttonEl).text('Group');
+        stackButton.classed('hidden', false);
+        let varEnter = drawVars(drawEl, false);
+        return varEnter;
+    }
+
+    let enterNode = await drawTabs(finalPheno, selectedGene[0].name);
+    let geneNode = enterNode.selectAll('.gene.first');
+
+   // let varNode = await groupVars(groupButton, geneNode);
+   let varNode = await drawVars(geneNode, false);
+
+    groupButton.on('click', async function(){
+        d3.select(this).text() == 'Group' ? varNode = await groupVars(this, geneNode) :  varNode = await ungroupVars(this, geneNode);
+    });
+    stackButton.on('click', function(){
+        if(d3.select(this).text() == 'Expand'){
+            spread(enterNode, 0);
+            spread(varNode, 2);
+        }else{
+            collapse(enterNode, 0);
+            collapse(varNode, 2);
+        } 
+    })
+    
+}
+
+let drawPhenotypes = async function(graphArray:Object, selectedGene:Array<object>){
+
+    let canvas = d3.select('#graph-render').select('.graph-canvas');
+    var toolDiv = d3.select('.tooltip');
+    
+    canvas.select('.links').selectAll('*').remove();
+    canvas.select('.nodes').selectAll('*').remove();
+    d3.selectAll('.render-label').remove();
+    let nodeCanvas = canvas.select('.nodes').attr('transform', 'translate(0, 0)');
+
+    let col = {
+        'pheno': 50,
+        'gene': 400,
+        'vars': 200
+    }
+    const consLabels = ['missense_variant', 'frameshift_variant', 'stop_gained', 'inframe_deletion', 'regulatory_region_variant', 'stop_lost' ]
 
     let labels = d3.select('#graph-render').append('div').classed('render-label pheno-label', true);
 
@@ -721,6 +1042,7 @@ let drawPhenotypesTest = async function(graphArray:Object, selectedGene:Array<ob
     let variants = graphArray.nodes.filter(d=> d.label == 'Variant').map(v=> {
         let varName = v.name;
         let props = typeof v.properties.properties == 'string' ? JSON.parse(v.properties.properties) : v.properties.properties;
+        console.log('props'+ v.name, props.Phenotypes)
         let pheno = props.Phenotypes[0] != undefined? props.Phenotypes.flatMap(d=> d): null;
         let clin = pheno != null? pheno.map(p=> p.disease_ids.filter(d=> d.organization == "OMIM")).flatMap(d=> d): null;
         let gene = String(props.mutations).split(',');
@@ -740,11 +1062,14 @@ let drawPhenotypesTest = async function(graphArray:Object, selectedGene:Array<ob
         let allvars = await newVars.filter(v=> {
             return v.key == p.properties.associatedGene});
 
+            console.log(allvars);
+
         p.children = allvars[0].values != undefined? allvars.map(all=> {
             let geneName = all.key;
             let children = all.values;
             let filtered = children.filter(c=> {
-                let ids = c.pheno.map(m=> m.accession);
+                
+                let ids = c.pheno != null? c.pheno.map(m=> m.accession) : [];
                 return ids.includes(p.name);
             })
       
@@ -937,264 +1262,7 @@ let drawPhenotypesTest = async function(graphArray:Object, selectedGene:Array<ob
             collapse(varNode, 2);
         } 
     })
-    
-}
 
-let drawPhenotypes = async function(graphArray:Object, selectedGene:Array<object>){
-
-    let canvas = d3.select('#graph-render').select('.graph-canvas');
-    var toolDiv = d3.select('.tooltip');
-    
-    canvas.select('.links').selectAll('*').remove();
-    canvas.select('.nodes').selectAll('*').remove();
-    d3.selectAll('.render-label').remove();
-    let nodeCanvas = canvas.select('.nodes').attr('transform', 'translate(0, 0)');
-
-    let col = {
-        'pheno': 50,
-        'gene': 400,
-        'vars': 500
-    }
-    const consLabels = ['missense_variant', 'frameshift_variant', 'stop_gained', 'inframe_deletion', 'regulatory_region_variant', 'stop_lost' ]
-
-    let labels = d3.select('#graph-render').append('div').classed('render-label pheno-label', true);//.append('svg');
-  //  let labelG = labels.append('div').attr('transform', 'translate(75, 30)')
-    labels.append('div').style('width', '415px').append('text').text('Phenotype');//.attr('x', 0);
-    labels.append('div').style('width', '50px').append('text').text('Gene');//.attr('x', col.gene+10);
-    let varDiv = labels.append('div').style('width', '380px');
-    varDiv.append('text').text('Variants');//.attr('x', col.vars+15);
-    let circLabel =   varDiv.append('svg').selectAll('circle-label').data(consLabels).enter().append('circle').attr('r', 3).attr('cx', (d,i)=> 10+(i*10)).attr('cy', 25);
-    circLabel.attr('class', d=> d).classed('circle-label', true);
-
-    let groupButton = varDiv.append('span').classed('badge badge-pill badge-secondary', true).append('text').text('Ungroup');
-
-    let geneData = graphArray.nodes.filter(d=> d.label == 'Gene');
-
-    let phenoData = graphArray.nodes.filter(d=> d.label == 'Phenotype').map(p=> {
-        let phen = p.properties;
-        phen.properties = typeof p.properties.properties == 'string' ? JSON.parse(p.properties.properties) : p.properties.properties;
-        return phen;
-    });
-
-    d3.select('#graph-render').style('height', (phenoData.length * 90) + 'px');
-    canvas.style('height', (phenoData.length * 90) + 'px');
-
-    let variants = graphArray.nodes.filter(d=> d.label == 'Variant').map(v=> {
-        let varName = v.name;
-        let props = typeof v.properties.properties == 'string' ? JSON.parse(v.properties.properties) : v.properties.properties;
-        let pheno = props.Phenotypes[0] != undefined? props.Phenotypes.flatMap(d=> d): null;
-        let clin = pheno != null? pheno.map(p=> p.disease_ids.filter(d=> d.organization == "OMIM")).flatMap(d=> d): null;
-        let gene = String(props.mutations).split(',');
-       
-        return {'name': v.name, 'props': props, 'pheno': clin, 'gene': gene[0]};
-    });
-
-    variants = variants.filter(v=> v.gene != 'undefined');
-
-    let newVars = d3.nest().key(function(d) { return d.gene; })
-    .entries(variants);
-
-    let newPheno = await phenoData.map(async p=> {
-        let pheno = p;
-        pheno.name = p.name;
-      
-        pheno.allvars = await newVars.filter(v=> v.key == p.properties.associatedGene).map(m=> m.values)[0];
- 
-        if(pheno.allvars[0]!= undefined){
-            let vars = pheno.allvars.map(v=> {
-                let vPheno = v.pheno != null? v.pheno.filter(f=> f.accession == String(p.properties.phenotypeMimNumber)) : null;
-                return { 'vname': v.name, 'phenoid': vPheno, 'props':v.props }
-            });
-            pheno.vars = vars.filter(f=> f.phenoid != null && f.phenoid.length > 0);
-        }else{
-            pheno.vars = null;
-        }
-        return pheno;
-    });
-
-
-    let totalPheno = await restack(await Promise.all(newPheno), selectedGene[0].name);
-
-    canvas.style('height', (150*phenoData.length) + 'px');
-   
-    circLabel.on('mouseover', function(d){
-      
-        toolDiv.transition()
-        .duration(200)
-        .style("opacity", .8);
-        toolDiv.html(d)
-        .style("left", (d3.event.pageX) + "px")
-        .style("top", (d3.event.pageY - 28) + "px");
-     })
-     .on("mouseout", function(d) {
-        toolDiv.transition()
-            .duration(500)
-            .style("opacity", 0);
-    });
-
-    let drawTabs = async function(data, selectedName:string){
-
-        let pData = await Promise.all(data);
-        let newData = pData.map((p,i)=>{
-            let start = i == 0 ? 0 : pData[i-1].y;
-            let y = i>0 && pData[i-1].properties.inheritance == undefined? start + 80 : start + 160; 
-            p.y = i == 0 ? 0 : y;
-            p.h = p.properties.inheritance == undefined? 78 : 158; 
-            return p;
-        });
-
-        let node = canvas.select('.nodes').append('g').classed('pheno-wrap', true).selectAll('.pheno-tab').data(newData);
-
-        let nodeEnter = node
-            .enter().append('g')
-            .attr("class", (d)=> 'pheno-tab '+d.name);
-
-        nodeEnter.attr('transform', (d, i)=> {
-            return 'translate(100, '+d.y+')'});
-
-        let selectedNode = nodeEnter.filter(n=>  n.properties.associatedGene === selectedName);
-
-        let selectedRects = selectedNode.append('rect')
-        selectedRects.attr('x', -50).attr('y', 66).attr('rx', 15).attr('ry', 15).attr('width', 1000);
-        selectedRects.attr('height', d=>  d.h).attr('fill','gray').style('opacity', '0.15');
-    
-        let circleP = nodeEnter.append('circle').attr('cx', 0).attr('cy', 100);
-        circleP.classed('pheno-c', true);
-
-        circleP.on('click', async (d)=>{
-       
-            let newPheno = await Promise.resolve(search.searchOMIMPheno(d));
-            let nameArr = data.map(m=> m.name);
-            let index = nameArr.indexOf(newPheno.name);
-            data[index] = newPheno;
-            canvas.select('.links').selectAll('*').remove();
-            canvas.select('.nodes').selectAll('*').remove();
-            let newTabs = await drawTabs(data, selectedName);
-            groupButton.text() == 'Group' ? drawVars(newTabs, false) :drawVars(newTabs, true);
-           
-        });
-    
-        let textBlurb = nodeEnter.append('g').selectAll('text').data(d=> d3.entries(d.properties).filter(k=> k.key != 'associatedGene' && k.key != 'phenotypeMappingKey' && k.key != 'OMIM'));
-        textBlurb.enter().append('text').text(d=> {
-            if(d.key == 'description'){return d.value
-            }else{
-            return  d.key+': '+ d.value;
-            }
-           
-        }).attr('x', col.pheno).attr('y', (d, i)=> 90 + (i* 15));
-    
-        let circleG = nodeEnter.append('circle').attr('cx', col.gene).attr('cy', 100);
-        circleG.classed('pheno-g', true);
-    
-        nodeEnter.append('text').text(d=> d.properties.associatedGene).attr('x', col.gene - 15).attr('y', 86);
-
-        return nodeEnter;
-
-    }
-
-    let drawVars = function(nodeEnter, grouped:Boolean){
-       
-        nodeEnter.select('.var-wrapper').remove();
-        if(grouped){
-
-            let circleVar = nodeEnter.append('g').classed('var-wrapper', true).selectAll('.pheno-v').data(d=> {
-                let dat = d3.entries(d.vars);
-                return dat;
-            });
-
-            circleVar.exit().remove();
-
-            let circEnter = circleVar.enter().append('g').attr('class', d=> d.key).classed('pheno-v', true);
-            circEnter.attr('transform', (d,i)=> 'translate('+(col.vars + (i*21))+', 100)');
-            let circ = circEnter.append('circle').attr('r', 10).attr('cx', 5).attr('cy', 0);
-            let count = circEnter.append('text').text(d=> d.value.length).attr('y', 3);
-            circleVar = circEnter.merge(circleVar);
-
-            circ.on('mouseover', function(d){          
-                toolDiv.transition()
-                .duration(200)
-                .style("opacity", .8);
-                toolDiv.html(d.value.length +"<br/>"+ d.key + "<br/>")
-                .style("left", (d3.event.pageX) + "px")
-                .style("top", (d3.event.pageY - 28) + "px");
-             })
-             .on("mouseout", function(d) {
-                toolDiv.transition()
-                    .duration(500)
-                    .style("opacity", 0);
-            });
-        }else{
-
-            let circleVar = nodeEnter.append('g').classed('var-wrapper', true).selectAll('.pheno-v').data(d=> d.vars);
-
-            circleVar.exit().remove();
-
-            let circEnter = circleVar.enter().append('g').attr('class', d=> d.props.Consequence+' '+d.vname).classed('pheno-v', true);
-            circEnter.attr('transform', (d,i)=> 'translate('+(col.vars + (i*11))+', 100)');
-            let circ = circEnter.append('circle').attr('r', 5).attr('cx', 5).attr('cy', 0);
-
-            circleVar = circEnter.merge(circleVar);
-            circ.on('mouseover', function(d){
-            
-                let matches = d3.selectAll('.'+d.vname);
-                matches.classed('highlight', true);
-
-                toolDiv.transition()
-                .duration(200)
-                .style("opacity", .8);
-                toolDiv.html(d.vname + "<br/>" + d.props.Consequence + "<br/>")
-                .style("left", (d3.event.pageX) + "px")
-                .style("top", (d3.event.pageY - 50) + "px");
-             })
-             .on("mouseout", function(d) {
-                let matches = d3.selectAll('.highlight');
-                matches.classed('highlight', false);
-
-                toolDiv.transition()
-                    .duration(500)
-                    .style("opacity", 0);
-            });
-        }
-    }
-
-    let groupVars = async function(thisEl: any, pheno: any){
-        let phen = await Promise.all(pheno);
-        let newPhen = phen.map(p=> {
-            let varGroups:object = { };
-            p.vars.forEach(v => {
-                let key = v.props.Consequence;
-                if(d3.keys(varGroups).includes(key)){
-                    varGroups[key].push(v)
-                }else{
-                    varGroups[key] = [v]
-                }
-            });
-            p.vars = varGroups;
-            return p;
-        });
-        d3.select(thisEl).text('Ungroup');
-        drawVars(enterNode, true);
-    }
-
-    let ungroupVars = async function(thisEl: any, pheno: any){
-        
-        let phen = await Promise.all(pheno);
-        let newPhen = phen.map(p=> {
-            let flatVar = d3.entries(p.vars).map(d=> d.value);
-            p.vars = flatVar.flatMap(d=> d);
-            return p;
-        });
-   
-        d3.select(thisEl).text('Group');
-        drawVars(enterNode, false);
-    }
-
-    groupButton.on('click', function(){
-        d3.select(this).text() == 'Group' ? groupVars(this, newPheno) : ungroupVars(this, newPheno);
-    });
-
-    let enterNode = await drawTabs(totalPheno, selectedGene[0].name);
-    groupVars(groupButton, totalPheno);
 }
 
 function drawGraph(graphArray: Object, selectedGene: Array<object>) {

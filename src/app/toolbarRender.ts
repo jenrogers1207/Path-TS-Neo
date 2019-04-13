@@ -251,7 +251,6 @@ export async function renderGeneDetail(dataArray: Array<object>, graph:object){
                 return descript.description});
     }
    
-
     let titles = propEnter.filter(d=> d == "Titles").select('.detail-wrapper').selectAll('.title').data(d=> {return d3.entries(data.properties[d])});
     let titleEnter = titles.enter().append('div').classed('title sections', true);
     titleEnter.append('text').text(d=> d.value);
