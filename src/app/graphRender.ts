@@ -952,8 +952,9 @@ let drawPhenotypesTest = async function(graphArray:Object, selectedGene:Array<ob
 
             let varGEnter = varGroups.enter().append('g').attr('class', d=> d.key).classed('vars second', true);
             varGEnter.attr('transform', (d,i)=> 'translate('+(420 + (i*21))+', 100)');
-            let circG = varGEnter.append('circle').attr('r', 10).attr('cx', 5).attr('cy', 0);
-            let count = varGEnter.append('text').text(d=> d.value.length).attr('y', 3);
+            let circG = varGEnter.append('circle').attr('r', 8).attr('cx', 5).attr('cy', 0);
+            circG.attr('opacity', .5)
+            let count = varGEnter.append('text').text(d=> d.value.length).attr('y', 2.5);
             circleVar = varGEnter.merge(circleVar);
 
 
